@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from app.routes import crimes
+from app.models import Crime
+from app.database import engine
 
 app = FastAPI();
 
-@app.get("/")
-def root():
-    return {"message": "Welcome to the Crime Analytics Platform API!"}
+app.include_router(crimes.router, prefix="/crimes")
 
-app.include_router(crimes.router, prefix="/crimes", tags=["Crimes"])
+Crime.metadata.create_all(bind=engine)
