@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "title": "Pickpocket at Gamla Stan metro station",
+    "type": "theft",
+    "location": "Gamla Stan, Stockholm",
+    "date": "2017-03-14",
+    "severity": 1,
+    "description": "Victim reported wallet stolen on the subway platform during morning rush hour. Suspect fled before police arrival.",
+    "source": null
+  },
+  {
+    "id": 2,
+    "title": "Armed robbery at convenience store in Rinkeby",
+    "type": "robbery",
+    "location": "Rinkeby, Stockholm",
+    "date": "2017-05-22",
+    "severity": 4,
+    "description": "Two masked men robbed a 7-Eleven at knifepoint, taking approximately 8,000 SEK from the register. No injuries reported.",
+    "source": null
+  },
+  {
+    "id": 3,
+    "title": "Assault outside nightclub in Stureplan",
+    "type": "assault",
+    "location": "Stureplan, Stockholm",
+    "date": "2017-07-08",
+    "severity": 3,
+    "description": "Group altercation outside a bar resulted in one man being hospitalized with facial injuries. Two suspects arrested.",
+    "source": null
+  },
+  {
+    "id": 4,
+    "title": "ATM card skimming fraud in Kungsholmen",
+    "type": "fraud",
+    "location": "Kungsholmen, Stockholm",
+    "date": "2018-01-15",
+    "severity": 2,
+    "description": "Victim discovered 45,000 SEK withdrawn from their account after card details were skimmed at a compromised ATM.",
+    "source": null
+  },
+  {
+    "id": 5,
+    "title": "Gang-related shooting in Husby",
+    "type": "assault",
+    "location": "Husby, Stockholm",
+    "date": "2018-04-09",
+    "severity": 5,
+    "description": "A 23-year-old man was shot in the leg near a residential block. Believed to be gang-related; victim refused to cooperate with police.",
+    "source": null
+  },
+  {
+    "id": 6,
+    "title": "Major darknet narcotics ring dismantled — 17,000 Swedish buyers",
+    "type": "drug offense",
+    "location": "Sweden (nationwide; Stockholm District Court)",
+    "date": "2018-09-20",
+    "severity": 5,
+    "description": "A Swedish national was arrested for operating one of the country's largest darknet drug networks, conducting over 324,000 transactions and selling heroin, cocaine, amphetamines, and cannabis to approximately 17,000 buyers across Sweden. All sales were made via encrypted darknet markets, paid for in Bitcoin, and delivered by post. Profits were estimated at EUR 1 million; street value approximately EUR 35 million. Charged with aggravated drug trafficking, money laundering, and document forgery. Trial opened at Stockholm District Court in March 2020.",
+    "source": "Eurojust press release, February 2020; Stockholm District Court"
+  },
+  {
+    "id": 7,
+    "title": "Swedbank CEO makes fraudulent public statements concealing money laundering",
+    "type": "fraud",
+    "location": "Brunkebergstorg, Stockholm",
+    "date": "2019-02-07",
+    "severity": 4,
+    "description": "Birgitte Bonnesen, CEO of Swedbank, made deliberately false and misleading public statements denying that the bank had facilitated money laundering through its Baltic operations, deceiving investors, the public, and regulators. Finansinspektionen fined Swedbank SEK 4 billion in 2020 for serious AML deficiencies. In October 2024, the Svea Court of Appeal convicted Bonnesen of gross fraud and sentenced her to 15 months in prison.",
+    "source": "OCCRP ('Swedish Court Sends Ex-CEO of Swedbank to Prison'); S-RM Inform Red Flag Bulletin, October 2024; Deminor legal analysis"
+  },
+  {
+    "id": 8,
+    "title": "Bus driver assaulted by fare evader in Skärholmen",
+    "type": "violence against public servants",
+    "location": "Skärholmen, Stockholm",
+    "date": "2019-02-18",
+    "severity": 3,
+    "description": "A bus driver was attacked by a passenger who refused to pay the fare. Driver sustained minor injuries; suspect charged with assault on a public servant.",
+    "source": null
+  },
+  {
+    "id": 9,
+    "title": "Hand grenade detonates inside shop in Spånga",
+    "type": "assault",
+    "location": "Spånga, Stockholm",
+    "date": "2019-07-07",
+    "severity": 4,
+    "description": "A hand grenade exploded inside a shop in a residential area of Spånga, Stockholm. The attack was linked to organized crime extortion of local businesses, a pattern documented across multiple Stockholm suburbs throughout 2018–2019. Sweden recorded over 120 explosive attacks in the first half of 2019 alone.",
+    "source": "Wikipedia – List of grenade attacks in Sweden; NCT CBNW explosive violence report 2019"
+  },
+  {
+    "id": 10,
+    "title": "COVID-19 relief grant fraud in Östermalm",
+    "type": "fraud",
+    "location": "Östermalm, Stockholm",
+    "date": "2020-05-14",
+    "severity": 3,
+    "description": "A business owner fraudulently claimed state pandemic relief funds for a non-operational company, obtaining 380,000 SEK.",
+    "source": null
+  },
+  {
+    "id": 11,
+    "title": "ATM blown open with explosives in Nacka",
+    "type": "robbery",
+    "location": "Nacka, Stockholm County",
+    "date": "2020-12-01",
+    "severity": 4,
+    "description": "A criminal group used an improvised explosive device to destroy an ATM, stealing approximately 1.2 million SEK. Significant property damage to the surrounding building.",
+    "source": null
+  },
+  {
+    "id": 12,
+    "title": "Historic Spånga Church attacked with Molotov cocktails",
+    "type": "vandalism",
+    "location": "Spånga, Stockholm",
+    "date": "2021-01-17",
+    "severity": 3,
+    "description": "Three Molotov cocktails were thrown at the 12th-century Spånga Church, located near the Tensta and Rinkeby suburbs. One incendiary device struck the gate and two were hurled at windows, breaking the glass. The fire did not spread to the interior. Police cordoned off the area for forensic investigation and classified the attack as arson. No suspects were arrested.",
+    "source": "Sputnik Globe, January 21 2021; JihadWatch; multiple Swedish media reports, January 2021"
+  },
+  {
+    "id": 13,
+    "title": "Spånga Church targeted in second arson attack within one week",
+    "type": "vandalism",
+    "location": "Spånga, Stockholm",
+    "date": "2021-01-24",
+    "severity": 3,
+    "description": "The historic Spånga Church was struck by a second Molotov cocktail attack just seven days after the first. Several incendiary devices were thrown at the building. Police confirmed both attacks were under joint investigation as arson targeting the same site. No arrests were made in connection with either incident.",
+    "source": "American Thinker commentary, February 2021; Swedish media reports, January 2021"
+  },
+  {
+    "id": 14,
+    "title": "Cocaine smuggling intercepted at Arlanda Airport",
+    "type": "drug offense",
+    "location": "Arlanda Airport, Stockholm County",
+    "date": "2021-11-17",
+    "severity": 5,
+    "description": "Customs agents intercepted 4.5 kg of cocaine concealed in checked luggage arriving from South America. Two individuals arrested on arrival.",
+    "source": null
+  },
+  {
+    "id": 15,
+    "title": "Criminal gangs orchestrate coordinated attack on police during Rinkeby riots",
+    "type": "violence against public servants",
+    "location": "Rinkeby, Stockholm",
+    "date": "2022-04-14",
+    "severity": 5,
+    "description": "Riots erupted in Rinkeby and other Stockholm suburbs, ostensibly as counter-protests to Rasmus Paludan's Quran-burning demonstrations. Swedish National Police concluded that criminal gangs deliberately exploited the events as cover to attack law enforcement. Officers were pelted with stones and petrol bombs; police vehicles were set ablaze. 26 officers were injured, 20 police vehicles were destroyed or damaged, and 25 people were arrested — including 8 minors. National Police Commissioner Thornberg stated those involved had 'links to criminal gangs'.",
+    "source": "NPR (April 18, 2022); Al Jazeera; Wikipedia – 2022 Sweden riots; Global News Canada"
+  },
+  {
+    "id": 16,
+    "title": "Fatal gang shooting in Jordbro",
+    "type": "assault",
+    "location": "Jordbro, Haninge",
+    "date": "2022-06-15",
+    "severity": 5,
+    "description": "A 21-year-old man was fatally shot in what police believe is part of an escalating gang conflict in southern Stockholm County.",
+    "source": null
+  },
+  {
+    "id": 17,
+    "title": "Organized fraud ring defrauds 36 elderly Stockholmers of gold and cash",
+    "type": "fraud",
+    "location": "Stockholm (multiple districts)",
+    "date": "2023-04-20",
+    "severity": 3,
+    "description": "Eleven individuals were prosecuted for systematically defrauding 36 elderly Stockholm residents aged between 83 and 93. Perpetrators phoned victims claiming unauthorized electronics purchases had been made on their accounts, then visited their homes posing as bank employees or police officers to collect bank cards, gold jewelry, wedding rings, and cash. Ten members of the ring were sentenced to prison.",
+    "source": "Sweden Herald ('Ten Convicted for Scamming Elderly Out of Gold and Money in Stockholm')"
+  },
+  {
+    "id": 18,
+    "title": "Ambulance crew assaulted in Hjulsta",
+    "type": "violence against public servants",
+    "location": "Hjulsta, Stockholm",
+    "date": "2023-07-28",
+    "severity": 4,
+    "description": "Two paramedics were assaulted upon arrival at an emergency call; one sustained a broken nose. Police escort is now required for future calls to the area.",
+    "source": null
+  },
+  {
+    "id": 19,
+    "title": "13-year-old boy shot dead in woodland near Handen",
+    "type": "assault",
+    "location": "Handen, Haninge (south Stockholm)",
+    "date": "2023-09-13",
+    "severity": 5,
+    "description": "The body of a 13-year-old boy, identified in media as Milo, was found in woodland near Handen, south of Stockholm. He had been shot in the head; his body was moved to the forest after the killing. He was last seen on September 8. Prosecutor Lisa dos Santos described the killing as 'gross and completely reckless gang violence' linked to the Foxtrot network's internal conflict. Two men in their 30s were detained as suspects but later cleared. September 2023 was Sweden's deadliest month for shootings since December 2019, with 11 gun-related deaths.",
+    "source": "Washington Post (September 21, 2023); The Local Sweden (September 12, 2023); Sweden Herald"
+  },
+  {
+    "id": 20,
+    "title": "Foxtrot–Dalen gang war: double shooting — four sentenced to life",
+    "type": "assault",
+    "location": "Stockholm",
+    "date": "2023-09-26",
+    "severity": 5,
+    "description": "Two targeted shootings on September 26 and 27, 2023 resulted in one fatality and one seriously injured victim. The attacks were part of the intensifying conflict between the Foxtrot and Dalen criminal networks competing for drug territory in the Stockholm region. The feud escalated sharply from December 2022 onward. Four individuals — including a woman — were subsequently sentenced to life imprisonment for their roles in the murders.",
+    "source": "Sweden Herald ('Murder victims were randomly selected – four get life imprisonment'); Wikipedia – Foxtrot criminal network"
+  },
+  {
+    "id": 21,
+    "title": "Teenager kills three in Västberga and Tullinge home invasions — record youth sentence",
+    "type": "assault",
+    "location": "Västberga / Tullinge, Stockholm",
+    "date": "2023-10-12",
+    "severity": 5,
+    "description": "A 16-year-old, acting on orders from the Foxtrot criminal network, broke into a villa in Västberga on October 12 and shot a 40-year-old father dead, also wounding the man's wife and grazing the couple's two-year-old daughter. The following evening he broke into a second property in Tullinge and killed two women aged 20 and 60. In August 2024 the then-17-year-old was sentenced to 12 years — the longest prison sentence ever handed to a juvenile in Swedish legal history. Three co-conspirators also received sentences including life imprisonment.",
+    "source": "The Local Sweden (August 28, 2024); Sweden Herald; Sveriges Domstolar ruling, August 2024"
+  },
+  {
+    "id": 22,
+    "title": "25 suspects charged in large-scale organized fraud targeting elderly Swedes",
+    "type": "fraud",
+    "location": "Stockholm (multiple districts)",
+    "date": "2024-03-20",
+    "severity": 4,
+    "description": "Twenty-five individuals were charged in connection with an organized fraud network systematically targeting elderly victims across Sweden. The scheme involved cold calls, impersonation of bank staff and police, and psychological manipulation to extract money and personal information. Swedish Police recorded 238,000 fraud crimes in 2023 and reported that organized fraud has become the largest single source of income for Swedish criminal networks, generating SEK 7.5 billion annually.",
+    "source": "Sweden Herald ('25 Charged in Sweden for Defrauding Elderly of Millions'); Riksbank Payments Report 2024"
+  },
+  {
+    "id": 23,
+    "title": "Random stabbing on metro platform at Fridhemsplan",
+    "type": "assault",
+    "location": "Fridhemsplan, Stockholm",
+    "date": "2024-07-03",
+    "severity": 4,
+    "description": "A random stabbing on a crowded subway platform left one victim hospitalized in serious condition. The attacker had a prior psychiatric history.",
+    "source": null
+  },
+  {
+    "id": 24,
+    "title": "Staged ambush against police patrol in Råcksta",
+    "type": "violence against public servants",
+    "location": "Råcksta, Stockholm",
+    "date": "2024-08-16",
+    "severity": 5,
+    "description": "Officers responding to a staged call drove into an ambush; shots were fired at the patrol vehicle. Officers unharmed. Believed to be gang retaliation for recent arrests.",
+    "source": null
+  },
+  {
+    "id": 25,
+    "title": "Svea Court of Appeal convicts former Swedbank CEO for gross fraud",
+    "type": "fraud",
+    "location": "Stockholm",
+    "date": "2024-10-01",
+    "severity": 4,
+    "description": "The Svea Court of Appeal found Birgitte Bonnesen, former CEO of Swedbank (2016–2019), guilty of gross fraud and sentenced her to 15 months in prison. The conviction related to her deliberately misleading public statements about Swedbank's anti-money laundering practices, which caused investors and the public to hold a materially false picture of the bank's exposure. This is the follow-on conviction to the fraudulent statements made in February 2019 (see ID 7). The case is one of the highest-profile white-collar criminal convictions in Swedish history.",
+    "source": "OCCRP ('Swedish Court Sends Ex-CEO of Swedbank to Prison'); S-RM Inform Red Flag Bulletin, October 2024"
+  },
+  {
+    "id": 26,
+    "title": "Mastermind of EUR 6 million banking app fraud extradited from the United States",
+    "type": "fraud",
+    "location": "Stockholm (victims) / United States (arrested)",
+    "date": "2024-11-15",
+    "severity": 4,
+    "description": "A man in his 30s living in the United States was arrested in November 2024 as the suspected mastermind of a phone fraud ring that defrauded at least 25 wealthy Swedish victims of over EUR 6 million (approximately SEK 60 million). Victims were tricked into installing fraudulent banking applications that gave perpetrators remote control over their devices and full access to their bank accounts. Eurojust coordinated the international investigation and extradition; the suspect was remanded at Stockholm District Court on suspicion of aggravated fraud.",
+    "source": "Eurojust press release ('Main suspect in Swedish bank scam extradited from United States'); Sweden Herald"
+  },
+  {
+    "id": 27,
+    "title": "AI deepfake used to bypass bank identity verification",
+    "type": "fraud",
+    "location": "Östermalm, Stockholm",
+    "date": "2025-06-04",
+    "severity": 4,
+    "description": "A criminal used AI-generated deepfake video to pass a bank's remote identity verification, opening accounts subsequently used for money laundering.",
+    "source": null
+  },
+  {
+    "id": 28,
+    "title": "Gang leader Ismail Abdo arrested in Turkey in joint Swedish–Turkish operation",
+    "type": "assault",
+    "location": "Stockholm region (crimes) / Turkey (arrested)",
+    "date": "2025-07-04",
+    "severity": 5,
+    "description": "Ismail Abdo, 35, leader of the Rumba criminal network and one of Sweden's most wanted fugitives, was arrested in Turkey on July 4, 2025, alongside approximately 20 other suspects in a major coordinated operation involving Swedish, Turkish, and Norwegian police. Abdo had for years directed gang violence, drug distribution, and murder-for-hire operations across the Stockholm region and Uppsala from abroad. He was the key figure behind the Foxtrot–Rumba feud, which erupted after his mother was shot dead in Uppsala in September 2023.",
+    "source": "CBS News; The Local Sweden (July 4, 2025); Sweden Herald ('Swedish Gang Leader Ismail Abdo Detained in Turkey')"
+  },
+  {
+    "id": 29,
+    "title": "Triple shooting in Tensta car park",
+    "type": "assault",
+    "location": "Tensta, Stockholm",
+    "date": "2026-01-22",
+    "severity": 5,
+    "description": "Three men were shot in an outdoor car park in the evening. One fatality and two critical injuries; believed to be a continuation of ongoing inter-gang conflict.",
+    "source": null
+  },
+  {
+    "id": 30,
+    "title": "VAT fraud network via shell companies defrauds Skatteverket",
+    "type": "fraud",
+    "location": "City Centre, Stockholm",
+    "date": "2026-03-14",
+    "severity": 5,
+    "description": "A network of shell companies was used to claim fictitious VAT refunds from Skatteverket over two years, totaling over 18 million SEK in losses.",
+    "source": null
+  }
+]

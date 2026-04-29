@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+from typing import Optional
 
 class CrimeBase(BaseModel):
     title: str
@@ -7,8 +8,16 @@ class CrimeBase(BaseModel):
     severity: int
     description: str
 
-class CrimeResponse(CrimeBase):
-    id: int
-
 class CrimeCreate(CrimeBase):
     pass
+
+class CrimeUpdate(BaseModel):
+    title: Optional[str] = None
+    type: Optional[str] = None
+    location: Optional[str] = None
+    severity: Optional[int] = None
+    description: Optional[str] = None
+
+class CrimeResponse(CrimeBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int

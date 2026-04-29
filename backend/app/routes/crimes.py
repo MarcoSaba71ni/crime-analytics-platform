@@ -1,70 +1,61 @@
-from app.schemas.crimes import CrimeBase, CrimeResponse, CrimeCreate
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from typing import List
-from fastapi import APIRouter, HTTPException
+
+from app.database.deps import get_db
+from app.models.crime import Crime as CrimeModel
+from app.schemas.crimes import CrimeCreate, CrimeUpdate, CrimeResponse
 
 router = APIRouter()
 
-crimes = [
-    {
-        "id": 1,
-        "title": "Robbery in Central",
-        "type": "Theft",
-        "location": "Stockholm",
-        "severity": 3,
-        "description": "Store robbed at night"
-    },
-    {
-        "id": 2,
-        "title": "Car Theft",
-        "type": "Vehicle Crime",
-        "location": "Solna",
-        "severity": 2,
-        "description": "Car stolen from parking lot"
-    }
-]
 
 # GET ALL CRIMES
 @router.get("/", response_model=List[CrimeResponse])
-def get_crimes():
-    return crimes
+def get_crimes(db: Session = Depends(get_db)):
+    return db.query(CrimeModel).all()
 
 # GET A SINGLE CRIME BY ID
 @router.get("/{crime_id}", response_model=CrimeResponse)
-def get_crime(crime_id: int):
-    for crime in crimes:
-        if crime["id"] == crime_id:
-            return crime
+def get_crime(crime_id: int, db: Session = Depends(get_db)):
+    crime = db.query(CrimeModel).filter(CrimeModel.id == crime_id).first()
 
-    raise HTTPException(status_code=404, detail="Crime not found")
+    if not crime:
+        raise HTTPException(status_code=404, detail="Crime not found")
+    return crime
 
 # CREATE A NEW CRIME
 @router.post("/", response_model=CrimeResponse)
-def create_crime(crime: CrimeCreate):
-    new_crime = crime.dict()
-    new_crime["id"] = max((item["id"] for item in crimes), default=0) + 1
+def create_crime(crime: CrimeCreate, db: Session = Depends(get_db)):
+    new_crime = CrimeModel(**crime.model_dump())
 
-    crimes.append(new_crime)
+    db.add(new_crime)
+    db.commit()
+    db.refresh(new_crime)
+
     return new_crime
 
 # UPDATE AN EXISTING CRIME
-@router.put("/crime_id", response_model=CrimeResponse)
-def update_crime(crime_id: int, updated_crime: CrimeCreate):
-    for index, crime in enumerate(crimes):
-        if crime["id"] == crime_id: 
-            updated_data = updated_crime.dict()
-            updated_data["id"] = crime_id
+@router.put("/{crime_id}", response_model=CrimeResponse)
+def update_crime(crime_id: int, updated_crime: CrimeUpdate, db: Session = Depends(get_db)):
+    crime = db.query(CrimeModel).filter(CrimeModel.id == crime_id).first()
 
-            crimes[index] = updated_data
-            return updated_data
-        
-    raise HTTPException(status_code=404 , detail="Crime Not Found")
+    if not crime:
+        raise HTTPException(status_code=404, detail="Crime not found")
 
+    for key, value in updated_crime.model_dump(exclude_none=True).items():
+        setattr(crime, key, value)
+
+    db.commit()
+    db.refresh(crime)
+
+    return crime
 # DELETE A SPECIFIC CRIME
-@router.delete("/crime_id", response_model=CrimeResponse)
-def delete_crime(crime_id: int):
-    for index, crime in enumerate(crimes):
-        if crime["id"] == crime_id:
-            del crime[index]
-            return {"message: Crime Deleted Successfully"}
-        
-    raise HTTPException(status_code=404, detail= "Crime Not Found")
+@router.delete("/{crime_id}", status_code=204)
+def delete_crime(crime_id: int, db: Session = Depends(get_db)):
+    crime = db.query(CrimeModel).filter(CrimeModel.id == crime_id).first()
+
+    if not crime:
+        raise HTTPException(status_code=404, detail="Crime not found")
+
+    db.delete(crime)
+    db.commit()
