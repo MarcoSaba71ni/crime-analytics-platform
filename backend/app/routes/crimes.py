@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
+from sqlalchemy import extract
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 
 from app.database.deps import get_db
 from app.models.crime import Crime as CrimeModel
@@ -12,9 +13,29 @@ router = APIRouter()
 
 # GET ALL CRIMES
 @router.get("/", response_model=List[CrimeResponse])
-def get_crimes(db: Session = Depends(get_db)):
+def get_crimes(
+    db: Session = Depends(get_db),
+    year: Optional[int] = Query(None, description="Filter by year (e.g. 2023)"),
+    severity: Optional[int] = Query(None, ge=1, le=5, description="Filter by severity level 1–5"),
+    crime_type: Optional[str] = Query(None, description="Filter by crime type (e.g. fraud)"),
+    verified: Optional[bool] = Query(None, description="true = source is set, false = source is null"),
+):
     try:
-        return db.query(CrimeModel).all()
+        query = db.query(CrimeModel)
+
+        if year is not None:
+            query = query.filter(extract("year", CrimeModel.date) == year)
+        if severity is not None:
+            query = query.filter(CrimeModel.severity == severity)
+        if crime_type is not None:
+            query = query.filter(CrimeModel.type == crime_type)
+        if verified is not None:
+            if verified:
+                query = query.filter(CrimeModel.source.isnot(None))
+            else:
+                query = query.filter(CrimeModel.source.is_(None))
+
+        return query.all()
     except SQLAlchemyError:
         raise HTTPException(status_code=500, detail="Database error while fetching crimes")
 
