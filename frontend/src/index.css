@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --font-redwing: 'Redwing', sans-serif;
+}
+
+@font-face {
+  font-family: 'Redwing';
+  src: url('/fonts/Redwing-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Redwing';
+  src: url('/fonts/Redwing-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-primary: #041F45;
+  --color-secondary: #E4B21C;
+  --color-tertiary: #dbeafe;
+}
+
+h1, h2, header li {
+  font-family: 'Redwing', sans-serif;
+  font-weight: 300;
+}
+
+.redwing {
+  font-family: 'Redwing', sans-serif;
+}
+
