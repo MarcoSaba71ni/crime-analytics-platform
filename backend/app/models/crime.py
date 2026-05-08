@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Integer, String, Text
+from sqlalchemy import Column, Date, Float, Integer, String, Text
 from app.database.database import Base
 
 class Crime(Base):
@@ -8,7 +8,11 @@ class Crime(Base):
     title = Column(String(255))
     type = Column(String(100))
     location = Column(String(255))
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
     date = Column(Date)
     severity = Column(Integer)
     description = Column(Text)
     source = Column(String(255), nullable=True)
+    image_url = Column(String(500), nullable=True)
+    image_alt = Column(String(255), nullable=True)

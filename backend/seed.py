@@ -16,17 +16,25 @@ seed_file = Path(os.getenv("SEED_FILE", project_root / "data" / "crimes_seed.jso
 with seed_file.open("r", encoding="utf-8") as file:
     crimes = json.load(file)
 
+inserted = 0
+skipped = 0
+
 for crime in crimes:
-    # Convert date string → Python date
-    crime.pop("id", None)  # Remove 'id' if it exists, as it's auto-generated
+    seed_id = crime.pop("id", None)
+    # is_verified is computed from source — never stored as a column
+    crime.pop("is_verified", None)
     crime["date"] = datetime.strptime(crime["date"], "%Y-%m-%d").date()
 
-    # Create model instance
+    # Upsert by id: skip if a row with this id already exists
+    if seed_id is not None:
+        exists = db.query(CrimeModel).filter(CrimeModel.id == seed_id).first()
+        if exists:
+            skipped += 1
+            continue
+
     new_crime = CrimeModel(**crime)
-
     db.add(new_crime)
+    inserted += 1
 
-# Commit all at once
 db.commit()
-
-print("✅ Database seeded successfully!")
+print(f"Seeding complete — {inserted} inserted, {skipped} skipped (already existed).")
