@@ -1,6 +1,9 @@
+import { Link } from "react-router-dom";
+
 function CrimeCard({ crime }) {
     return (
-        <div className="bg-gray-800 text-white rounded-lg mb-4 overflow-hidden flex flex-col">
+        <Link to={`/crime-page?id=${crime.id}`} 
+        className="bg-gray-800 text-white rounded-lg mb-4 overflow-hidden flex flex-col">
             {crime.image_url && (
                 <img
                     src={crime.image_url}
@@ -22,7 +25,7 @@ function CrimeCard({ crime }) {
                 </div>
                 <p className="text-gray-300 text-sm line-clamp-3">{crime.description}</p>
             </div>
-        </div>
+        </Link>
     );
 }
 

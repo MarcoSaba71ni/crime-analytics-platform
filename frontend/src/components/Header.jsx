@@ -17,10 +17,10 @@ function Header () {
                         <Link to="/">Home</Link>
                     </li>
                     <li className="text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110">
-                        <Link to="/methodology">Methodology</Link>
+                        <Link to="/statistics">Statistics</Link>
                     </li>
                     <li className="text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110">
-                        <Link to="/who-we-are">Who We Are</Link>
+                        <Link to="/about">Who We Are</Link>
                     </li>
                     <li className="text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110">
                         <Link to="/crime-history">Crime History</Link>

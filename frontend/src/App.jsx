@@ -1,9 +1,9 @@
-import HomePage from './pages/HomePage.jsx'
+import Router from "./router/Router.jsx"
 
 function App() {
   return (
     <div>
-        <HomePage />
+        <Router/>
     </div>
   )
 }
