@@ -4,9 +4,11 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from app.core.auth_deps import get_current_user
 from app.database.deps import get_db
-from app.models.crime import Crime as CrimeModel
-from app.schemas.crimes import CrimeCreate, CrimeUpdate, CrimeResponse
+from app.models.auth_models import AuthRegister as AuthModel
+from app.models.crime_models import Crime as CrimeModel
+from app.schemas.crimes_schemas import CrimeCreate, CrimeUpdate, CrimeResponse
 
 router = APIRouter()
 
@@ -53,7 +55,7 @@ def get_crime(crime_id: int, db: Session = Depends(get_db)):
 
 # CREATE A NEW CRIME
 @router.post("/", response_model=CrimeResponse)
-def create_crime(crime: CrimeCreate, db: Session = Depends(get_db)):
+def create_crime(crime: CrimeCreate, db: Session = Depends(get_db), current_user: AuthModel = Depends(get_current_user)):
     try:
         new_crime = CrimeModel(**crime.model_dump())
 
@@ -69,7 +71,7 @@ def create_crime(crime: CrimeCreate, db: Session = Depends(get_db)):
 
 # UPDATE AN EXISTING CRIME
 @router.put("/{crime_id}", response_model=CrimeResponse)
-def update_crime(crime_id: int, updated_crime: CrimeUpdate, db: Session = Depends(get_db)):
+def update_crime(crime_id: int, updated_crime: CrimeUpdate, db: Session = Depends(get_db), current_user: AuthModel = Depends(get_current_user)):
     
     crime = db.query(CrimeModel).filter(CrimeModel.id == crime_id).first()
 
@@ -96,7 +98,7 @@ def update_crime(crime_id: int, updated_crime: CrimeUpdate, db: Session = Depend
 
 # DELETE A SPECIFIC CRIME
 @router.delete("/{crime_id}", status_code=204)
-def delete_crime(crime_id: int, db: Session = Depends(get_db)):
+def delete_crime(crime_id: int, db: Session = Depends(get_db), current_user: AuthModel = Depends(get_current_user)):
     crime = db.query(CrimeModel).filter(CrimeModel.id == crime_id).first()
     
     if not crime:

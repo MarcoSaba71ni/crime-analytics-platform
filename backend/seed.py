@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 from app.database.database import SessionLocal
-from app.models.crime import Crime as CrimeModel
+from backend.app.models.crime_models import Crime as CrimeModel
 
 db = SessionLocal()
 

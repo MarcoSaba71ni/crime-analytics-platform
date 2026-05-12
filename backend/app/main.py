@@ -4,12 +4,18 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
-from app.routes import crimes
-from app.models.crime import Crime  # noqa: F401 — registers model with Base.metadata
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from app.routes import crimes, profiles, auth
+from app.models.crime_models import Crime  # noqa: F401 — registers model with Base.metadata
+from app.models.auth_models import AuthRegister  # noqa: F401 — registers model with Base.metadata
 from app.database.database import engine, Base
+from app.core.limiter import limiter
 
 
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,6 +26,8 @@ app.add_middleware(
 )
 
 app.include_router(crimes.router, prefix="/crimes")
+app.include_router(profiles.router, prefix="/profiles")
+app.include_router(auth.router, prefix="/auth")
 
 Base.metadata.create_all(bind=engine)
 
