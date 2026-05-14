@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.core.limiter import limiter
@@ -10,14 +10,15 @@ from app.schemas.auth_schemas import (
     AuthLogin,
     AuthLoginResponse,
     AuthRegister as AuthRegisterSchema,
-    AuthRegisterResponse,
+    AuthResponse,
 )
 
 router = APIRouter()
 
 
-@router.post("/register", response_model=AuthRegisterResponse, status_code=201)
-async def register_user(user: AuthRegisterSchema, db: Session = Depends(get_db)):
+@router.post("/register", response_model=AuthResponse, status_code=201)
+@limiter.limit("5/minute")
+async def register_user(request: Request, user: AuthRegisterSchema, db: Session = Depends(get_db)):
     existing_user = db.query(AuthModel).filter(
         (AuthModel.email == user.email) | (AuthModel.username == user.username)
     ).first()
@@ -37,14 +38,18 @@ async def register_user(user: AuthRegisterSchema, db: Session = Depends(get_db))
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
+    except IntegrityError as e:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Email or username already registered") from e
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Internal server error") from e
+    
+    token = create_access_token({"sub": new_user.email, "id": new_user.id})
+    return AuthResponse(access_token=token, user=new_user)
 
-    return new_user
 
-
-@router.post("/login", response_model=AuthLoginResponse, status_code=200)
+@router.post("/login", response_model=AuthResponse, status_code=200)
 @limiter.limit("5/minute")
 async def login_user(request: Request, user: AuthLogin, db: Session = Depends(get_db)):
     db_user = db.query(AuthModel).filter(AuthModel.email == user.email).first()
@@ -57,4 +62,4 @@ async def login_user(request: Request, user: AuthLogin, db: Session = Depends(ge
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_access_token({"sub": db_user.email, "id": db_user.id})
-    return AuthLoginResponse(access_token=token)
+    return AuthResponse(access_token=token, user=db_user)

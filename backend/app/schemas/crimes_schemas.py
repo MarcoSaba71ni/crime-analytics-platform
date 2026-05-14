@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field, computed_field
-from typing import Optional
+from typing import List, Optional
 from datetime import date
 
 class CrimeBase(BaseModel):
@@ -30,6 +30,12 @@ class CrimeUpdate(BaseModel):
     source: Optional[str] = Field(None, max_length=255)
     image_url: Optional[str] = Field(None, max_length=500)
     image_alt: Optional[str] = Field(None, max_length=255)
+
+class PaginatedCrimesResponse(BaseModel):
+    total: int
+    page: int
+    limit: int
+    crimes: List[CrimeResponse]
 
 class CrimeResponse(CrimeBase):
     model_config = ConfigDict(from_attributes=True)

@@ -4,28 +4,42 @@ import CrimeCard from '../components/CrimeCard';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
+
 function HomePage() {
     const [crimes, setCrimes] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [limit, setLimit] = useState(6);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         let ignore = false;
 
         async function loadCrimes() {
+            setIsLoading(true);
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/crimes`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/crimes?page=${currentPage}&limit=${limit}`);
                 const contentType = response.headers.get("content-type");
                 if(!response.ok || !contentType || !contentType.includes("application/json")) {
                     const text = await response.text();
                     throw new Error(`Network response was not ok: ${text}`);
                 }
-                const allCrimes = await response.json();
+                const data = await response.json();
+                console.log("Fetched crimes data:", data);
+                const allCrimes = data.crimes || data; // Handle both paginated and non-paginated responses
+                console.log("Parsed crimes data:", allCrimes);
                 if (!ignore) {
-                    setCrimes(allCrimes);
+                    setCrimes(prevCrimes => [...prevCrimes, ...allCrimes]);
+                    setTotalPages(data.totalPages || 1);
                 }
             } catch (error) {
+                setError(error.message);
                 console.error('Error fetching crimes:', error);
+            } finally {
+                setIsLoading(false);
             }
         }
 
@@ -34,7 +48,7 @@ function HomePage() {
         return () => {
             ignore = true;
         };
-    }, []);
+    }, [currentPage, limit]);
 
     const filteredCrimes = crimes.filter(crime =>
         crime.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -115,13 +129,24 @@ function HomePage() {
                         </button>
                     </div>              
                     <div id="crimes-wrapper"
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 max-h-96 overflow-y-auto pr-2">
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 pr-2">
                         {filteredCrimes.map((crime) => (
                             <CrimeCard key={crime.id} crime={crime} />
                         ))}
+                        {filteredCrimes.length === 0 && (
+                            <p className="text-gray-400 text-center col-span-full">No crimes found matching your search.</p>
+                        )}
+                        {isLoading && (
+                            <p className="text-gray-400 text-center col-span-full">Loading crimes...</p>
+                        )}
+                        {error && (
+                            <p className="text-red-500 text-center col-span-full">Error: {error}</p>
+                        )}                            
+
                     </div>
                     <div className="flex justify-center mt-4">
-                        <button className="font-redwing hover:text-[var(--color-secondary)] cursor-pointer duration-300 text-2xl text-white">LOAD MORE</button>
+                        <button className="font-redwing hover:text-[var(--color-secondary)] cursor-pointer duration-300 text-2xl text-white"
+                        onClick={() => setCurrentPage((prevPage) => prevPage + 1)}>LOAD MORE</button>
                     </div>
                 </div>
             </section>

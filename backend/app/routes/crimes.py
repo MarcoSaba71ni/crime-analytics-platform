@@ -8,20 +8,23 @@ from app.core.auth_deps import get_current_user
 from app.database.deps import get_db
 from app.models.auth_models import AuthRegister as AuthModel
 from app.models.crime_models import Crime as CrimeModel
-from app.schemas.crimes_schemas import CrimeCreate, CrimeUpdate, CrimeResponse
+from app.schemas.crimes_schemas import CrimeCreate, CrimeUpdate, CrimeResponse, PaginatedCrimesResponse
 
 router = APIRouter()
 
 
 # GET ALL CRIMES
-@router.get("/", response_model=List[CrimeResponse])
+@router.get("/", response_model=PaginatedCrimesResponse)
 def get_crimes(
     db: Session = Depends(get_db),
+    page: int = Query(1, ge=1, description="Page number for pagination"),
+    limit: int = Query(6, ge=1, le=100, description="Number of crimes per page"),
     year: Optional[int] = Query(None, description="Filter by year (e.g. 2023)"),
     severity: Optional[int] = Query(None, ge=1, le=5, description="Filter by severity level 1–5"),
     crime_type: Optional[str] = Query(None, description="Filter by crime type (e.g. fraud)"),
     verified: Optional[bool] = Query(None, description="true = source is set, false = source is null"),
 ):
+    offset = (page - 1) * limit
     try:
         query = db.query(CrimeModel)
 
@@ -37,7 +40,16 @@ def get_crimes(
             else:
                 query = query.filter(CrimeModel.source.is_(None))
 
-        return query.all()
+        total = query.count()
+        crimes = query.offset(offset).limit(limit).all()
+
+        return {
+            "total": total,
+            "page": page,
+            "limit": limit,
+            "crimes": crimes
+        }
+
     except SQLAlchemyError:
         raise HTTPException(status_code=500, detail="Database error while fetching crimes")
 

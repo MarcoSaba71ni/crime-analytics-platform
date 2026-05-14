@@ -3,14 +3,13 @@ import { Link } from "react-router-dom";
 function CrimeCard({ crime }) {
     return (
         <Link to={`/crime-page?id=${crime.id}`} 
-        className="bg-gray-800 text-white rounded-lg mb-4 overflow-hidden flex flex-col">
+        className="bg-[var(--color-primary)] text-white rounded-lg mb-4 overflow-hidden flex flex-col">
             {crime.image_url && (
                 <img
                     src={crime.image_url}
                     alt={crime.image_alt || crime.title}
                     className="w-full h-40 object-cover"
-                />
-            )}
+                />)}
             <div className="p-4 flex flex-col gap-2">
                 <div className="flex justify-between items-start gap-2">
                     <h3 className="text-base font-bold leading-snug">{crime.title}</h3>

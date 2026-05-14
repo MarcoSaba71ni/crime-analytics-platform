@@ -26,6 +26,11 @@ class AuthRegisterResponse(BaseModel):
 class AuthLogin(AuthBase):
     pass
 
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: AuthRegisterResponse
+
 
 class AuthLoginResponse(BaseModel):
     access_token: str
