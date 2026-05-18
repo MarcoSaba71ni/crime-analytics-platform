@@ -1,5 +1,6 @@
 import { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/useAuth.jsx';
 
 
 function Register() {
@@ -10,33 +11,48 @@ function Register() {
     const [password, setPassword] = useState('');
     const [bio, setBio] = useState('');
 
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
+    const [loginLoading, setLoginLoading] = useState(false);
+    const [loginError, setLoginError] = useState(null);
+
     const navigate = useNavigate();
 
+    const { login, setAuth } = useAuth();
 
-        async function registerUser() {
+    async function loginUser(e) {
+        e.preventDefault();
+        setLoginError(null);
+        try {
+            setLoginLoading(true);
+            await login(loginEmail, loginPassword);
+            navigate('/');
+        } catch (error) {
+            setLoginError(error.message);
+        } finally {
+            setLoginLoading(false);
+        }
+    }
+
+        async function registerUser(e) {
+            e.preventDefault();
+            setError(null);
             try {
                 setIsLoading(true);
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email,
-                        username,
-                        password
-                    }),
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, username, password, bio: bio || undefined }),
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || 'Registration failed');
                 }
                 const data = await response.json();
-                console.log('Registration successful:', data);
-                navigate('/'); 
+                setAuth(data.user, data.access_token);
+                navigate('/');
             } catch (error) {
-                console.error('Error during registration:', error);
-                setError('Registration failed. Please try again.');
+                setError(error.message || 'Registration failed. Please try again.');
             } finally {
                 setIsLoading(false);
             }
@@ -46,20 +62,25 @@ function Register() {
     return (
         <div className="bg-[url('../images/stockholm-view.webp')] bg-cover bg-center min-h-screen flex items-center justify-center px-4 py-10">
 
-                <form className="relative flex flex-col bg-[rgba(15,23,42,0.62)] p-6 md:p-8 rounded-xl shadow-lg w-full max-w-sm border border-white/20">
+                <form onSubmit={loginUser} className="relative flex flex-col bg-[rgba(15,23,42,0.62)] p-6 md:p-8 rounded-xl shadow-lg w-full max-w-sm border border-white/20">
                     <h2 className="flex justify-center text-3xl text-white font-bold tracking-wide">Login</h2>
                     <p className="text-center text-white/70 text-sm mt-1 mb-5">Access your dashboard and saved areas</p>
+                    {loginError && <p className="mb-4 text-red-400 text-sm text-center">{loginError}</p>}
                     <div className="mb-4 flex flex-col gap-1">
-                        <label className="text-white font-redwing" 
+                        <label className="text-white font-redwing"
                         htmlFor="login-email">Email:</label>
-                        <input className="bg-[var(--color-primary)]/85 p-2.5 rounded text-white placeholder:text-white/50 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-300/70" type="email" id="login-email" name="loginEmail" placeholder="name@example.com" />            
+                        <input className="bg-[var(--color-primary)]/85 p-2.5 rounded text-white placeholder:text-white/50 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-300/70" type="email" id="login-email" name="loginEmail" placeholder="name@example.com"
+                        value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} />
                     </div>
                     <div className="mb-5 flex flex-col gap-1">
                         <label className="text-white font-redwing"
                         htmlFor="login-password">Password:</label>
-                        <input className="bg-[var(--color-primary)]/85 p-2.5 rounded text-white placeholder:text-white/50 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-300/70" type="password" id="login-password" name="loginPassword" placeholder="Enter your password" />
+                        <input className="bg-[var(--color-primary)]/85 p-2.5 rounded text-white placeholder:text-white/50 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-300/70" type="password" id="login-password" name="loginPassword" placeholder="Enter your password"
+                        value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} />
                     </div>
-                    <button type="submit" className="bg-[var(--color-secondary)] cursor-pointer text-black px-4 py-2.5 rounded font-semibold hover:bg-blue-400 transition-colors duration-300">Login</button>
+                    <button type="submit" disabled={loginLoading} className="bg-[var(--color-secondary)] text-black px-4 py-2.5 rounded font-semibold hover:bg-blue-400 transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer">
+                        {loginLoading ? 'Logging in...' : 'Login'}
+                    </button>
                 </form>
                 <div className="hidden lg:flex flex-col items-center justify-center mx-5 gap-3">
                     <div className="w-px bg-white/50 flex-1" />
@@ -75,6 +96,7 @@ function Register() {
                  className="relative flex flex-col bg-[rgba(15,23,42,0.62)] p-6 md:p-8 rounded-xl shadow-lg w-full max-w-sm border border-white/20">
                     <h2 className="flex justify-center text-3xl text-white font-bold tracking-wide">Register</h2>
                     <p className="text-center text-white/70 text-sm mt-1 mb-5">Create a new account in under a minute</p>
+                    {error && <p className="mb-4 text-red-400 text-sm text-center">{error}</p>}
                     <div className="mb-4 flex flex-col gap-1">
                         <label className="text-white font-redwing" 
                         htmlFor="register-email">Email:</label>
