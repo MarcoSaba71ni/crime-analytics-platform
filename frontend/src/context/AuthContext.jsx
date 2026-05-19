@@ -1,4 +1,4 @@
-import { createContext , useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 
 export const AuthContext = createContext(null);
@@ -39,6 +39,31 @@ export function AuthProvider({ children }) {
         localStorage.removeItem('access_token');
         localStorage.removeItem('user');
     }
+
+    useEffect(() => {
+        if (!token) return;
+
+        async function validateToken() {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                });
+                if (!response.ok) {
+                    logout();
+                    return;
+                }
+                const data = await response.json();
+                setUser(data);
+                localStorage.setItem('user', JSON.stringify(data));
+            } catch {
+                logout();
+            }
+        }
+
+        validateToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // intentionally mount-only: validates token restored from localStorage on page refresh
+
     return (
         <AuthContext.Provider value={{ user, token, login, logout, setAuth }}>
             {children}

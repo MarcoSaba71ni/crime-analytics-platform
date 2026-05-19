@@ -56,6 +56,25 @@ function Header () {
                     </button>
                 </Link>
             </div>
+            <div>
+                <div>
+                    <Link to="/profile">
+                        <button
+                            className="header_button bg-green-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-green-700 transition-colors duration-300"
+                        >
+                            Profile
+                        </button>
+                    </Link>
+
+                </div>
+                <div>
+                    <button
+                        className="header_button bg-red-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-red-700 transition-colors duration-300"
+                    >
+                        Logout
+                    </button>
+                </div>
+            </div>
             {showLoginDiv && (
             <div className="fixed inset-0 z-40 bg-black/50">
                 <div className="mx-auto mt-24 w-full max-w-md rounded-lg p-6">

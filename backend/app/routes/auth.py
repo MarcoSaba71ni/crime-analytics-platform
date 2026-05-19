@@ -4,12 +4,13 @@ from sqlalchemy.orm import Session
 
 from app.core.limiter import limiter
 from app.core.security import create_access_token, hash_password, verify_password
+from app.core.auth_deps import get_current_user
 from app.database.deps import get_db
 from app.models.auth_models import AuthRegister as AuthModel
 from app.schemas.auth_schemas import (
     AuthLogin,
-    AuthLoginResponse,
     AuthRegister as AuthRegisterSchema,
+    AuthRegisterResponse,
     AuthResponse,
 )
 
@@ -63,3 +64,8 @@ async def login_user(request: Request, user: AuthLogin, db: Session = Depends(ge
 
     token = create_access_token({"sub": db_user.email, "id": db_user.id})
     return AuthResponse(access_token=token, user=db_user)
+
+
+@router.get("/me", response_model=AuthRegisterResponse, status_code=200)
+async def get_me(current_user: AuthModel = Depends(get_current_user)):
+    return current_user
