@@ -1,15 +1,29 @@
 import { Link } from "react-router-dom";
+import CrimeLocationMap from "./CrimeLocationMap";
 
 function CrimeCard({ crime }) {
     return (
-        <Link to={`/crime-page?id=${crime.id}`} 
+        <Link to={`/crime-page?id=${crime.id}`}
         className="bg-[var(--color-primary)] text-white rounded-lg mb-4 overflow-hidden flex flex-col">
-            {crime.image_url && (
+            {crime.latitude && crime.longitude ? (
+                <div className="w-full h-40 overflow-hidden pointer-events-none">
+                    <CrimeLocationMap lat={crime.latitude} lng={crime.longitude} />
+                </div>
+            ) : crime.image_url ? (
                 <img
-                    src={crime.image_url}
+                    src={`${import.meta.env.VITE_API_URL}/crimes/proxy-image?url=${encodeURIComponent(crime.image_url)}`}
                     alt={crime.image_alt || crime.title}
                     className="w-full h-40 object-cover"
-                />)}
+                    onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = 'https://placehold.co/600x160/1e293b/94a3b8?text=No+Image';
+                    }}
+                />
+            ) : (
+                <div className="w-full h-40 bg-slate-800 flex items-center justify-center">
+                    <span className="text-slate-500 text-sm">No location data</span>
+                </div>
+            )}
             <div className="p-4 flex flex-col gap-2">
                 <div className="flex justify-between items-start gap-2">
                     <h3 className="text-base font-bold leading-snug">{crime.title}</h3>

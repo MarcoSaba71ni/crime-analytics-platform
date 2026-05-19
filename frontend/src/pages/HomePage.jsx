@@ -1,9 +1,9 @@
-import { Sparkles, ArrowRight } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import CrimeCard from '../components/CrimeCard';
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-
+import HeroSection from '../components/HeroSection/HeroSection';
+import { useAuth } from '../context/useAuth';
 
 function HomePage() {
     const [crimes, setCrimes] = useState([]);
@@ -13,7 +13,7 @@ function HomePage() {
     const [limit, setLimit] = useState(6);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
+    const { user } = useAuth();
 
     useEffect(() => {
         let ignore = false;
@@ -56,51 +56,7 @@ function HomePage() {
 
     return (
         <>
-            <section className="relative w-full h-140">
-                <div className="absolute inset-0 bg-[url('../images/man-with-mask-cop.jpg')] bg-cover bg-center brightness-50" />
-                <div className="relative z-10 mx-40 py-40 flex flex-col gap-8">
-                    {/* Hero Section Content */}
-                    <div className='flex justify-between items-center'>
-                        <div className='flex flex-col gap-8'>
-                            <div className="flex flex-col gap-2">
-                                <p className="inline-flex w-fit rounded-full border border-[var(--color-secondary)]/70 bg-[#041F45A6] px-4 py-1 text-xs tracking-[0.18em] text-[var(--color-secondary)] font-redwing">
-                                    PUBLIC SAFETY INTELLIGENCE
-                                </p>
-                                <h1 className="text-white text-6xl">Safe Sweden</h1>
-                                <h2 className="text-white text-2xl">Crime analytics platform designed to help users better understand public safety</h2>                        
-                            </div>
-                            <div className="flex gap-2">
-                                <Link to="/about">
-                                <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">METHODOLOGY</button>
-                                </Link>
-                                <Link to="/zones">
-                                <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">ZONES</button>
-                                </Link>
-                            </div>
-                            <div className="mt-16">
-                                <Link to="/crime-history">
-                                    <h3 className="text-white text-xl transition-transform duration-300 hover:scale-102 font-redwing underline">“HOW DID SWEDEN GO FROM BEING THE SAFEST COUNTRY IN THE WORLD TO THE MOST DANGEROUS COUNTRY IN EUROPE?”</h3></Link>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center">
-                            <button
-                                onClick={() => navigate('/crime-history')}
-                                aria-label="Go to crime history"
-                                className="h-10 w-10 rounded-full bg-[var(--color-secondary)] text-[var(--color-primary)] flex items-center justify-center hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] border border-transparent hover:border-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out"
-                            >
-                                <ArrowRight size={18} />
-                            </button>
-                        </div>                                            
-                    </div>
-
-                    <div className="flex justify-center gap-2">
-                        <button className="rounded-full bg-[var(--color-secondary)] text-[var(--color-primary)] px-2 py-1 hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">1</button>
-                        <button className="rounded-full bg-[var(--color-secondary)] text-[var(--color-primary)] px-2 py-1 hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">2</button>
-                        <button className="rounded-full bg-[var(--color-secondary)] text-[var(--color-primary)] px-2 py-1 hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">3</button>
-                    </div>
-                </div>
-            </section>
+            <HeroSection />
             <section className="bg-black">
                 <div className="flex flex-col gap-4 mx-40 py-20">
                     <h2 className="text-4xl font-redwing text-white">List of Crimes</h2>
@@ -158,6 +114,41 @@ function HomePage() {
                     </Link>
                 </div>
             </section>
+            { !user && (
+                <section className="bg-[var(--color-primary)] w-full py-24 flex flex-col items-center gap-6">
+                    <h2 className="text-white text-4xl text-center">Stay informed. Track crime trends in real time.</h2>
+                    <p className="font-redwing text-[var(--color-secondary)] text-lg text-center max-w-xl">
+                        Create a free account to save areas, set watchlists, and receive AI-generated summaries of crime activity near you.
+                    </p>
+                    <div className="flex gap-4 mt-4">
+                        <Link to="/auth/register">
+                            <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-8 py-3 rounded-lg text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
+                                SIGN IN
+                            </button>                        
+                        </Link>
+                        <Link to="/auth/register">
+                            <button className="border border-[var(--color-secondary)] cursor-pointer hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-[var(--color-secondary)] font-redwing px-8 py-3 rounded-lg text-lg">
+                                CREATE ACCOUNT
+                            </button>
+                        </Link>
+                    </div>
+                </section>                
+            )}
+
+            { user && (
+                <section className="bg-[var(--color-primary)] w-full py-24 flex flex-col items-center gap-6">
+                    <h2 className="text-white text-4xl text-center">Stay informed. Track crime trends in real time.</h2>
+                    <p className="font-redwing text-[var(--color-secondary)] text-lg text-center max-w-xl">
+                        Register your email to save areas, set watchlists, and receive AI-generated summaries of crime activity near you.
+                    </p>
+                    <div className="flex gap-4 mt-4">
+                        <input type="email" placeholder="Enter your email" className="w-full border border-gray-300 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary)]" />
+                        <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-4 py-2 rounded-lg text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
+                            SUBSCRIBE
+                        </button>
+                    </div>
+                </section> 
+            )}
             <section className="w-full h-140 flex">
                 <div className="relative bg-[url('../images/experts-analyzing.webp')] bg-cover bg-center w-1/2 h-full brightness-75 flex flex-col gap-4 justify-center items-center">
                     <div className="absolute inset-0" />
@@ -175,39 +166,51 @@ function HomePage() {
                 </div>
             </section>
 
-            <section className="bg-[var(--color-primary)] w-full py-24 flex flex-col items-center gap-6">
-                <h2 className="text-white text-4xl text-center">Stay informed. Track crime trends in real time.</h2>
-                <p className="font-redwing text-[var(--color-secondary)] text-lg text-center max-w-xl">
-                    Create a free account to save areas, set watchlists, and receive AI-generated summaries of crime activity near you.
-                </p>
-                <div className="flex gap-4 mt-4">
-                    <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-8 py-3 rounded-lg text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
-                        SIGN IN
-                    </button>
-                    <Link to="/auth/register">
-                        <button className="border border-[var(--color-secondary)] cursor-pointer hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-[var(--color-secondary)] font-redwing px-8 py-3 rounded-lg text-lg">
-                            CREATE ACCOUNT
-                        </button>
-                    </Link>
-                </div>
-            </section>
-            <section className="bg-[var(--color-secondary)] w-full py-12 flex flex-row justify-center items-center gap-4">
-                <div>
-                   <img src="../images/armed-officers-running.png" alt="Officers running"
-                   className="w-100 h-89 object-[30%_center] object-cover" />
-                </div>
-                <div className="flex flex-col justify-start gap-2">
-                    <h3 className="text-white text-2xl font-redwing">Who We Are</h3>
-                    <p className="text-white text-lg max-w-xl font-redwing">FIND WHO WE ARE AND THE MOTIVES BEHIND THIS PROJECT, THE MISSION, OUR GOAL AND VALUES</p>
-                    <button
-                    onClick={() => navigate("/about")} className="bg-[var(--color-primary)] cursor-pointer hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-[var(--color-secondary)] font-redwing px-4 py-2 rounded-lg text-lg mt-4">
-                        LEARN MORE
-                    </button>
-                    <button className="bg-white border border-white cursor-pointer hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-primary)] font-redwing px-4 py-2 rounded-lg text-lg">
-                        CONTACT US
-                    </button>   
-                </div>
+            <section className="relative bg-[var(--color-secondary)] py-14 lg:py-18">
+                <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-6 lg:grid-cols-12 lg:items-center lg:px-10">
+                    <div className="relative overflow-hidden rounded-2xl lg:col-span-7">
+                        <img
+                            src="../images/armed-officers-running.png"
+                            alt="Officers running"
+                            className="h-72 w-full object-cover object-[30%_center] sm:h-80 lg:h-[26rem]"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(4,31,69,0.72)] via-transparent to-transparent" />
+                        <p className="absolute bottom-5 left-5 rounded-full border border-white/40 bg-[rgba(4,31,69,0.72)] px-4 py-1 text-xs tracking-[0.14em] text-white font-redwing">
+                            CIVIC TECH FOR PUBLIC SAFETY
+                        </p>
+                    </div>
 
+                    <div className="rounded-2xl bg-[var(--color-primary)] p-6 text-white shadow-xl lg:col-span-5 lg:p-8">
+                        <h3 className="text-3xl font-redwing leading-tight">Who We Are</h3>
+                        <p className="mt-4 text-base leading-relaxed text-white/90">
+                            Safe Sweden is a civic-tech initiative focused on making public crime data clearer, more transparent, and easier to understand for everyone.
+                        </p>
+                        <p className="mt-3 text-base leading-relaxed text-white/80">
+                            Explore our mission, values, and methodology, and see how data can support informed, safer communities.
+                        </p>
+
+                        <div className="mt-6 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3 sm:gap-3">
+                            <span className="rounded-full border border-white/35 px-3 py-1.5 text-center font-redwing">Mission</span>
+                            <span className="rounded-full border border-white/35 px-3 py-1.5 text-center font-redwing">Methodology</span>
+                            <span className="rounded-full border border-white/35 px-3 py-1.5 text-center font-redwing">Values</span>
+                        </div>
+
+                        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                            <Link
+                                to="/about"
+                                className="rounded-lg bg-[var(--color-secondary)] px-5 py-3 text-center text-base font-redwing text-[var(--color-primary)] transition-colors duration-300 hover:bg-white"
+                            >
+                                LEARN MORE
+                            </Link>
+                            <a
+                                href="mailto:contact@safesweden.ai"
+                                className="rounded-lg border border-white px-5 py-3 text-center text-base font-redwing text-white transition-colors duration-300 hover:bg-white hover:text-[var(--color-primary)]"
+                            >
+                                CONTACT US
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </section>
 
         </>

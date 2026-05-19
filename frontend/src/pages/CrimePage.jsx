@@ -1,6 +1,7 @@
 import { useState , useEffect } from "react"
 import { Link } from "react-router-dom"
 import { ArrowLeft, MapPin, Calendar, ShieldAlert, BadgeCheck, BookOpen } from "lucide-react"
+import CrimeLocationMap from "../components/CrimeLocationMap"
 
 function getCrimeIdFromURL() {
     const params = new URLSearchParams(window.location.search);
@@ -82,7 +83,7 @@ function CrimePage() {
             {crime.image_url && (
                 <div className="relative w-full h-80 overflow-hidden">
                     <img
-                        src={crime.image_url}
+                        src={`${import.meta.env.VITE_API_URL}/crimes/proxy-image?url=${encodeURIComponent(crime.image_url)}`}
                         alt={crime.image_alt || crime.title}
                         className="w-full h-full object-cover brightness-50"
                     />
@@ -139,6 +140,19 @@ function CrimePage() {
                     </div>
                     <p className="text-gray-300 text-base leading-relaxed">{crime.description}</p>
                 </div>
+
+                {/* Location map */}
+                {crime.latitude && crime.longitude && (
+                    <div className="mb-10">
+                        <div className="flex items-center gap-2 text-[var(--color-secondary)] font-redwing tracking-widest text-xs mb-3">
+                            <MapPin size={14} />
+                            LOCATION
+                        </div>
+                        <div className="rounded-lg overflow-hidden">
+                            <CrimeLocationMap lat={crime.latitude} lng={crime.longitude} interactive height="320px" />
+                        </div>
+                    </div>
+                )}
 
                 {/* Source */}
                 {crime.source && (
