@@ -1,3 +1,4 @@
+import time
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -29,7 +30,16 @@ app.include_router(crimes.router, prefix="/crimes")
 app.include_router(profiles.router, prefix="/profiles")
 app.include_router(auth.router, prefix="/auth")
 
-Base.metadata.create_all(bind=engine)
+for _attempt in range(1, 6):
+    try:
+        Base.metadata.create_all(bind=engine)
+        break
+    except Exception as e:
+        if _attempt == 5:
+            raise
+        wait = 2 ** (_attempt - 1)
+        print(f"DB not ready (attempt {_attempt}/5), retrying in {wait}s... {e}")
+        time.sleep(wait)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -61,6 +71,12 @@ async def global_exception_handler(request:Request , exc: Exception):
 
 @app.get("/health")
 def health():
-    with engine.connect() as conn:
-        conn.execute(text("SELECT 1"))
-    return {"status": "ok", "database": "connected"}
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return {"status": "ok", "database": "connected"}
+    except Exception:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "error", "database": "unavailable"}
+        )
