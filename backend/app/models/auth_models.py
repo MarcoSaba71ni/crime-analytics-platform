@@ -11,5 +11,5 @@ class AuthRegister(Base):
     email = Column(String(255), unique=True, index=True)
     password = Column(String(255))
     bio = Column(Text, nullable=True)
-    role = Column(String(50), default="user")
+    role = Column(String(50), default="analyst")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

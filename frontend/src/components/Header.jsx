@@ -1,10 +1,15 @@
-import {Link} from 'react-router-dom'
+import {Link, useLocation} from 'react-router-dom'
 import { useState , useEffect } from 'react';
+import { UserCircle, LogOut } from 'lucide-react';
 import LoginForm from './LoginForm';
+import { useAuth } from '../context/useAuth';
 
 function Header () {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [showLoginDiv, setShowLoginDiv] = useState(false);
+    const { user, logout } = useAuth();
+    const location = useLocation();
+    const hideLoginButton = location.pathname === '/auth/register';
 
     useEffect(() => {
         if (isLoginOpen) {
@@ -29,9 +34,6 @@ function Header () {
             >
                 <ul className="flex gap-12">
                     <li className="text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110">
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li className="text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110">
                         <Link to="/statistics">Statistics</Link>
                     </li>
                     <li className="text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110">
@@ -45,35 +47,33 @@ function Header () {
                     </li>
                 </ul>
             </nav>
-            <div className="bg-transparent">
-                <Link>
+            <div className="flex items-center justify-end min-w-[200px]">
+                {!user && !showLoginDiv && !hideLoginButton && (
                     <button
-                    onClick={() => setIsLoginOpen(true)}
+                        onClick={() => setIsLoginOpen(true)}
                         className="header_button text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-500 transition-colors duration-300"
                         style={{ backgroundColor: 'var(--color-primary)' }}
                     >
                         Login
                     </button>
-                </Link>
-            </div>
-            <div>
-                <div>
-                    <Link to="/profile">
-                        <button
-                            className="header_button bg-green-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-green-700 transition-colors duration-300"
-                        >
-                            Profile
-                        </button>
-                    </Link>
-
-                </div>
-                <div>
-                    <button
-                        className="header_button bg-red-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-red-700 transition-colors duration-300"
-                    >
-                        Logout
-                    </button>
-                </div>
+                )}
+                {user && (
+                    <div className='flex gap-4'>
+                        <div>
+                            <Link to="/profile" className="text-white hover:text-cyan-300 transition-colors duration-300">
+                                <UserCircle size={32} strokeWidth={1.5} />
+                            </Link>
+                        </div>
+                        <div>
+                            <button
+                                onClick={logout}
+                                className="text-white hover:text-red-400 transition-colors duration-300 cursor-pointer bg-transparent border-none"
+                            >
+                                <LogOut size={32} strokeWidth={1.5} />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
             {showLoginDiv && (
             <div className="fixed inset-0 z-40 bg-black/50">

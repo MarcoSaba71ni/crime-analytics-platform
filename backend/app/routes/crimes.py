@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi.responses import Response
 from sqlalchemy import extract
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from typing import List, Optional
+import httpx
 
 from app.core.auth_deps import get_current_user
 from app.database.deps import get_db
@@ -11,6 +13,35 @@ from app.models.crime_models import Crime as CrimeModel
 from app.schemas.crimes_schemas import CrimeCreate, CrimeUpdate, CrimeResponse, PaginatedCrimesResponse
 
 router = APIRouter()
+
+
+# PROXY WIKIMEDIA IMAGES
+@router.get("/proxy-image")
+async def proxy_image(url: str = Query(..., description="Wikimedia image URL to proxy")):
+    if not url.startswith("https://upload.wikimedia.org/"):
+        raise HTTPException(status_code=400, detail="Only Wikimedia image URLs are supported")
+    try:
+        async with httpx.AsyncClient() as client:
+            r = await client.get(
+                url,
+                headers={"User-Agent": "SafeSweden/1.0 (civic-tech project)"},
+                follow_redirects=True,
+                timeout=10.0,
+            )
+            r.raise_for_status()
+    except httpx.HTTPStatusError:
+        raise HTTPException(status_code=502, detail="Failed to fetch image from source")
+    except httpx.RequestError:
+        raise HTTPException(status_code=502, detail="Could not connect to image source")
+
+    content_type = r.headers.get("content-type", "")
+    if not content_type.startswith("image/"):
+        raise HTTPException(status_code=502, detail="Source URL did not return an image")
+    return Response(
+        content=r.content,
+        media_type=content_type,
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
 
 
 # GET ALL CRIMES
