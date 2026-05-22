@@ -5,7 +5,7 @@ import CrimePage from "../pages/CrimePage";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import { ProtectedRoute } from "./ProtectedRoute";
-import{ Profile }from "../pages/Profile";
+import ProfilePage from "../pages/ProfilePage";
 import { PublicRoutes } from "./PublicRoutes";
 
 import { Routes , Route } from "react-router-dom";
@@ -31,7 +31,7 @@ function Router () {
             </Route>
             <Route path="/profile" element={
                 <ProtectedRoute>
-                    <Profile/>
+                    <ProfilePage/>
                 </ProtectedRoute>
             } />
         </Routes>
