@@ -8,6 +8,8 @@ export function AuthProvider({ children }) {
     const [token, setToken] = useState(
         localStorage.getItem('access_token') || null
     );
+    const role = user?.role || null;
+
 
     function setAuth(userData, accessToken) {
         setUser(userData);
@@ -29,6 +31,7 @@ export function AuthProvider({ children }) {
         }
 
         const data = await response.json();
+        console.log('Login successful:', data);
         setAuth(data.user, data.access_token);
         return data;
     }
@@ -65,7 +68,7 @@ export function AuthProvider({ children }) {
     }, []); // intentionally mount-only: validates token restored from localStorage on page refresh
 
     return (
-        <AuthContext.Provider value={{ user, token, login, logout, setAuth }}>
+        <AuthContext.Provider value={{ user, token, role, login, logout, setAuth }}>
             {children}
         </AuthContext.Provider>
     );

@@ -73,9 +73,15 @@ function HeroSection() {
                     </div>
 
                     <div className="flex justify-center gap-2">
-                        <button onClick={() => setCurrentSlide(0)} className={`rounded-full px-2 py-1 cursor-pointer transition-colors duration-300 ease-in-out ${currentSlide === 0 ? 'bg-[var(--color-primary)] text-[var(--color-secondary)]' : 'bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)]'}`}>1</button>
-                        <button onClick={() => setCurrentSlide(1)} className={`rounded-full px-2 py-1 cursor-pointer transition-colors duration-300 ease-in-out ${currentSlide === 1 ? 'bg-[var(--color-primary)] text-[var(--color-secondary)]' : 'bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)]'}`}>2</button>
-                        <button onClick={() => setCurrentSlide(2)} className={`rounded-full px-2 py-1 cursor-pointer transition-colors duration-300 ease-in-out ${currentSlide === 2 ? 'bg-[var(--color-primary)] text-[var(--color-secondary)]' : 'bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)]'}`}>3</button>
+                        <button onClick={() => setCurrentSlide(0)} 
+                        className={`rounded-full px-2 py-1 cursor-pointer transition-colors duration-300 ease-in-out 
+                        ${currentSlide === 0 ? 'bg-[var(--color-primary)] text-[var(--color-secondary)]' : 'bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)]'}`}>1</button>
+                        <button onClick={() => setCurrentSlide(1)} 
+                        className={`rounded-full px-2 py-1 cursor-pointer transition-colors duration-300 ease-in-out 
+                        ${currentSlide === 1 ? 'bg-[var(--color-primary)] text-[var(--color-secondary)]' : 'bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)]'}`}>2</button>
+                        <button onClick={() => setCurrentSlide(2)} 
+                        className={`rounded-full px-2 py-1 cursor-pointer transition-colors duration-300 ease-in-out 
+                        ${currentSlide === 2 ? 'bg-[var(--color-primary)] text-[var(--color-secondary)]' : 'bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)]'}`}>3</button>
                     </div>
                 </div>
             </section>

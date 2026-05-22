@@ -13,7 +13,8 @@ function HomePage() {
     const [limit, setLimit] = useState(6);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const { user } = useAuth();
+    const { user, role } = useAuth();
+    const isCrimeReporter = role === 'crime_reporter';
 
     useEffect(() => {
         let ignore = false;

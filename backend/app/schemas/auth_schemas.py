@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-from typing import Optional
+from typing import Literal, Optional
 
 
 class AuthBase(BaseModel):
@@ -10,6 +10,7 @@ class AuthBase(BaseModel):
 class AuthRegister(AuthBase):
     username: str = Field(..., min_length=3, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
     bio: Optional[str] = None
+    role: Literal["analyst", "crime_reporter"] = "analyst"
 
 
 class AuthRegisterResponse(BaseModel):
