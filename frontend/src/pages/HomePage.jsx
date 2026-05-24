@@ -140,7 +140,7 @@ function HomePage() {
                 <section className="bg-[var(--color-primary)] w-full py-24 flex flex-col items-center gap-6">
                     <h2 className="text-white text-4xl text-center">Stay informed. Track crime trends in real time.</h2>
                     <p className="font-redwing text-[var(--color-secondary)] text-lg text-center max-w-xl">
-                        Register your email to save areas, set watchlists, and receive AI-generated summaries of crime activity near you.
+                        Subscribe your email to receive AI-generated summaries and watch lists of crime activity in your saved area.
                     </p>
                     <div className="flex gap-4 mt-4">
                         <input type="email" placeholder="Enter your email" className="w-full border border-gray-300 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary)]" />
