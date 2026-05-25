@@ -1,8 +1,12 @@
 import {Link, useLocation} from 'react-router-dom'
 import { useState , useEffect } from 'react';
-import { UserCircle, LogOut , Heart, PlusCircle } from 'lucide-react';
+import { UserCircle, LogOut , Bookmark, PlusCircle } from 'lucide-react';
 import LoginForm from './LoginForm';
 import { useAuth } from '../context/useAuth';
+import { useSelector } from 'react-redux';
+import { deleteSavedCrime } from '../store/savedSlice';
+import { useDispatch } from 'react-redux';
+
 
 function Header () {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -13,6 +17,18 @@ function Header () {
     const isReporter = role.toLowerCase() === "crime_reporter";
     const location = useLocation();
     const hideLoginButton = location.pathname === '/auth/register';
+    const savedCrimes = useSelector((state) => state.saved.savedCrimes);
+    const [showSavedCrimes, setShowSavedCrimes] = useState(false);
+    const dispatch = useDispatch();
+
+    function handleToggleSavedCrime() {
+        setShowSavedCrimes((prev) => !prev);
+    }
+
+    function handleCloseSavedCrimes() {
+        setShowSavedCrimes(false);
+    }
+
 
     useEffect(() => {
         if (isLoginOpen) {
@@ -22,7 +38,6 @@ function Header () {
             setShowLoginDiv(false);
         }
     }, [isLoginOpen]);
-
 
     return (
         <header className="fixed top-0 left-0 w-full z-20 px-6 md:px-12 bg-transparent">
@@ -70,9 +85,77 @@ function Header () {
                     {user && (
                         <div className='flex gap-4'>
                             {isAnalyst && (
-                                <button>
-                                    <Heart size={32} strokeWidth={1.5} className="text-white hover:text-red-400 cursor-pointer transition-colors duration-300" />
-                                </button>
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        onClick={handleToggleSavedCrime}
+                                        aria-label="Open saved crimes"
+                                    >
+                                        <Bookmark size={32} strokeWidth={1.5} className="text-white hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300" />
+                                    </button>
+
+                                    {showSavedCrimes && (
+                                        <div className="absolute top-full right-0 mt-2 w-80 rounded-lg border border-white/10 bg-[var(--color-primary)] text-white shadow-2xl z-50">
+                                            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+                                                <h3 className="text-sm font-redwing tracking-wider">Saved Crimes</h3>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleCloseSavedCrimes}
+                                                    className="text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20 transition-colors"
+                                                >
+                                                    Close
+                                                </button>
+                                            </div>
+                                            <div className="px-4 py-3 border-t border-white/10">
+                                                <Link to="/profile" className="text-xs text-[var(--color-secondary)] hover:underline">
+                                                    View full List
+                                                </Link>
+                                            </div>
+
+                                            <div className="max-h-80 overflow-y-auto px-4 py-3">
+                                                {savedCrimes.length === 0 ? (
+                                                    <p className="text-sm text-white/70">No saved crimes yet.</p>
+                                                ) : (
+                                                    <ul className="space-y-2">
+                                                        {savedCrimes.map((crime) => {
+                                                            return (
+                                                                <li key={crime.id} className="rounded bg-white/5 px-3 py-2">
+                                                                    <p className="text-sm font-semibold text-white truncate">
+                                                                        {crime.title || `Crime ${crime.id}`}
+                                                                    </p>
+                                                                    <p className="text-xs text-white/70 truncate">
+                                                                        {crime.location || 'Location unavailable'}
+                                                                    </p>
+                                                                    <p className="text-xs text-white/70 mt-1 line-clamp-2">
+                                                                        {crime.description || 'Description unavailable'}
+                                                                    </p>
+                                                                    <div className="flex gap-4 mt-2">
+                                                                        <Link
+                                                                            to={`/crime-page?id=${crime.id}`}
+                                                                            onClick={handleCloseSavedCrimes}
+                                                                            className="inline-block mt-1 text-xs text-[var(--color-secondary)] hover:underline"
+                                                                        >
+                                                                            Open
+                                                                        </Link>    
+                                                                        <div>
+                                                                            <button
+                                                                                className="inline-block text-xs text-white p-1 bg-red-600 cursor-pointer rounded hover:bg-red-700 transition-colors"
+                                                                                onClick={() => dispatch(deleteSavedCrime(crime.id))}
+                                                                            >
+                                                                                Remove
+                                                                            </button>
+                                                                        </div>                                                                
+                                                                    </div>
+
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             )}
                             {isReporter && (
                                 <button>

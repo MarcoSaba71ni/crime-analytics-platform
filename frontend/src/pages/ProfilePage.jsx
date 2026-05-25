@@ -1,5 +1,9 @@
 import { useAuth } from "../context/useAuth";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { toggleSavedCrime } from "../store/savedSlice";
+import CrimeLocationMap from "../components/CrimeLocationMap";
 
 function ProfilePage() {
 
@@ -11,6 +15,8 @@ function ProfilePage() {
     console.log('User ID:', userId);
     console.log('User Role:', role);
     const [profileData, setProfileData] = useState(null);
+    const dispatch = useDispatch();
+    const savedCrimes = useSelector((state) => state.saved.savedCrimes);
 
     useEffect(() => {
         async function fetchUserData() {
@@ -77,6 +83,22 @@ function ProfilePage() {
                     {role === "analyst" && (
                         <div className="w-2/3 flex flex-col items-start justify-start">
                             <h2 className="text-3xl font-bold  mt-4 text-white text-start items-top">SAVED LIST</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+                                {savedCrimes.map((crime) => (
+                                    <div key={crime.id} className="w-full bg-[var(--color-primary)] rounded-md p-4 mt-4 flex justify-between items-center">
+                                        <div>
+                                            {crime.latitude && crime.longitude ? (
+                                                <div className="w-full h-40 mb-4">
+                                                    <CrimeLocationMap lat={crime.latitude} lng={crime.longitude} />
+                                                </div>
+                                            ) : null}
+                                            <Link to={`/crime-page?id=${crime.id}`}><h3 className="text-lg font-bold text-white">{crime.title}</h3></Link>
+                                            <p className="text-white">{crime.description}</p>
+                                        </div>
+                                    </div>
+                                ))}                                
+                            </div>
+
                         </div>
                     )}
                     {role === "crime_reporter" && (

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { Heart , BadgeCheck } from "lucide-react";
+import { Bookmark , BadgeCheck } from "lucide-react";
 import CrimeLocationMap from "./CrimeLocationMap";
 import {useAuth} from "../context/useAuth";
-import { toggleFavorite } from "../store/favoriteSlice";
+import { toggleSavedCrime } from "../store/savedSlice";
 import { useDispatch , useSelector } from "react-redux";
 
 function CrimeCard({ crime }) {
@@ -10,13 +10,18 @@ function CrimeCard({ crime }) {
     const isAnalyst = (role ?? user?.role ?? "").toLowerCase() === "analyst";
     const isVerified = Boolean(crime.is_verified);
     const dispatch = useDispatch();
-    const favorites = useSelector((state) => state.favorites.favorites);
-    const isFavorite = favorites.some(fav => fav.id === crime.id);
+    const savedCrimes = useSelector((state) => state.saved.savedCrimes);
+    const isSaved = savedCrimes.some((savedCrime) => savedCrime.id === crime.id);
 
-    function handleFavorite(e) {
+    function handleSave(e) {
         e.preventDefault();
         e.stopPropagation();
-        dispatch(toggleFavorite(crime.id));
+        dispatch(toggleSavedCrime({
+            id: crime.id,
+            title: crime.title,
+            description: crime.description,
+            location: crime.location
+        }));
     }
 
     return (
@@ -46,15 +51,15 @@ function CrimeCard({ crime }) {
                 {isAnalyst && (
                     <button
                         type="button"
-                        aria-label="Mark as verified"
+                        aria-label="Toggle saved crime"
                         className="absolute top-2 right-2 z-[1200] cursor-pointer px-2 py-1 text-sm rounded shadow-md ring-1 ring-black/10 bg-white text-black transition-colors duration-200"
-                        onClick={handleFavorite}
+                        onClick={handleSave}
                     >
-                        <Heart
+                        <Bookmark
                             size={16}
                             strokeWidth={2}
-                            className={isFavorite ? "text-red-500" : "text-black"}
-                            fill={isFavorite ? "currentColor" : "none"}
+                            className={isSaved ? "text-[var(--color-secondary)]" : "text-black"}
+                            fill={isSaved ? "currentColor" : "none"}
                         />
                     </button>
                 )}

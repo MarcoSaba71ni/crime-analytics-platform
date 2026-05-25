@@ -1,7 +1,9 @@
 import { useState , useEffect } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, MapPin, Calendar, ShieldAlert, BadgeCheck, BookOpen } from "lucide-react"
+import { ArrowLeft, MapPin, Calendar, ShieldAlert, BadgeCheck, BookOpen , Bookmark } from "lucide-react"
 import CrimeLocationMap from "../components/CrimeLocationMap"
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSavedCrime } from "../store/savedSlice";
 
 function getCrimeIdFromURL() {
     const params = new URLSearchParams(window.location.search);
@@ -12,6 +14,12 @@ function CrimePage() {
     const [crime, setCrime] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+
+    const savedCrimes = useSelector(
+        (state) => state.saved.savedCrimes
+    );
+    const isSaved = savedCrimes.some((savedCrime) => savedCrime.id === crime?.id);
 
     const crimeId = getCrimeIdFromURL();
 
@@ -52,6 +60,16 @@ function CrimePage() {
         if (level <= 2) return "bg-green-700 text-green-100";
         if (level === 3) return "bg-yellow-600 text-yellow-100";
         return "bg-red-700 text-red-100";
+    };
+
+    const handleSaveCrime = () => {
+        if (!crime?.id) return;
+        dispatch(toggleSavedCrime({
+            id: crime.id,
+            title: crime.title,
+            description: crime.description,
+            location: crime.location
+        }));
     };
 
     if (loading) {
@@ -108,18 +126,30 @@ function CrimePage() {
             <div className="max-w-4xl mx-auto px-8 py-12 relative z-10">
                 {/* Title row */}
                 <div className="flex flex-col gap-3 mb-8">
-                    <div className="flex flex-wrap items-center gap-3">
-                        <span className="text-xs uppercase tracking-widest text-[var(--color-secondary)] font-redwing border border-[var(--color-secondary)] px-3 py-1 rounded-full">
-                            {crime.type}
-                        </span>
-                        <span className={`text-xs font-redwing px-3 py-1 rounded-full ${severityColor(crime.severity)}`}>
-                            Severity {crime.severity}/5
-                        </span>
-                        {crime.is_verified && (
-                            <span className="flex items-center gap-1 text-xs bg-blue-700 px-3 py-1 rounded-full">
-                                <BadgeCheck size={12} /> Verified
+                    <div className="flex justify-between">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <span className="text-xs uppercase tracking-widest text-[var(--color-secondary)] font-redwing border border-[var(--color-secondary)] px-3 py-1 rounded-full">
+                                {crime.type}
                             </span>
-                        )}
+                            <span className={`text-xs font-redwing px-3 py-1 rounded-full ${severityColor(crime.severity)}`}>
+                                Severity {crime.severity}/5
+                            </span>
+                            {crime.is_verified && (
+                                <span className="flex items-center gap-1 text-xs bg-blue-700 px-3 py-1 rounded-full">
+                                    <BadgeCheck size={12} /> Verified
+                                </span>
+                            )}
+                        </div> 
+                        <div>
+                            <button
+                                type="button"
+                                onClick={handleSaveCrime}
+                                aria-label="Toggle saved crime"
+                                className={`mr-4 cursor-pointer ${isSaved ? "text-[var(--color-secondary)]" : "text-gray-500"}`}
+                            >
+                                <Bookmark size={32} fill={isSaved ? "currentColor" : "none"} />
+                            </button>
+                        </div>                       
                     </div>
                     <h1 className="text-4xl font-redwing leading-tight">{crime.title}</h1>
                 </div>
