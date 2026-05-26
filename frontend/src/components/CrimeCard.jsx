@@ -64,7 +64,7 @@ function CrimeCard({ crime }) {
                     </button>
                 )}
                 <span
-                    className={`absolute top-2 right-12 z-[1200] cursor-pointer px-2 py-1 text-sm rounded shadow-md ring-1 ${
+                    className={`absolute top-2 ${isAnalyst ? "right-12" : "right-2"} z-[1200] cursor-pointer px-2 py-1 text-sm rounded shadow-md ring-1 ${
                         isVerified
                             ? "bg-green-600 text-white ring-green-800/40"
                             : "bg-white text-black ring-black/10"

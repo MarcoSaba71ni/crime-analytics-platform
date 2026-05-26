@@ -17,16 +17,24 @@ function ProfilePage() {
     const { user , token } = useAuth();
     const userId = user?.id;
     const role = user?.role;
-    console.log('User ID:', userId);
-    console.log('User Role:', role);
     const [profileData, setProfileData] = useState(null);
     const savedCrimes = useSelector((state) => state.saved.savedCrimes);
     const [isEditing, setIsEditing] = useState(false);
+    const [updatedUsername, setUpdatedUsername] = useState("");
+    const [updatedEmail, setUpdatedEmail] = useState("");
+    const [updatedBio, setUpdatedBio] = useState("");
+    const [updateError, setUpdateError] = useState(null);
+    const [updatedLoading, setUpdatedLoading] = useState(false);
+
 
     useEffect(() => {
         async function fetchUserData() {
             setLoading(true);
-            if (!userId) return;
+            if (!userId) {
+                setLoading(false);
+                return;
+            }   
+
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/profiles/${userId}`, {
                     headers: {
@@ -39,6 +47,7 @@ function ProfilePage() {
                 const profileData = await response.json();
                 console.log('Profile data:', profileData);                
                 setProfileData(profileData);
+
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -48,6 +57,46 @@ function ProfilePage() {
         };
         fetchUserData();
         }, [userId, token]);
+
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            setUpdateError(null);
+
+            // Add logic to update the profile here
+            const updatedProfile = {
+                username: updatedUsername,
+                email: updatedEmail,
+                bio: updatedBio
+            };
+            setUpdatedLoading(true);
+            if (!updatedProfile.username || !updatedProfile.email) {
+                setUpdateError('email and username fields are required');
+                setUpdatedLoading(false);
+                return;
+            }
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/profiles/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updatedProfile)
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to update profile');
+                }
+
+                const updatedData = await response.json();
+                setProfileData(updatedData);
+                setIsEditing(false);
+            } catch (err) {
+                setUpdateError(err.message);
+            } finally {
+                setUpdatedLoading(false);
+            }
+            // You can use the updatedUsername, updatedEmail, and updatedBio state variables
+        }
 
     return (
         <div>
@@ -83,41 +132,54 @@ function ProfilePage() {
                                 <p className="text-sm font-redwing text-gray-200 leading-relaxed break-words">{profileData?.bio || "No bio added yet."}</p>
                             </div>
                             <button
-                            onClick={() => setIsEditing(true)}
+                            onClick={() => {
+                                setUpdateError(null);
+                                setIsEditing(true), 
+                                setUpdatedUsername(profileData?.username || ""),
+                                setUpdatedEmail(profileData?.email || ""),
+                                setUpdatedBio(profileData?.bio || "")
+                                }}
                              className="cursor-pointer mt-2 px-4 py-2 text-sm font-semibold bg-white text-black rounded-md self-end hover:bg-gray-200 transition-colors">UPDATE PROFILE</button>
                         </div>
                         )}
                         {isEditing && (
-                            <form className="flex flex-col mx-4 mt-4 p-4 rounded-lg border border-white/10 bg-white/5 gap-4" >
+                            <form
+                            onSubmit={handleProfileUpdate} className="flex flex-col mx-4 mt-4 p-4 rounded-lg border border-white/10 bg-white/5 gap-4" >
                                 <div>
                                     <h3 className="text-white text-sm font-semibold">Edit profile details</h3>
                                     <p className="text-xs text-gray-300 mt-1">Update your information below and save when ready.</p>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-xs tracking-widest text-gray-300">USERNAME</label>
-                                    <input type="text" className="w-full h-10 px-3 rounded-md bg-gray-200/95 text-black text-sm font-redwing outline-none focus:ring-2 focus:ring-white/70" placeholder="Enter username" />
+                                    <input type="text" className="w-full h-10 px-3 rounded-md bg-gray-200/95 text-black text-sm font-redwing outline-none focus:ring-2 focus:ring-white/70" value={updatedUsername} onChange={(e) => setUpdatedUsername(e.target.value)} placeholder="Enter username" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-xs tracking-widest text-gray-300">EMAIL</label>
-                                    <input type="email" className="w-full h-10 px-3 rounded-md bg-gray-200/95 text-black text-sm font-redwing outline-none focus:ring-2 focus:ring-white/70" placeholder="Enter email" />
+                                    <input type="email" className="w-full h-10 px-3 rounded-md bg-gray-200/95 text-black text-sm font-redwing outline-none focus:ring-2 focus:ring-white/70" value={updatedEmail} onChange={(e) => setUpdatedEmail(e.target.value)} placeholder="Enter email" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-xs tracking-widest text-gray-300">BIO</label>
-                                    <textarea className="w-full min-h-24 px-3 py-2 rounded-md bg-gray-200/95 text-black text-sm font-redwing outline-none focus:ring-2 focus:ring-white/70 resize-y" rows="4" placeholder="Write a short bio" />
+                                    <textarea className="w-full min-h-24 px-3 py-2 rounded-md bg-gray-200/95 text-black text-sm font-redwing outline-none focus:ring-2 focus:ring-white/70 resize-y" value={updatedBio} onChange={(e) => setUpdatedBio(e.target.value)} rows="4" placeholder="Write a short bio" />
                                 </div>
+                                {updateError && (
+                                    <p className="text-red-500 text-sm">{updateError}</p>)}
                                 <div className="flex items-center justify-end gap-3 pt-1">
                                     <button
                                         type="button"
-                                        onClick={() => setIsEditing(false)}
+                                        onClick={() => {
+                                            setUpdateError(null);
+                                            setIsEditing(false);
+                                        }}
                                         className="cursor-pointer px-4 py-2 text-sm font-semibold border border-white/40 text-white rounded-md hover:bg-white/10 transition-colors"
                                     >
                                         CANCEL
                                     </button>
                                     <button
                                         type="submit"
-                                        className="cursor-pointer px-4 py-2 text-sm font-semibold bg-white text-black rounded-md hover:bg-gray-200 transition-colors"
+                                        className={`cursor-pointer px-4 py-2 text-sm font-semibold bg-white text-black rounded-md hover:bg-gray-200 transition-colors ${updatedLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        disabled={updatedLoading}
                                     >
-                                        SAVE CHANGES
+                                        {updatedLoading ? 'SAVING...' : 'SAVE CHANGES'}
                                     </button>
                                 </div>
                             </form>)}
