@@ -4,17 +4,18 @@ import CrimeCard from '../components/CrimeCard';
 import { Link } from 'react-router-dom';
 import HeroSection from '../components/HeroSection/HeroSection';
 import { useAuth } from '../context/useAuth';
+import ReportingForm  from '../components/ReportingForm';
 
 function HomePage() {
     const [crimes, setCrimes] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [limit, setLimit] = useState(6);
+    const limit = 6;
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const { user, role } = useAuth();
     const isCrimeReporter = role === 'crime_reporter';
+    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
         let ignore = false;
@@ -34,7 +35,6 @@ function HomePage() {
                 console.log("Parsed crimes data:", allCrimes);
                 if (!ignore) {
                     setCrimes(prevCrimes => [...prevCrimes, ...allCrimes]);
-                    setTotalPages(data.totalPages || 1);
                 }
             } catch (error) {
                 setError(error.message);
@@ -101,16 +101,22 @@ function HomePage() {
                         </div>
 
                         <div>
-                            <Link
-                                to="/report-crime"
-                                className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 font-redwing text-lg text-[var(--color-primary)] transition-transform duration-300 ease-in-out hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-primary)]"
+                            <button
+                                onClick={() => setIsUpdating(true)}
+                                disabled={isUpdating}
+                                className={`inline-flex cursor-pointer items-center gap-2 rounded-lg bg-white px-5 py-3 font-redwing text-lg text-[var(--color-primary)] transition-transform duration-300 ease-in-out hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-primary)] ${isUpdating ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                                 <ShieldUser size={22} />
                                 Start Crime Report
-                            </Link>
+                            </button>
                         </div>
                     </div>
+                    {isUpdating && (
+                        <ReportingForm onClose={() => setIsUpdating(false)} />
+                        )}
+                
                 </section>
+
             )}
             <section className="bg-black">
                 <div className="flex flex-col gap-4 mx-40 py-20">
@@ -148,7 +154,10 @@ function HomePage() {
                             <p className="text-gray-400 text-center col-span-full">No crimes found matching your search.</p>
                         )}
                         {isLoading && (
-                            <p className="text-gray-400 text-center col-span-full">Loading crimes...</p>
+                        <div className="flex flex-col items-center justify-center mx-auto gap-4">
+                            <div className="w-10 h-10 border-4 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin text-black" />
+                            <p className="text-white font-redwing tracking-widest">LOADING...</p>
+                        </div>
                         )}
                         {error && (
                             <p className="text-red-500 text-center col-span-full">Error: {error}</p>

@@ -101,14 +101,14 @@ function ProfilePage() {
     return (
         <div>
             {loading && (
-                <div className="min-h-screen bg-[var(--color-secondary)] flex items-center justify-center">
+                <div className="min-h-screen bg-[var(--color-secondary)]/20 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-4">
                         <div className="w-10 h-10 border-4 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin text-black" />
                         <p className="text-white font-redwing tracking-widest">LOADING...</p>
                     </div>
                 </div>
             )}
-            <div className="w-full flex flex-col bg-[var(--color-secondary)]">
+            <div className="w-full min-h-screen flex flex-col bg-[var(--color-secondary)]">
                 <div className="flex justify-center items-start w-full mt-25 mb-10">
                     <div className="w-1/3 h-auto self-start rounded-md bg-[var(--color-primary)] mx-20 overflow-hidden">
                         <div>

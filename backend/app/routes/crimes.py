@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import httpx
 
+
 from app.core.auth_deps import get_current_user
 from app.database.deps import get_db
 from app.models.auth_models import AuthRegister as AuthModel
@@ -100,7 +101,7 @@ def get_crime(crime_id: int, db: Session = Depends(get_db)):
 @router.post("/", response_model=CrimeResponse)
 def create_crime(crime: CrimeCreate, db: Session = Depends(get_db), current_user: AuthModel = Depends(get_current_user)):
     try:
-        new_crime = CrimeModel(**crime.model_dump())
+        new_crime = CrimeModel(**crime.model_dump(), reporter_id=current_user.id)
 
         db.add(new_crime)
         db.commit()

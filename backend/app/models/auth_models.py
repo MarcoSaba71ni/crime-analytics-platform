@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import Column, DateTime, Integer, String, Text
 from app.database.database import Base
-
+from sqlalchemy.orm import relationship
 
 class AuthRegister(Base):
     __tablename__ = "users"
@@ -13,3 +13,4 @@ class AuthRegister(Base):
     bio = Column(Text, nullable=True)
     role = Column(String(50), default="analyst")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    crimes = relationship("Crime", back_populates="reporter")
