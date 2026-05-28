@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Date, Float, Integer, String, Text
 from app.database.database import Base
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 class Crime(Base):
     __tablename__ = "crimes"
@@ -16,3 +18,5 @@ class Crime(Base):
     source = Column(String(255), nullable=True)
     image_url = Column(String(500), nullable=True)
     image_alt = Column(String(255), nullable=True)
+    reporter_id = Column(Integer, ForeignKey("users.id"))
+    reporter = relationship("AuthRegister", back_populates="crimes")

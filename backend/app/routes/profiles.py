@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from typing import List
+from fastapi import Depends
 
 from app.core.auth_deps import get_current_user
 from app.database.deps import get_db
@@ -13,7 +14,7 @@ router = APIRouter()
 
 # GET ALL PROFILES
 @router.get("/", response_model=List[ProfileResponse])
-def get_profiles(db: Session = Depends(get_db)):
+def get_profiles(db: Session = Depends(get_db), current_user: AuthModel = Depends(get_current_user)):
     try:
         return db.query(AuthModel).all()
     except SQLAlchemyError:
@@ -22,7 +23,11 @@ def get_profiles(db: Session = Depends(get_db)):
 
 # GET A SINGLE PROFILE BY ID
 @router.get("/{profile_id}", response_model=ProfileResponse)
-def get_profile(profile_id: int, db: Session = Depends(get_db)):
+def get_profile(profile_id: int, db: Session = Depends(get_db), current_user: AuthModel = Depends(get_current_user)):
+    
+    if current_user.id != profile_id:
+        raise HTTPException(status_code=403, detail="Not authorized to access this profile")
+
     try:
         profile = db.query(AuthModel).filter(AuthModel.id == profile_id).first()
     except SQLAlchemyError:
@@ -45,6 +50,9 @@ def update_profile(
 
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
+
+    if current_user.id != profile_id:
+        raise HTTPException(status_code=403, detail="Not authorized to update this profile")
 
     update_data = updated_profile.model_dump(exclude_none=True)
 
@@ -74,6 +82,9 @@ def delete_profile(
 
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
+
+    if current_user.id != profile_id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this profile")
 
     try:
         db.delete(profile)

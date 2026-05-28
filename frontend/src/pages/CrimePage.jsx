@@ -1,7 +1,10 @@
 import { useState , useEffect } from "react"
 import { Link } from "react-router-dom"
-import { ArrowLeft, MapPin, Calendar, ShieldAlert, BadgeCheck, BookOpen } from "lucide-react"
+import { ArrowLeft, MapPin, Calendar, ShieldAlert, BadgeCheck, BookOpen , Bookmark } from "lucide-react"
 import CrimeLocationMap from "../components/CrimeLocationMap"
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSavedCrime } from "../store/savedSlice";
+import { useAuth } from "../context/useAuth";
 
 function getCrimeIdFromURL() {
     const params = new URLSearchParams(window.location.search);
@@ -12,6 +15,14 @@ function CrimePage() {
     const [crime, setCrime] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    const { user } = useAuth();
+    const role = user ? user.role : null;
+
+    const savedCrimes = useSelector(
+        (state) => state.saved.savedCrimes
+    );
+    const isSaved = savedCrimes.some((savedCrime) => savedCrime.id === crime?.id);
 
     const crimeId = getCrimeIdFromURL();
 
@@ -54,6 +65,17 @@ function CrimePage() {
         return "bg-red-700 text-red-100";
     };
 
+    const handleSaveCrime = () => {
+        if (!crime?.id) return;
+        dispatch(toggleSavedCrime({
+            id: crime.id,
+            title: crime.title,
+            description: crime.description,
+            location: crime.location,
+            type: crime.type
+        }));
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-[var(--color-primary)] flex items-center justify-center">
@@ -78,40 +100,61 @@ function CrimePage() {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--color-primary)] text-white">
-            {/* Hero image banner */}
-            {crime.image_url && (
-                <div className="relative w-full h-80 overflow-hidden">
-                    <img
-                        src={`${import.meta.env.VITE_API_URL}/crimes/proxy-image?url=${encodeURIComponent(crime.image_url)}`}
-                        alt={crime.image_alt || crime.title}
-                        className="w-full h-full object-cover brightness-50"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary)] to-transparent" />
-                    <Link
-                        to="/"
-                        className="absolute top-6 left-8 flex items-center gap-2 text-[var(--color-secondary)] font-redwing text-sm tracking-widest hover:opacity-80 transition-opacity"
-                    >
-                        <ArrowLeft size={16} /> BACK
-                    </Link>
+        <div className="min-h-screen bg-[var(--color-primary)] pt-16 text-white">
+            
+            {/* Back link */}
+            <div className="max-w-4xl mx-auto px-8 pt-12 relative z-10">
+                <Link
+                    to="/"
+                    className="flex items-center gap-2 text-[var(--color-secondary)] font-redwing tracking-widest text-sm hover:opacity-80 transition-opacity"
+                >
+                    <ArrowLeft size={16} /> BACK TO ALL CRIMES
+                </Link>
+            </div>
+
+            {/* Location map */}
+            {crime.latitude && crime.longitude && (
+                <div className="max-w-4xl mx-auto px-8 pt-8 relative z-10">
+                    <div className="flex items-center gap-2 text-[var(--color-secondary)] font-redwing tracking-widest text-xs mb-3">
+                        <MapPin size={14} />
+                        LOCATION
+                    </div>
+                    <div className="rounded-lg overflow-hidden">
+                        <CrimeLocationMap lat={crime.latitude} lng={crime.longitude} interactive height="320px" />
+                    </div>
                 </div>
             )}
 
+            
             {/* Content */}
-            <div className="max-w-4xl mx-auto px-8 py-12 -mt-16 relative z-10">
+            <div className="max-w-4xl mx-auto px-8 py-12 relative z-10">
                 {/* Title row */}
                 <div className="flex flex-col gap-3 mb-8">
-                    <div className="flex flex-wrap items-center gap-3">
-                        <span className="text-xs uppercase tracking-widest text-[var(--color-secondary)] font-redwing border border-[var(--color-secondary)] px-3 py-1 rounded-full">
-                            {crime.type}
-                        </span>
-                        <span className={`text-xs font-redwing px-3 py-1 rounded-full ${severityColor(crime.severity)}`}>
-                            Severity {crime.severity}/5
-                        </span>
-                        {crime.is_verified && (
-                            <span className="flex items-center gap-1 text-xs bg-blue-700 px-3 py-1 rounded-full">
-                                <BadgeCheck size={12} /> Verified
+                    <div className="flex justify-between">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <span className="text-xs uppercase tracking-widest text-[var(--color-secondary)] font-redwing border border-[var(--color-secondary)] px-3 py-1 rounded-full">
+                                {crime.type}
                             </span>
+                            <span className={`text-xs font-redwing px-3 py-1 rounded-full ${severityColor(crime.severity)}`}>
+                                Severity {crime.severity}/5
+                            </span>
+                            {crime.is_verified && (
+                                <span className="flex items-center gap-1 text-xs bg-blue-700 px-3 py-1 rounded-full">
+                                    <BadgeCheck size={12} /> Verified
+                                </span>
+                            )}
+                        </div> 
+                        {role === "analyst" && (
+                            <div>
+                                <button
+                                    type="button"
+                                    onClick={handleSaveCrime}
+                                    aria-label="Toggle saved crime"
+                                    className={`mr-4 cursor-pointer ${isSaved ? "text-[var(--color-secondary)]" : "text-gray-500"}`}
+                                >
+                                    <Bookmark size={32} fill={isSaved ? "currentColor" : "none"} />
+                                </button>
+                            </div>                         
                         )}
                     </div>
                     <h1 className="text-4xl font-redwing leading-tight">{crime.title}</h1>
@@ -141,19 +184,6 @@ function CrimePage() {
                     <p className="text-gray-300 text-base leading-relaxed">{crime.description}</p>
                 </div>
 
-                {/* Location map */}
-                {crime.latitude && crime.longitude && (
-                    <div className="mb-10">
-                        <div className="flex items-center gap-2 text-[var(--color-secondary)] font-redwing tracking-widest text-xs mb-3">
-                            <MapPin size={14} />
-                            LOCATION
-                        </div>
-                        <div className="rounded-lg overflow-hidden">
-                            <CrimeLocationMap lat={crime.latitude} lng={crime.longitude} interactive height="320px" />
-                        </div>
-                    </div>
-                )}
-
                 {/* Source */}
                 {crime.source && (
                     <div className="bg-gray-800 rounded-lg px-6 py-4 flex items-start gap-3">
@@ -165,15 +195,7 @@ function CrimePage() {
                     </div>
                 )}
 
-                {/* Back link */}
-                <div className="mt-16">
-                    <Link
-                        to="/"
-                        className="flex items-center gap-2 text-[var(--color-secondary)] font-redwing tracking-widest text-sm hover:opacity-80 transition-opacity"
-                    >
-                        <ArrowLeft size={16} /> BACK TO ALL CRIMES
-                    </Link>
-                </div>
+               
             </div>
         </div>
     )
