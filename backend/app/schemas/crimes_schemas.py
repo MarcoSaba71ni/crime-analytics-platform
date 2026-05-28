@@ -40,6 +40,7 @@ class PaginatedCrimesResponse(BaseModel):
 class CrimeResponse(CrimeBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
+    reporter_id: Optional[int] = None
 
     @computed_field
     @property

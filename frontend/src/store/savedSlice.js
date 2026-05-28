@@ -36,6 +36,23 @@ const savedSlice = createSlice({
         clearSavedCrimes: (state) => {
             state.savedCrimes = [];
             persistSavedCrimes(state.savedCrimes);
+        },
+        upsertSavedCrime: (state, action) => {
+            const crimeData = normalizeSavedCrime(action.payload);
+            if (crimeData.id === undefined || crimeData.id === null) return;
+
+            const existingIndex = state.savedCrimes.findIndex((crime) => crime.id === crimeData.id);
+
+            if (existingIndex >= 0) {
+                state.savedCrimes[existingIndex] = {
+                    ...state.savedCrimes[existingIndex],
+                    ...crimeData
+                };
+            } else {
+                state.savedCrimes.push(crimeData);
+            }
+
+            persistSavedCrimes(state.savedCrimes);
         }
     }
 });
@@ -66,7 +83,15 @@ function normalizeSavedCrime(payload) {
             id: payload.id,
             title: payload.title || '',
             description: payload.description || '',
-            location: payload.location || ''
+            location: payload.location || '',
+            type: payload.type || '',
+            latitude: payload.latitude ?? payload.lat ?? null,
+            longitude: payload.longitude ?? payload.lng ?? null,
+            date: payload.date || '',
+            severity: payload.severity ?? null,
+            source: payload.source || '',
+            image_url: payload.image_url || '',
+            image_alt: payload.image_alt || ''
         };
     }
 
@@ -74,7 +99,15 @@ function normalizeSavedCrime(payload) {
         id: payload,
         title: '',
         description: '',
-        location: ''
+        location: '',
+        type: '',
+        latitude: null,
+        longitude: null,
+        date: '',
+        severity: null,
+        source: '',
+        image_url: '',
+        image_alt: ''
     };
 }
 
@@ -82,5 +115,5 @@ function persistSavedCrimes(savedCrimes) {
     localStorage.setItem('savedCrimes', JSON.stringify(savedCrimes));
 }
 
-export const { toggleSavedCrime, deleteSavedCrime, clearSavedCrimes } = savedSlice.actions;
+export const { toggleSavedCrime, deleteSavedCrime, clearSavedCrimes, upsertSavedCrime } = savedSlice.actions;
 export default savedSlice.reducer;

@@ -99,8 +99,8 @@ function ProfilePage() {
                 </div>
             )}
             <div className="w-full min-h-screen flex flex-col bg-[var(--color-secondary)]">
-                <div className="flex justify-center items-start w-full mt-25 mb-10">
-                    <div className="w-1/3 h-auto self-start rounded-md bg-[var(--color-primary)] mx-20 overflow-hidden">
+                <div className="flex justify-center items-start w-full mt-25 mb-10 px-6 lg:px-10 gap-6">
+                    <div className="basis-1/3 shrink-0 h-auto self-start rounded-md bg-[var(--color-primary)] overflow-hidden">
                         <div>
                             <img src="../../images/burning-bus.jpg" alt="Profile" 
                             className="w-full"/>
@@ -174,7 +174,9 @@ function ProfilePage() {
                                 </div>
                             </form>)}
                     </div>
-                    <CrimePerUserRole />
+                    <div className="basis-2/3 min-w-0">
+                        <CrimePerUserRole />
+                    </div>
                 </div>
             </div>            
         </div>

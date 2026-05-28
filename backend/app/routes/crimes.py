@@ -55,6 +55,7 @@ def get_crimes(
     severity: Optional[int] = Query(None, ge=1, le=5, description="Filter by severity level 1–5"),
     crime_type: Optional[str] = Query(None, description="Filter by crime type (e.g. fraud)"),
     verified: Optional[bool] = Query(None, description="true = source is set, false = source is null"),
+    reporter_id: Optional[int] = Query(None, description="Filter by reporter ID")
 ):
     offset = (page - 1) * limit
     try:
@@ -72,6 +73,8 @@ def get_crimes(
             else:
                 query = query.filter(CrimeModel.source.is_(None))
 
+        if reporter_id is not None:
+            query = query.filter(CrimeModel.reporter_id == reporter_id)
         total = query.count()
         crimes = query.offset(offset).limit(limit).all()
 

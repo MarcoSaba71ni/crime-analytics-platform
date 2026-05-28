@@ -154,7 +154,7 @@ function HomePage() {
                             <p className="text-gray-400 text-center col-span-full">No crimes found matching your search.</p>
                         )}
                         {isLoading && (
-                        <div className="flex flex-col items-center justify-center mx-auto gap-4">
+                        <div className="col-span-full w-full min-h-40 flex flex-col items-center justify-center gap-4">
                             <div className="w-10 h-10 border-4 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin text-black" />
                             <p className="text-white font-redwing tracking-widest">LOADING...</p>
                         </div>

@@ -20,7 +20,8 @@ function CrimeCard({ crime }) {
             id: crime.id,
             title: crime.title,
             description: crime.description,
-            location: crime.location
+            location: crime.location,
+            type: crime.type
         }));
     }
 

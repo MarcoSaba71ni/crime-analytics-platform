@@ -6,6 +6,7 @@ import { useAuth } from '../context/useAuth';
 import { useSelector } from 'react-redux';
 import { deleteSavedCrime } from '../store/savedSlice';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 
 function Header () {
@@ -20,6 +21,7 @@ function Header () {
     const savedCrimes = useSelector((state) => state.saved.savedCrimes);
     const [showSavedCrimes, setShowSavedCrimes] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     function handleToggleSavedCrime() {
         setShowSavedCrimes((prev) => !prev);
@@ -29,6 +31,10 @@ function Header () {
         setShowSavedCrimes(false);
     }
 
+    async function handleLogout() {
+        await logout();
+        navigate("/auth/register", { replace: true }); // Redirect to login page after logout
+    }
 
     useEffect(() => {
         if (isLoginOpen) {
@@ -169,7 +175,7 @@ function Header () {
                             </div>
                             <div>
                                 <button
-                                    onClick={logout}
+                                    onClick={handleLogout}
                                     className="text-white hover:text-red-400 transition-colors duration-300 cursor-pointer bg-transparent border-none"
                                 >
                                     <LogOut size={32} strokeWidth={1.5} />

@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, Calendar, ShieldAlert, BadgeCheck, BookOpen , Bookma
 import CrimeLocationMap from "../components/CrimeLocationMap"
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSavedCrime } from "../store/savedSlice";
+import { useAuth } from "../context/useAuth";
 
 function getCrimeIdFromURL() {
     const params = new URLSearchParams(window.location.search);
@@ -15,6 +16,8 @@ function CrimePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
+    const { user } = useAuth();
+    const role = user ? user.role : null;
 
     const savedCrimes = useSelector(
         (state) => state.saved.savedCrimes
@@ -68,7 +71,8 @@ function CrimePage() {
             id: crime.id,
             title: crime.title,
             description: crime.description,
-            location: crime.location
+            location: crime.location,
+            type: crime.type
         }));
     };
 
@@ -140,16 +144,18 @@ function CrimePage() {
                                 </span>
                             )}
                         </div> 
-                        <div>
-                            <button
-                                type="button"
-                                onClick={handleSaveCrime}
-                                aria-label="Toggle saved crime"
-                                className={`mr-4 cursor-pointer ${isSaved ? "text-[var(--color-secondary)]" : "text-gray-500"}`}
-                            >
-                                <Bookmark size={32} fill={isSaved ? "currentColor" : "none"} />
-                            </button>
-                        </div>                       
+                        {role === "analyst" && (
+                            <div>
+                                <button
+                                    type="button"
+                                    onClick={handleSaveCrime}
+                                    aria-label="Toggle saved crime"
+                                    className={`mr-4 cursor-pointer ${isSaved ? "text-[var(--color-secondary)]" : "text-gray-500"}`}
+                                >
+                                    <Bookmark size={32} fill={isSaved ? "currentColor" : "none"} />
+                                </button>
+                            </div>                         
+                        )}
                     </div>
                     <h1 className="text-4xl font-redwing leading-tight">{crime.title}</h1>
                 </div>
