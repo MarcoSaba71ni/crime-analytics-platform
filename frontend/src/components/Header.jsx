@@ -18,6 +18,7 @@ function Header () {
     const isReporter = role.toLowerCase() === "crime_reporter";
     const location = useLocation();
     const hideLoginButton = location.pathname === '/auth/register';
+    const changeHeaderNav = location.pathname === '/statistics' || location.pathname === '/about' || location.pathname === '/zones';
     const savedCrimes = useSelector((state) => state.saved.savedCrimes);
     const [showSavedCrimes, setShowSavedCrimes] = useState(false);
     const dispatch = useDispatch();
@@ -58,20 +59,20 @@ function Header () {
 
                 <div className="flex justify-center">
                     <nav
-                        className="px-6 py-3 rounded-b-full"
-                        style={{ backgroundColor: 'var(--color-primary)' }}
+                        className={`px-6 py-3 rounded-b-full ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'bg-[var(--color-primary)]'} transition-colors duration-300`}
+                        style={{ backgroundColor: changeHeaderNav ? 'var(--color-secondary)' : 'var(--color-primary)' }}
                     >
                         <ul className="flex gap-4 md:gap-8 lg:gap-12">
-                            <li className="text-sm md:text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap">
+                            <li className={`text-sm md:text-lg ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
                                 <Link to="/statistics">Statistics</Link>
                             </li>
-                            <li className="text-sm md:text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap">
+                            <li className={`text-sm md:text-lg ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
                                 <Link to="/about">Who We Are</Link>
                             </li>
-                            <li className="text-sm md:text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap">
+                            <li className={`text-sm md:text-lg ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
                                 <Link to="/crime-history">Crime History</Link>
                             </li>
-                            <li className="text-sm md:text-lg text-white hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap">
+                            <li className={`text-sm md:text-lg ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
                                 <Link to="/zones">Zones</Link>
                             </li>
                         </ul>
@@ -82,8 +83,8 @@ function Header () {
                     {!user && !showLoginDiv && !hideLoginButton && (
                         <button
                             onClick={() => setIsLoginOpen(true)}
-                            className="header_button text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-500 transition-colors duration-300"
-                            style={{ backgroundColor: 'var(--color-primary)' }}
+                            className={`header_button px-4 py-2 rounded cursor-pointer hover:bg-blue-500 ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} transition-colors duration-300`}
+                            style={{ backgroundColor: changeHeaderNav ? 'var(--color-secondary)' : 'var(--color-primary)' }}
                         >
                             Login
                         </button>
