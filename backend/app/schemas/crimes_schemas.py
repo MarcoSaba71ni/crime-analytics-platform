@@ -31,12 +31,6 @@ class CrimeUpdate(BaseModel):
     image_url: Optional[str] = Field(None, max_length=500)
     image_alt: Optional[str] = Field(None, max_length=255)
 
-class PaginatedCrimesResponse(BaseModel):
-    total: int
-    page: int
-    limit: int
-    crimes: List[CrimeResponse]
-
 class CrimeResponse(CrimeBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
@@ -46,3 +40,10 @@ class CrimeResponse(CrimeBase):
     @property
     def is_verified(self) -> bool:
         return self.source is not None
+
+
+class PaginatedCrimesResponse(BaseModel):
+    total: int
+    page: int
+    limit: int
+    crimes: List[CrimeResponse]
