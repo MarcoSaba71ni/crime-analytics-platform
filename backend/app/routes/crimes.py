@@ -46,7 +46,7 @@ async def proxy_image(url: str = Query(..., description="Wikimedia image URL to 
 
 
 # GET ALL CRIMES
-@router.get("/", response_model=PaginatedCrimesResponse)
+@router.get("", response_model=PaginatedCrimesResponse)
 def get_crimes(
     db: Session = Depends(get_db),
     page: int = Query(1, ge=1, description="Page number for pagination"),
