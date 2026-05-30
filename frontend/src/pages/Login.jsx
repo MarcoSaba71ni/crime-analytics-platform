@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
     const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +56,7 @@ function Login() {
                 className="bg-[var(--color-primary)] text-white px-4 py-2 rounded hover:bg-blue-500 transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer">
                 {isLoading ? 'Logging in...' : 'Login'}
             </button>
-            <p className="mt-4 text-center text-sm text-[var(--color-primary)]">Don't have an account? <a href="/auth/register" className="underline">Register</a></p>
+            <p className="mt-4 text-center text-sm text-[var(--color-primary)]">Don't have an account? <Link to="/auth/register" className="underline">Register</Link></p>
         </form>
     )
 }
