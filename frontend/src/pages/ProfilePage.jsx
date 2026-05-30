@@ -102,8 +102,7 @@ function ProfilePage() {
                 <div className="flex justify-center items-start w-full mt-25 mb-10 px-6 lg:px-10 gap-6">
                     <div className="basis-1/3 shrink-0 h-auto self-start rounded-md bg-[var(--color-primary)] overflow-hidden">
                         <div>
-                            <img src="../../images/burning-bus.jpg" alt="Profile" 
-                            className="w-full"/>
+                            <h1 className="text-white text-2xl font-bold p-4">Profile Information:</h1>
                         </div>
                         {!isEditing && (
                         <div className="flex flex-col mx-4 mt-4 p-4 rounded-lg border border-white/10 bg-white/5 gap-4">

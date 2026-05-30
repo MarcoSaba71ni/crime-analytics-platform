@@ -173,7 +173,7 @@ function HomePage() {
             <section className=" bg-[url('../images/stockholm-view-img3.jpg')] bg-cover bg-center w-full h-140">
                 <div className=" z-10 flex flex-col justify-center items-center gap-8 mx-40 py-40">
                     <h2 className="text-4xl font-redwing text-white pt-40">UNDERSTAND THE CRIME TRENDS IN THE CAPITAL OF SWEDEN</h2>
-                    <Link to="/crime-history">
+                    <Link to="/statistics">
                         <button className="font-redwing bg-[var(--color-secondary)] px-4 py-2 rounded-lg text-2xl text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">EXPLORE</button>
                     </Link>
                 </div>
