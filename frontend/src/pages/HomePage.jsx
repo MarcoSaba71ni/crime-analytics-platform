@@ -9,6 +9,8 @@ import ReportingForm  from '../components/ReportingForm';
 function HomePage() {
     const [crimes, setCrimes] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState('all');
+    const [selectedSeverity, setSelectedSeverity] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 6;
     const [isLoading, setIsLoading] = useState(false);
@@ -51,27 +53,49 @@ function HomePage() {
         };
     }, [currentPage, limit]);
 
-    const filteredCrimes = crimes.filter(crime =>
-        crime.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredCrimes = crimes.filter((crime) => {
+        const normalizedSearchTerm = searchTerm.toLowerCase();
+        const matchesSearch =
+            crime.title.toLowerCase().includes(normalizedSearchTerm) ||
+            crime.location.toLowerCase().includes(normalizedSearchTerm) ||
+            crime.type.toLowerCase().includes(normalizedSearchTerm);
+
+        const matchesCategory =
+            selectedCategory === 'all' || crime.type.toLowerCase() === selectedCategory;
+
+        const matchesSeverity =
+            selectedSeverity === 'all' ||
+            (selectedSeverity === 'low' && crime.severity <= 2) ||
+            (selectedSeverity === 'medium' && crime.severity === 3) ||
+            (selectedSeverity === 'high' && crime.severity >= 4);
+
+        return matchesSearch && matchesCategory && matchesSeverity;
+    });
+
+    const getFilterButtonClass = (isActive) =>
+        `border px-2 sm:px-3 py-1 sm:py-2 rounded-full cursor-pointer transition-colors text-sm sm:text-md duration-300 ease-in-out ${
+            isActive
+                ? 'border-[var(--color-secondary)] bg-[var(--color-secondary)] text-[var(--color-primary)]'
+                : 'border-white text-white bg-black hover:bg-[#4073BA]'
+        }`;
 
     return (
         <>
             <HeroSection />
             { !user && (
-                <section className="bg-[var(--color-primary)] w-full py-24 flex flex-col items-center gap-6">
-                    <h2 className="text-white text-4xl text-center">Create a free account or login to track crime trends in real time.</h2>
-                    <p className="font-redwing text-[var(--color-secondary)] text-lg text-center max-w-xl">
+                <section className="bg-[var(--color-primary)] w-full px-4 sm:px-0 py-24 flex flex-col items-center gap-6">
+                    <h2 className="text-white text-2xl sm:text-4xl text-center">Create a free account or login to track crime trends in real time.</h2>
+                    <p className="font-redwing text-[var(--color-secondary)] text-md sm:text-lg text-center max-w-xl">
                         As an Analyst you can save areas, set watchlists, and receive AI-generated summaries. As a Crime Reporter you can report crimes and contribute to the community's safety.
                     </p>
                     <div className="flex gap-4 mt-4">
                         <Link to="/auth/register">
-                            <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-8 py-3 rounded-lg text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
+                            <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
                                 SIGN IN
                             </button>                        
                         </Link>
                         <Link to="/auth/register">
-                            <button className="border border-[var(--color-secondary)] cursor-pointer hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-[var(--color-secondary)] font-redwing px-8 py-3 rounded-lg text-lg">
+                            <button className="border border-[var(--color-secondary)] cursor-pointer hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-[var(--color-secondary)] font-redwing px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-lg">
                                 CREATE ACCOUNT
                             </button>
                         </Link>
@@ -84,8 +108,8 @@ function HomePage() {
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 <p className="font-redwing text-sm tracking-[0.12em] text-white/75">REPORTER MODE</p>
-                                <h2 className="font-redwing text-2xl text-white sm:text-3xl">Submit a New Crime Report</h2>
-                                <p className="mt-1 max-w-2xl text-sm text-white/85 sm:text-base">
+                                <h2 className="font-redwing text-2xl text-white text-lg sm:text-3xl">Submit a New Crime Report</h2>
+                                <p className="mt-1 max-w-2xl text-xs sm:text-sm text-white/85 sm:text-base">
                                     Capture incident details quickly and help keep the community map accurate and up to date.
                                 </p>
                             </div>
@@ -104,7 +128,7 @@ function HomePage() {
                             <button
                                 onClick={() => setIsUpdating(true)}
                                 disabled={isUpdating}
-                                className={`inline-flex cursor-pointer items-center gap-2 rounded-lg bg-white px-5 py-3 font-redwing text-lg text-[var(--color-primary)] transition-transform duration-300 ease-in-out hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-primary)] ${isUpdating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                className={`inline-flex cursor-pointer items-center gap-2 rounded-lg bg-white px-4 sm:px-5 py-2 sm:py-3 font-redwing text-sm sm:text-lg text-[var(--color-primary)] transition-transform duration-300 ease-in-out hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-primary)] ${isUpdating ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                                 <ShieldUser size={22} />
                                 Start Crime Report
@@ -119,25 +143,74 @@ function HomePage() {
 
             )}
             <section className="bg-black">
-                <div className="flex flex-col gap-4 mx-40 py-20">
-                    <h2 className="text-4xl font-redwing text-white">List of Crimes</h2>
-                    <p className="text-gray-400 text-center">“Due to limited access to structured, incident-level crime data, this project combines real verified data with simulated dataset based on real statistical trends from Brottsförebyggande rådet. The dataset reflects observed developments such as declining overall crime rates and increasing levels of organized and financial crime.”</p>
+                <div className="flex flex-col gap-4 mx-4 sm:mx-40 py-20">
+                    <h2 className="text-2xl sm:text-4xl font-redwing text-white">List of Crimes</h2>
+                    <p className="text-gray-400 text-sm sm:text-lg text-center">“Due to limited access to structured, incident-level crime data, this project combines real verified data with simulated dataset based on real statistical trends from Brottsförebyggande rådet. The dataset reflects observed developments such as declining overall crime rates and increasing levels of organized and financial crime.”</p>
                     <input 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value.trim())}
-                    className="bg-gray-800 text-white w-2/3 border border-gray-600 rounded-lg px-4 py-2 mt-4" placeholder="Search for crime's title, location or type ..."></input>
-                    <div className="flex gap-2 items-center">
-                        <p className="text-white">All Categories:</p>
-                        <button className="border px-3 py-2 rounded-full text-white bg-black hover:bg-[#4073BA] cursor-pointer transition-colors duration-300 ease-in-out">Murder</button>
-                        <button className="border px-3 py-2 rounded-full text-white bg-black hover:bg-[#4073BA] cursor-pointer transition-colors duration-300 ease-in-out">Theft</button>
-                        <button className="border px-3 py-2 rounded-full text-white bg-black hover:bg-[#4073BA] cursor-pointer transition-colors duration-300 ease-in-out">Assault</button>
+                    className="bg-gray-800 text-white w-full sm:w-2/3 border border-gray-600 rounded-lg px-2 sm:px-4 py-2 sm:py-2 mt-4" placeholder="Search for crime's title, location or type ..."></input>
+                    <div className="flex flex-wrap gap-2 items-center">
+                        <p className="text-white text-sm sm:text-md">All Categories:</p>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedCategory('all')}
+                            className={getFilterButtonClass(selectedCategory === 'all')}
+                        >
+                            All
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedCategory('vandalism')}
+                            className={getFilterButtonClass(selectedCategory === 'vandalism')}
+                        >
+                            Vandalism
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedCategory('theft')}
+                            className={getFilterButtonClass(selectedCategory === 'theft')}
+                        >
+                            Theft
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedCategory('assault')}
+                            className={getFilterButtonClass(selectedCategory === 'assault')}
+                        >
+                            Assault
+                        </button>
                     </div>
-                    <div className="flex gap-2 items-center">
-                        <p className="text-white">Severity:</p>
-                        <button className="border px-3 py-2 rounded-full text-white bg-black hover:bg-[#4073BA] cursor-pointer transition-colors duration-300 ease-in-out">All</button>
-                        <button className="border px-3 py-2 rounded-full text-white bg-black hover:bg-[#4073BA] cursor-pointer transition-colors duration-300 ease-in-out">Low</button>
-                        <button className="border px-3 py-2 rounded-full text-white bg-black hover:bg-[#4073BA] cursor-pointer transition-colors duration-300 ease-in-out">Medium</button>
-                        <button className="border px-3 py-2 rounded-full text-white bg-black hover:bg-[#4073BA] cursor-pointer transition-colors duration-300 ease-in-out">High</button>
+                    <div className="flex flex-wrap gap-2 items-center">
+                        <p className="text-white text-sm sm:text-md">Severity:</p>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedSeverity('all')}
+                            className={getFilterButtonClass(selectedSeverity === 'all')}
+                        >
+                            All
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedSeverity('low')}
+                            className={getFilterButtonClass(selectedSeverity === 'low')}
+                        >
+                            Low
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedSeverity('medium')}
+                            className={getFilterButtonClass(selectedSeverity === 'medium')}
+                        >
+                            Medium
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedSeverity('high')}
+                            className={getFilterButtonClass(selectedSeverity === 'high')}
+                        >
+                            High
+                        </button>
                     </div>
                     <div>
                         <button className="bg-gradient-to-r from-[#2563eb] to-[#60a5fa] text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105">
@@ -151,7 +224,7 @@ function HomePage() {
                             <CrimeCard key={crime.id} crime={crime} />
                         ))}
                         {filteredCrimes.length === 0 && (
-                            <p className="text-gray-400 text-center col-span-full">No crimes found matching your search.</p>
+                            <p className="text-gray-400 text-center col-span-full">No crimes found matching your current search and filters.</p>
                         )}
                         {isLoading && (
                         <div className="col-span-full w-full min-h-40 flex flex-col items-center justify-center gap-4">
@@ -171,38 +244,38 @@ function HomePage() {
                 </div>
             </section>
             <section className=" bg-[url('../images/stockholm-view-img3.jpg')] bg-cover bg-center w-full h-140">
-                <div className=" z-10 flex flex-col justify-center items-center gap-8 mx-40 py-40">
-                    <h2 className="text-4xl font-redwing text-white pt-40">UNDERSTAND THE CRIME TRENDS IN THE CAPITAL OF SWEDEN</h2>
+                <div className=" z-10 flex flex-col justify-center items-center gap-8 mx-10 sm:mx-40 py-40">
+                    <h2 className="text-2xl sm:text-4xl font-redwing text-white pt-40">UNDERSTAND THE CRIME TRENDS IN THE CAPITAL OF SWEDEN</h2>
                     <Link to="/statistics">
-                        <button className="font-redwing bg-[var(--color-secondary)] px-4 py-2 rounded-lg text-2xl text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">EXPLORE</button>
+                        <button className="font-redwing bg-[var(--color-secondary)] px-2 sm:px-4 py-1 sm:py-2 rounded-lg sm:text-2xl text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">EXPLORE</button>
                     </Link>
                 </div>
             </section>
-            <section className="w-full h-140 flex">
+            <section className="w-full h-100 sm:h-140 flex">
                 <div className="relative bg-[url('../images/experts-analyzing.webp')] bg-cover bg-center w-1/2 h-full brightness-75 flex flex-col gap-4 justify-center items-center">
                     <div className="absolute inset-0" />
-                        <h3 className="relative font-redwing text-white text-3xl z-10">STATISTICS & DASHBOARDS</h3>
+                        <h3 className="relative z-10 w-full px-4 text-center font-redwing text-lg text-white sm:text-3xl">STATISTICS & DASHBOARDS</h3>
                         <Link to="/statistics">
                             <button className="relative bg-[var(--color-secondary)] text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing z-10 hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">EXPLORE</button>
                         </Link>
                 </div>
-                <div className="bg-[url('../images/black-dressed-men.png')] bg-cover bg-center w-1/2 h-full brightness-75 flex flex-col gap-4 justify-center items-center">
+                <div className="relative bg-[url('../images/black-dressed-men.png')] bg-cover bg-center w-1/2 sm:h-full brightness-75 flex flex-col gap-4 justify-center items-center">
                     <div className="absolute inset-0"/>
-                        <h3 className="relative font-redwing text-white text-3xl z-10">ZONES CONTROLLED BY NEIGHBORHOOD</h3>
+                        <h3 className="relative z-10 w-full px-4 text-center font-redwing text-lg text-white sm:text-3xl">ZONES CONTROLLED BY NEIGHBORHOOD</h3>
                         <Link to="/zones">
                             <button className="relative bg-[var(--color-secondary)] text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing z-10 hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">EXPLORE</button>
                         </Link>
                 </div>
             </section>
             { user && (
-                <section className="bg-[var(--color-primary)] w-full py-24 flex flex-col items-center gap-6">
-                    <h2 className="text-white text-4xl text-center">Stay informed. Track crime trends in real time.</h2>
-                    <p className="font-redwing text-[var(--color-secondary)] text-lg text-center max-w-xl">
+                <section className="bg-[var(--color-primary)] w-full py-24 flex flex-col px-6 sm:px-0 items-center gap-6">
+                    <h2 className="text-white text-2xl sm:text-4xl text-center">Stay informed. Track crime trends in real time.</h2>
+                    <p className="font-redwing text-[var(--color-secondary)] text-sm sm:text-lg text-center max-w-xl">
                         Subscribe your email to receive AI-generated summaries and watch lists of crime activity in your saved area.
                     </p>
-                    <div className="flex gap-4 mt-4">
+                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
                         <input type="email" placeholder="Enter your email" className="w-full border border-gray-300 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary)]" />
-                        <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-4 py-2 rounded-lg text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
+                        <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-3 sm:px-4 py-1 sm:py-2 rounded-lg text-sm sm:text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
                             SUBSCRIBE
                         </button>
                     </div>
@@ -223,18 +296,18 @@ function HomePage() {
                     </div>
 
                     <div className="rounded-2xl bg-[var(--color-primary)] p-6 text-white shadow-xl lg:col-span-5 lg:p-8">
-                        <h3 className="text-3xl font-redwing leading-tight">Who We Are</h3>
-                        <p className="mt-4 text-base leading-relaxed text-white/90">
+                        <h3 className="text-2xl sm:text-3xl font-redwing leading-tight">Who We Are</h3>
+                        <p className="mt-4 text-sm sm:text-md text-base leading-relaxed text-white/90">
                             Safe Sweden is a civic-tech initiative focused on making public crime data clearer, more transparent, and easier to understand for everyone.
                         </p>
-                        <p className="mt-3 text-base leading-relaxed text-white/80">
+                        <p className="mt-3 text-base leading-relaxed hidden sm:flex text-white/80">
                             Explore our mission, values, and methodology, and see how data can support informed, safer communities.
                         </p>
 
                         <div className="mt-6 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3 sm:gap-3">
-                            <span className="rounded-full border border-white/35 px-3 py-1.5 text-center font-redwing">Mission</span>
-                            <span className="rounded-full border border-white/35 px-3 py-1.5 text-center font-redwing">Methodology</span>
-                            <span className="rounded-full border border-white/35 px-3 py-1.5 text-center font-redwing">Values</span>
+                            <Link to="/about#our-mission" className="rounded-full hover:bg-white hover:text-[var(--color-primary)] transition-colors duration-300 border border-white/35 px-3 py-1.5 text-center font-redwing">Mission</Link>
+                            <Link to="/about#methodology" className="rounded-full hover:bg-white hover:text-[var(--color-primary)] transition-colors duration-300 border border-white/35 px-3 py-1.5 text-center font-redwing">Methodology</Link>
+                            <Link to="/about#our-values" className="rounded-full hover:bg-white hover:text-[var(--color-primary)] transition-colors duration-300 border border-white/35 px-3 py-1.5 text-center font-redwing">Values</Link>
                         </div>
 
                         <div className="mt-7 flex flex-col gap-3 sm:flex-row">

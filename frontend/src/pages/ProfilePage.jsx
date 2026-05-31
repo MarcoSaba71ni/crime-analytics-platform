@@ -99,13 +99,13 @@ function ProfilePage() {
                 </div>
             )}
             <div className="w-full min-h-screen flex flex-col bg-[var(--color-secondary)]">
-                <div className="flex justify-center items-start w-full mt-25 mb-10 px-6 lg:px-10 gap-6">
-                    <div className="basis-1/3 shrink-0 h-auto self-start rounded-md bg-[var(--color-primary)] overflow-hidden">
+                <div className="flex w-full flex-col items-stretch justify-center gap-6 px-4 pt-24 pb-10 sm:px-6 lg:flex-row lg:items-start lg:px-10">
+                    <div className="w-full rounded-md bg-[var(--color-primary)] overflow-hidden lg:basis-1/3 lg:shrink-0 lg:self-start">
                         <div>
-                            <h1 className="text-white text-2xl font-bold p-4">Profile Information:</h1>
+                            <h1 className="text-white text-xl sm:text-2xl font-bold p-4">Profile Information:</h1>
                         </div>
                         {!isEditing && (
-                        <div className="flex flex-col mx-4 mt-4 p-4 rounded-lg border border-white/10 bg-white/5 gap-4">
+                        <div className="flex flex-col mx-4 mt-2 mb-4 p-4 rounded-lg border border-white/10 bg-white/5 gap-4 sm:mt-4">
                             <div className="space-y-1">
                                 <h3 className="text-xs tracking-widest text-gray-300">USERNAME</h3>
                                 <p className="text-base font-redwing text-white break-words">{profileData?.username || "-"}</p>
@@ -128,12 +128,12 @@ function ProfilePage() {
                                 setUpdatedEmail(profileData?.email || ""),
                                 setUpdatedBio(profileData?.bio || "")
                                 }}
-                             className="cursor-pointer mt-2 px-4 py-2 text-sm font-semibold bg-white text-black rounded-md self-end hover:bg-gray-200 transition-colors">UPDATE PROFILE</button>
+                             className="cursor-pointer mt-2 w-full sm:w-auto px-4 py-2 text-sm font-semibold bg-white text-black rounded-md self-stretch sm:self-end hover:bg-gray-200 transition-colors">UPDATE PROFILE</button>
                         </div>
                         )}
                         {isEditing && (
                             <form
-                            onSubmit={handleProfileUpdate} className="flex flex-col mx-4 mt-4 p-4 rounded-lg border border-white/10 bg-white/5 gap-4" >
+                            onSubmit={handleProfileUpdate} className="flex flex-col mx-4 mt-2 mb-4 p-4 rounded-lg border border-white/10 bg-white/5 gap-4 sm:mt-4" >
                                 <div>
                                     <h3 className="text-white text-sm font-semibold">Edit profile details</h3>
                                     <p className="text-xs text-gray-300 mt-1">Update your information below and save when ready.</p>
@@ -152,20 +152,20 @@ function ProfilePage() {
                                 </div>
                                 {updateError && (
                                     <p className="text-red-500 text-sm">{updateError}</p>)}
-                                <div className="flex items-center justify-end gap-3 pt-1">
+                                <div className="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:items-center sm:justify-end">
                                     <button
                                         type="button"
                                         onClick={() => {
                                             setUpdateError(null);
                                             setIsEditing(false);
                                         }}
-                                        className="cursor-pointer px-4 py-2 text-sm font-semibold border border-white/40 text-white rounded-md hover:bg-white/10 transition-colors"
+                                        className="cursor-pointer w-full sm:w-auto px-4 py-2 text-sm font-semibold border border-white/40 text-white rounded-md hover:bg-white/10 transition-colors"
                                     >
                                         CANCEL
                                     </button>
                                     <button
                                         type="submit"
-                                        className={`cursor-pointer px-4 py-2 text-sm font-semibold bg-white text-black rounded-md hover:bg-gray-200 transition-colors ${updatedLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        className={`cursor-pointer w-full sm:w-auto px-4 py-2 text-sm font-semibold bg-white text-black rounded-md hover:bg-gray-200 transition-colors ${updatedLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         disabled={updatedLoading}
                                     >
                                         {updatedLoading ? 'SAVING...' : 'SAVE CHANGES'}
@@ -173,7 +173,7 @@ function ProfilePage() {
                                 </div>
                             </form>)}
                     </div>
-                    <div className="basis-2/3 min-w-0">
+                    <div className="w-full min-w-0 lg:basis-2/3">
                         <CrimePerUserRole />
                     </div>
                 </div>

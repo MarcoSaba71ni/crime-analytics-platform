@@ -165,9 +165,9 @@ function Register() {
         } focus:outline-none focus:ring-2`;
 
     return (
-        <div className="bg-[url('../images/stockholm-view.webp')] bg-cover bg-center min-h-screen flex items-center justify-center px-4 py-10">
-
-                <form onSubmit={loginUser} className="relative flex flex-col bg-[rgba(15,23,42,0.62)] p-6 md:p-8 rounded-xl shadow-lg w-full max-w-sm border border-white/20">
+        <div className="bg-[url('../images/stockholm-view.webp')] bg-cover bg-center min-h-screen px-4 py-24 sm:px-6 lg:px-8">
+            <div className="mx-auto flex w-full max-w-6xl flex-col items-stretch justify-center gap-6 lg:flex-row lg:items-center">
+                <form onSubmit={loginUser} className="relative flex w-full flex-col rounded-xl border border-white/20 bg-[rgba(15,23,42,0.62)] p-5 shadow-lg sm:p-6 md:p-8 lg:max-w-sm">
                     <h2 className="flex justify-center text-3xl text-white font-bold tracking-wide">Login</h2>
                     <p className="text-center text-white/70 text-sm mt-1 mb-5">Access your dashboard and saved areas</p>
                     {loginError && <p className="mb-4 text-red-400 text-sm text-center">{loginError}</p>}
@@ -203,7 +203,7 @@ function Register() {
                         {loginLoading ? 'Logging in...' : 'Login'}
                     </button>
                 </form>
-                <div className="hidden lg:flex flex-col items-center justify-center mx-5 gap-3">
+                <div className="hidden lg:flex flex-col items-center justify-center px-2 gap-3">
                     <div className="w-px bg-white/50 flex-1" />
                     <span className="text-white/70 text-xl font-semibold tracking-[0.3em] uppercase">or</span>
                     <div className="w-px bg-white/50 flex-1" />
@@ -214,11 +214,11 @@ function Register() {
                     <div className="h-px bg-white/50 flex-1" />
                 </div>
                 <form onSubmit={registerUser}
-                 className="relative flex flex-col bg-[rgba(15,23,42,0.62)] p-6 md:p-8 rounded-xl shadow-lg w-full max-w-lg border border-white/20">
+                 className="relative flex w-full flex-col rounded-xl border border-white/20 bg-[rgba(15,23,42,0.62)] p-5 shadow-lg sm:p-6 md:p-8 lg:max-w-2xl">
                     <h2 className="flex justify-center text-3xl text-white font-bold tracking-wide">Register</h2>
                     <p className="text-center text-white/70 text-sm mt-1 mb-5">Create a new account as an Analyst or Crime Reporter</p>
                     {error && <p className="mb-4 text-red-400 text-sm text-center">{error}</p>}
-                    <div className="flex gap-4">
+                    <div className="flex flex-col gap-4 md:flex-row">
                         <div className="flex flex-col flex-1">
                             <div className="mb-4 flex flex-col gap-1">
                                 <label className="text-white font-redwing" htmlFor="register-email">Email:</label>
@@ -316,6 +316,7 @@ function Register() {
                     </button>
                 </form>
             </div>
+        </div>
     )
 }
 

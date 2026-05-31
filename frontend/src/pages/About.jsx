@@ -1,12 +1,24 @@
 import videoTraffic from '../../images/video-Stockholm_traffic.webm';
 import { CircleChevronDown, CircleChevronUp , TriangleAlert, Combine , BrainCircuit , Map} from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation , Link } from 'react-router-dom';
+
 
 
 function About() {
     const [fullMission, setFullMission] = useState(false);
     const [fullValues, setFullValues] = useState(false);
     const [fullGoals, setFullGoals] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (!location.hash) return;
+        const targetId = location.hash.replace('#', '');
+        const target = document.getElementById(targetId);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [location.hash]);
 
     const toggleMission = () => setFullMission(!fullMission);
     const toggleValues = () => setFullValues(!fullValues);
@@ -37,8 +49,11 @@ function About() {
                             Crime intelligence built for public awareness and civic trust.
                         </h1>
                         <div className=" flex justify-center mt-4">
-                            <button className="bg-[var(--color-secondary)] mx-auto text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">WHO WE ARE</button>
-                        </div>
+                            <Link to="#who-we-are">
+                            <button 
+                            className="bg-[var(--color-secondary)] mx-auto text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">WHO WE ARE</button>
+                            
+                            </Link>                        </div>
                     </div>
                 </div>
             </section>
@@ -61,7 +76,7 @@ function About() {
                 </div>
             </section>
 
-            <section className="bg-[rgba(255,255,255,0.03)] px-6 py-20 lg:px-12">
+            <section id="our-values" className="bg-[rgba(255,255,255,0.03)] px-6 py-20 lg:px-12">
                 <div className="mx-auto max-w-7xl">
                     <div className="max-w-2xl">
                         <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-secondary)] font-redwing">Our Values</p>
@@ -69,7 +84,7 @@ function About() {
                     </div>
 
                     <div className="mt-10 grid gap-6 md:grid-cols-3">
-                        <article className="rounded-2xl border border-white/10 bg-[rgba(4,31,69,0.55)] p-6 shadow-xl backdrop-blur-sm">
+                        <article id="our-mission" className="rounded-2xl border border-white/10 bg-[rgba(4,31,69,0.55)] p-6 shadow-xl backdrop-blur-sm">
                             <h3 className="text-xl font-semibold text-[var(--color-secondary)]">Our Mission</h3>
                             <p className="mt-3 text-sm leading-relaxed text-white/80">
                                 We show how information is gathered, what it means, and where its limits are so users can interpret trends with confidence.
@@ -118,7 +133,7 @@ function About() {
                     </div>
                 </div>
             </section>
-            <section>
+            <section id="methodology">
                 <div className="mx-auto max-w-7xl px-6 py-20 lg:px-12">
                     <div className="max-w-2xl">
                         <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-secondary)] font-redwing">Methodology</p>
@@ -194,7 +209,7 @@ function About() {
                     </div>
                 </div>
             </section>
-            <section className="bg-[var(--color-secondary)]/70 px-6 py-20 lg:px-12">
+            <section id="who-we-are" className="bg-[var(--color-secondary)]/70 px-6 py-20 lg:px-12">
                 <div className="mx-auto max-w-7xl">
                     <div className="max-w-2xl">
                         <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-secondary)] font-redwing">WHO I AM</p>
