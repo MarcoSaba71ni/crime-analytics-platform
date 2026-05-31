@@ -30,31 +30,31 @@ function HeroSection() {
                     className="absolute inset-0 bg-cover bg-center brightness-50"
                     style={{ backgroundImage: `url(${slide.image})` }}
                 />
-                <div className="relative z-10 mx-40 py-40 flex flex-col gap-8">
+                <div className="relative z-10 mx-10 sm:mx-40 py-40 flex flex-col gap-8">
                     {/* Hero Section Content */}
-                    <div className='flex justify-between items-center'>
+                    <div className='flex flex-col sm:flex-row justify-between items-center'>
                         <div className='flex flex-col gap-8'>
                             <div className="flex flex-col gap-2">
                                 <p className="inline-flex w-fit rounded-full border border-[var(--color-secondary)]/70 bg-[#041F45A6] px-4 py-1 text-xs tracking-[0.18em] text-[var(--color-secondary)] font-redwing">
                                     PUBLIC SAFETY INTELLIGENCE
                                 </p>
-                                <h1 className="text-white text-6xl">Safe Sweden</h1>
-                                <h2 className="text-white text-2xl">Crime analytics platform designed to help users better understand public safety</h2>                        
+                                <h1 className="text-white text-4xl sm:text-6xl">Safe Sweden</h1>
+                                <h2 className="text-white text-md sm:text-2xl">Crime analytics platform designed to help users better understand public safety</h2>                        
                             </div>
                             <div className="flex gap-2">
-                                <Link to="/about">
-                                <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">METHODOLOGY</button>
+                                <Link to="/about#methodology">
+                                <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] text px-2 sm:px-4 py-1 sm:py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">METHODOLOGY</button>
                                 </Link>
                                 <Link to="/zones">
-                                <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">ZONES</button>
+                                <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] px-2 sm:px-4 py-1 sm:py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">ZONES</button>
                                 </Link>
                             </div>
-                            <div className="mt-16">
+                            <div className=" mt-4 sm:mt-16">
                                 <Link to="/crime-history">
-                                    <h3 className="text-white text-xl transition-transform duration-300 hover:scale-102 font-redwing underline">{slide.title}</h3></Link>
+                                    <h3 className="text-white text-sm sm:text-xl transition-transform duration-300 hover:scale-102 font-redwing underline">{slide.title}</h3></Link>
                             </div>
                         </div>
-                        <div className='flex gap-2'>
+                        <div className=' hidden sm:flex gap-2'>
                             <div className="flex items-center">
                                 <button
                                     onClick={() => prevSlide()}

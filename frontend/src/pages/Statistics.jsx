@@ -3,8 +3,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   AreaChart, Area,
 } from 'recharts'
-
-import { CircleChevronDown} from 'lucide-react'
+import { useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 
 // ── demo data (replace with API calls once backend is ready) ─────────────────
 
@@ -156,9 +156,9 @@ const DarkTooltip = ({ active, payload, label }) => {
   )
 }
 
-function StatSection({ label, value, subtitle, accent, children }) {
+function StatSection({ id, label, value, subtitle, accent, children }) {
   return (
-    <div style={{
+    <div id={id} className="scroll-mt-28" style={{
       borderRadius: 14,
       background: 'rgba(255,255,255,0.03)',
       border: '1px solid rgba(255,255,255,0.07)',
@@ -191,6 +191,17 @@ function StatSection({ label, value, subtitle, accent, children }) {
 // ── page ──────────────────────────────────────────────────────────────────────
 
 function Statistics() {
+  const location = useLocation()
+
+  useEffect(() => {
+    if (!location.hash) return
+    const targetId = location.hash.replace('#', '')
+    const target = document.getElementById(targetId)
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [location.hash])
+
   return (
     <div className="min-h-screen bg-[var(--color-primary)] pt-24 pb-16">
       <div className="max-w-6xl mx-auto px-6">
@@ -207,7 +218,7 @@ function Statistics() {
         </div>
 
         {/* HORIZONTAL TABS */}
-        <section className="mb-12 flex gap-4">
+        <section className="mb-12 flex gap-4 flex-col sm:flex-row">
             <div className="flex-1 border border-[#3b82f6] rounded-lg p-4 bg-[#3b82f6]/10 flex flex-col justify-between gap-3">
                 <div>
                   <h2 className="text-sm font-bold text-white mb-2 uppercase tracking-wide">
@@ -218,7 +229,9 @@ function Statistics() {
                   </p>
                 </div>
                 <div className="w-full flex justify-center">
-                    <button className='text-white text-xs cursor-pointer font-redwing border rounded-md p-1'>VISUALIZE</button>
+                  <Link to="/statistics#total-crimes-reported">
+                    <button className='text-white text-xs cursor-pointer font-redwing border transition-transform hover:scale-105 rounded-md p-1'>VISUALIZE</button>
+                  </Link>
                 </div>
             </div>
             <div className="flex-1 border border-[#f59e0b] rounded-lg p-4 bg-[#f59e0b]/10 flex flex-col justify-between gap-3">
@@ -227,11 +240,13 @@ function Statistics() {
                       Active Investigation
                   </h2>
                   <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, lineHeight: 1.6 }}>
-                      Active investigations currently in progress from 2017 to May 2026.
+                      In-progress investigations from 2017 to May 2026.
                   </p>
                 </div>
                 <div className="w-full flex justify-center">
-                    <button className='text-white text-xs cursor-pointer font-redwing border rounded-md p-1'>VISUALIZE</button>
+                    <Link to="/statistics#active-investigation">
+                      <button className='text-white text-xs cursor-pointer font-redwing border transition-transform hover:scale-105 rounded-md p-1'>VISUALIZE</button>
+                    </Link>
                 </div>
             </div>
             <div className="flex-1 border border-[#a855f7] rounded-lg p-4 bg-[#a855f7]/10 flex flex-col justify-between gap-3">
@@ -244,7 +259,9 @@ function Statistics() {
                   </p>
                 </div>
                 <div className="w-full flex justify-center">
-                    <button className='text-white text-xs cursor-pointer font-redwing border rounded-md p-1'>VISUALIZE</button>
+                    <Link to="/statistics#common-crimes">
+                      <button className='text-white text-xs cursor-pointer font-redwing border transition-transform hover:scale-105 rounded-md p-1'>VISUALIZE</button>
+                    </Link>
                 </div>
             </div>
             <div className="flex-1 border border-[#ef4444] rounded-lg p-4 bg-[#ef4444]/10 flex flex-col justify-between gap-3">
@@ -253,11 +270,13 @@ function Statistics() {
                       Highest Risk Zones
                   </h2>
                   <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, lineHeight: 1.6 }}>
-                      Areas with the highest crime risk index from 2017 to May 2026.
+                      Areas with the highest crime risk.
                   </p>
                 </div>
                 <div className="w-full flex justify-center">
-                    <button className='text-white text-xs cursor-pointer font-redwing border rounded-md p-1'>VISUALIZE</button>
+                    <Link to="/statistics#highest-risk-zones">
+                      <button className='text-white text-xs cursor-pointer font-redwing border transition-transform hover:scale-105 rounded-md p-1'>VISUALIZE</button>
+                    </Link>
                 </div>
             </div>
             <div className="flex-1 border border-[#f97316] rounded-lg p-4 bg-[#f97316]/10 flex flex-col justify-between gap-3">
@@ -270,7 +289,9 @@ function Statistics() {
                   </p>
                 </div>
                 <div className="w-full flex justify-center">
-                    <button className='text-white text-xs cursor-pointer font-redwing border rounded-md p-1'>VISUALIZE</button>
+                    <Link to="/statistics#crime-increase">
+                      <button className='text-white text-xs cursor-pointer font-redwing border transition-transform hover:scale-105 rounded-md p-1'>VISUALIZE</button>
+                    </Link>
                 </div>
             </div>
             <div className="flex-1 border border-[#22c55e] rounded-lg p-4 bg-[#22c55e]/10 flex flex-col gap-3">
@@ -283,7 +304,9 @@ function Statistics() {
                   </p>
                 </div>
                 <div className="w-full flex justify-center">
-                    <button className='text-white text-xs cursor-pointer font-redwing border rounded-md p-1'>VISUALIZE</button>
+                    <Link to="/statistics#resolved-cases">
+                      <button className='text-white text-xs cursor-pointer font-redwing border transition-transform hover:scale-105 rounded-md p-1'>VISUALIZE</button>
+                    </Link>
                 </div>
             </div>
         </section>
@@ -293,6 +316,7 @@ function Statistics() {
 
           {/* ── 1. TOTAL CRIMES REPORTED ─────────────────────────────────── */}
           <StatSection
+            id="total-crimes-reported"
             label="Total Crimes Reported"
             value="1,439,163"
             subtitle="Sweden 2025 · BRÅ (est.)"
@@ -424,11 +448,9 @@ function Statistics() {
 
             </div>
           </StatSection>
-        <div className="w-full flex justify-center items-center">
-            <button><CircleChevronDown className='text-white cursor-pointer transition-transform hover:scale-110 duration-300'/></button>                
-        </div>
           {/* ── 2. ACTIVE INVESTIGATION ──────────────────────────────────── */}
           <StatSection
+            id="active-investigation"
             label="Active Investigation"
             value="2,847"
             subtitle="Cases in progress"
@@ -458,12 +480,9 @@ function Statistics() {
               ))}
             </div>
           </StatSection>
-            <div className="w-full flex justify-center items-center">
-                <button><CircleChevronDown className='text-white cursor-pointer transition-transform hover:scale-110 duration-300'/></button>                
-            </div>
-
           {/* ── 3. COMMON CRIMES ─────────────────────────────────────────── */}
           <StatSection
+            id="common-crimes"
             label="Common Crimes"
             value="Theft"
             subtitle="Most reported type"
@@ -498,12 +517,9 @@ function Statistics() {
               </ResponsiveContainer>
             </div>
           </StatSection>
-            <div className="w-full flex justify-center items-center">
-                <button><CircleChevronDown className='text-white cursor-pointer transition-transform hover:scale-110 duration-300'/></button>                
-            </div>
-
           {/* ── 4. HIGHEST RISK ZONE ─────────────────────────────────────── */}
           <StatSection
+            id="highest-risk-zones"
             label="Highest Risk Zone"
             value="Stockholm"
             subtitle="City — risk index 94 / 100"
@@ -546,12 +562,9 @@ function Statistics() {
               ))}
             </div>
           </StatSection>
-            <div className="w-full flex justify-center items-center">
-                <button><CircleChevronDown className='text-[var(-color--secondary)] cursor-pointer transition-transform hover:scale-110 duration-300'/></button>                
-            </div>
-
           {/* ── 5. CRIME INCREASE ────────────────────────────────────────── */}
           <StatSection
+            id="crime-increase"
             label="Crime Increase"
             value="+8.3%"
             subtitle="Year-over-year (2025)"
@@ -625,12 +638,9 @@ function Statistics() {
               </div>
             </div>
           </StatSection>
-            <div className="w-full flex justify-center items-center">
-                <button><CircleChevronDown className='text-white cursor-pointer transition-transform hover:scale-110 duration-300'/></button>                
-            </div>
-
           {/* ── 6. RESOLVED CASES ────────────────────────────────────────── */}
           <StatSection
+            id="resolved-cases"
             label="Resolved Cases"
             value="67%"
             subtitle="Overall resolution rate"
@@ -703,10 +713,6 @@ function Statistics() {
               </div>
             </div>
           </StatSection>
-            <div className="w-full flex justify-center items-center">
-                <button><CircleChevronDown className='text-white cursor-pointer transition-transform hover:scale-110 duration-300'/></button>                
-            </div>
-
         </div>
       </div>
     </div>
