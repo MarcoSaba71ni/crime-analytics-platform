@@ -49,7 +49,7 @@ function HeroSection() {
                                 <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] px-2 sm:px-4 py-1 sm:py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">ZONES</button>
                                 </Link>
                             </div>
-                            <div className=" mt-4 sm:mt-16">
+                            <div className=" mt-4 sm:mt-16 md:mt-0">
                                 <Link to="/crime-history">
                                     <h3 className="text-white text-sm sm:text-xl transition-transform duration-300 hover:scale-102 font-redwing underline">{slide.title}</h3></Link>
                             </div>

@@ -18,7 +18,7 @@ function Header () {
     const isReporter = role.toLowerCase() === "crime_reporter";
     const location = useLocation();
     const hideLoginButton = location.pathname === '/auth/register';
-    const changeHeaderNav = location.pathname === '/statistics' || location.pathname === '/about' || location.pathname === '/zones';
+    const changeHeaderNav = location.pathname === '/statistics' || location.pathname === '/about' || location.pathname === '/zones' || location.pathname === '/crime-history';
     const savedCrimes = useSelector((state) => state.saved.savedCrimes);
     const [showSavedCrimes, setShowSavedCrimes] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

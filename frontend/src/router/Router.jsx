@@ -7,6 +7,8 @@ import Register from "../pages/Register";
 import { ProtectedRoute } from "./ProtectedRoute";
 import ProfilePage from "../pages/ProfilePage";
 import { PublicRoutes } from "./PublicRoutes";
+import CrimeHistory from "../pages/CrimeHistory";
+import Zones from "../pages/Zones";
 
 import { Routes , Route } from "react-router-dom";
 
@@ -17,6 +19,8 @@ function Router () {
             <Route path="/statistics" element={<Statistics/>} />
             <Route path="/about" element={<About/>} />
             <Route path ="/crime-page" element={<CrimePage/>} />
+            <Route path="/crime-history" element={<CrimeHistory/>} />
+            <Route path="/zones" element={<Zones/>} />
             <Route path="auth">
                 <Route path="login" element={
                     <PublicRoutes>
