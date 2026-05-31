@@ -209,17 +209,19 @@ function About() {
                     </div>
                 </div>
             </section>
-            <section id="who-we-are" className="bg-[var(--color-secondary)]/70 px-6 py-20 lg:px-12">
-                <div className="mx-auto max-w-7xl">
-                    <div className="max-w-2xl">
+            <section id="who-we-are" className="bg-[var(--color-secondary)]/70 px-6 py-20 lg:px-12 flex flex-col items-center justify-center">
+                <div className="mx-auto max-w-7xl flex flex-col items-center">
+                    <div className="max-w-2xl text-center">
                         <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-secondary)] font-redwing">WHO I AM</p>
                         <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">This project was designed, built, and implemented by a Full Stack Developer.</h2>
                         <p className="mt-4 text-sm leading-relaxed text-white/80">
-                            "With the scope of contributing with society and giving back to this country that has given me so much. I am a son of a police officer, I am an immigrant"
+                            "With the scope of contributing with society and giving back to this country that has given me so much. I am a son of a police officer."
                         </p>
                         <div className="flex justify-center mt-4">
-                            <button className="bg-[var(--color-secondary)] mt-4 text-[var(--color-primary
-)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">LIST OF CRIMES</button>
+                            <Link to="/">
+                            <button className="bg-[var(--color-secondary)] mt-4 text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">LIST OF CRIMES</button>                            
+                            </Link>
+
                         </div>
                     </div>
                 </div>
