@@ -6,8 +6,9 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 load_dotenv()
 
-print("RAILWAY DATABASE_URL =", os.getenv("DATABASE_URL"))
 DATABASE = os.getenv("DATABASE_URL")
+if not DATABASE:
+    raise RuntimeError("DATABASE_URL environment variable is not set.")
 
 engine = create_engine(
     DATABASE,

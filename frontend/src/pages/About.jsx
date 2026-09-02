@@ -221,7 +221,6 @@ function About() {
                             <Link to="/">
                             <button className="bg-[var(--color-secondary)] mt-4 text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">LIST OF CRIMES</button>                            
                             </Link>
-
                         </div>
                     </div>
                 </div>

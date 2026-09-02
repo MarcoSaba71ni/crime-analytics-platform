@@ -1,0 +1,408 @@
+{
+  "metadata": {
+    "project": "SafeSweden AI",
+    "phase": "Phase 3 — Approved Feature Backlog",
+    "created": "2026-08-31",
+    "last_updated": "2026-08-31",
+    "status": "approved",
+    "note": "This file is the controlled source of truth for approved features. Features are organised by implementation phase and priority order. Deferred features are listed separately and are not scheduled."
+  },
+  "roadmap": {
+    "phase_a": {
+      "label": "Phase A — Fix the Foundation",
+      "goal": "Secure, containerised, tested, and bug-free baseline before any new feature is built. Phase A has two tracks that run in parallel: infrastructure (PE items) and bug corrections (BUG items). Both must be complete before Phase B begins.",
+      "tracks": {
+        "infrastructure": ["PE-06", "PE-01", "PE-07", "PE-02"],
+        "bug_corrections": ["BUG-01", "BUG-02", "BUG-03", "BUG-04", "BUG-05"]
+      },
+      "features": [
+        {
+          "id": "PE-06",
+          "priority": 1,
+          "name": "Secrets Management & Security Hardening",
+          "status": "accepted",
+          "description": "Rotate the exposed production MySQL credentials currently committed in .env. Remove the DATABASE_URL print statement from database.py startup. Replace the insecure SECRET_KEY default ('change-me-in-production') in security.py with a required environment variable that fails loudly if unset. Move CORS allowed origins to environment config rather than hardcoded strings in main.py. Inject all secrets via Railway environment variables and GitHub Actions secrets — never via committed files. Document the rotation procedure.",
+          "problem_solved": "Production MySQL credentials and an insecure JWT secret are live vulnerabilities in the current codebase. The DATABASE_URL is also printed to stdout on every startup, exposing it in Railway logs.",
+          "showcase_value": ["security", "secrets management", "platform engineering"],
+          "files_to_change": [
+            "backend/app/database/database.py",
+            "backend/app/core/security.py",
+            "backend/app/main.py",
+            ".env.example",
+            ".gitignore"
+          ],
+          "complexity": "low",
+          "urgency": "immediate"
+        },
+        {
+          "id": "PE-01",
+          "priority": 2,
+          "name": "Containerisation with Docker Compose",
+          "status": "accepted",
+          "description": "Dockerfile for the backend (Gunicorn + uvicorn FastAPI) and a docker-compose.yml for local development that starts the API, MySQL, and Redis with a single command. Includes environment variable injection via .env files, volume mounts for development hot reload, and a health-check dependency so the API container waits for MySQL to be ready before starting. A separate Dockerfile for the frontend (Nginx serving the Vite build) covers production use.",
+          "problem_solved": "No containerisation exists. Developers must manually install Python dependencies, configure MySQL, and manage environment variables. Docker Compose eliminates setup friction and ensures environment parity between local and production.",
+          "showcase_value": ["platform engineering", "containerisation", "developer experience"],
+          "files_to_create": [
+            "backend/Dockerfile",
+            "frontend/Dockerfile",
+            "docker-compose.yml",
+            "docker-compose.prod.yml"
+          ],
+          "complexity": "low-medium",
+          "urgency": "high"
+        },
+        {
+          "id": "PE-07",
+          "priority": 3,
+          "name": "Backend Test Suite",
+          "status": "accepted",
+          "description": "Backend unit and integration tests using pytest and httpx TestClient. Covers: auth endpoints (register, login, token validation), crime CRUD (create, read, update, delete, pagination, filters), profile management, and permission checks (ownership enforcement on update/delete — a current bug). Uses a test database via docker-compose override or SQLite in-memory for speed. Test coverage reporting via pytest-cov integrated into CI.",
+          "problem_solved": "pytest is in requirements.txt but zero test files exist. The platform has no automated quality assurance, and a permission bug exists in the crimes update/delete endpoints (any authenticated user can edit any crime). Tests are the prerequisite for safe refactoring.",
+          "showcase_value": ["platform engineering", "automated testing", "quality engineering"],
+          "files_to_create": [
+            "backend/tests/__init__.py",
+            "backend/tests/conftest.py",
+            "backend/tests/test_auth.py",
+            "backend/tests/test_crimes.py",
+            "backend/tests/test_profiles.py"
+          ],
+          "complexity": "medium",
+          "urgency": "high"
+        },
+        {
+          "id": "PE-02",
+          "priority": 4,
+          "name": "CI/CD Pipeline",
+          "status": "accepted",
+          "description": "GitHub Actions workflow triggered on every push and pull request. Jobs: (1) backend — install deps, run pytest, report coverage; (2) frontend — npm install, ESLint lint, Vite build. On merge to main: deploy backend to Railway via Railway CLI and frontend to Vercel via Vercel CLI. Secrets injected via GitHub Actions secrets, never committed. Adds a CI status badge to the README.",
+          "problem_solved": "No automated testing or deployment pipeline exists. Code changes deploy manually with no quality gate. CI/CD enforces that tests pass before any merge and removes manual deployment steps.",
+          "showcase_value": ["platform engineering", "CI/CD", "automated testing", "deployment automation"],
+          "files_to_create": [
+            ".github/workflows/ci.yml"
+          ],
+          "complexity": "medium",
+          "urgency": "high"
+        },
+        {
+          "id": "BUG-01",
+          "priority": "A-5",
+          "name": "Fix missing ownership check on crime update and delete",
+          "status": "accepted",
+          "track": "bug_correction",
+          "description": "PUT /crimes/{id} and DELETE /crimes/{id} require authentication but do not verify that the requesting user is the original reporter. Any authenticated user can currently edit or delete any crime record in the database. Add an ownership check: if current_user.id != crime.reporter_id, raise HTTP 403. Admins (future role) should be exempt from this check. This bug will be caught by the test suite added in PE-07.",
+          "affected_files": [
+            "backend/app/routes/crimes.py"
+          ],
+          "lines_of_concern": "crimes.py:121-161",
+          "complexity": "low",
+          "urgency": "high"
+        },
+        {
+          "id": "BUG-02",
+          "priority": "A-6",
+          "name": "Remove console.log statements from production code",
+          "status": "accepted",
+          "track": "bug_correction",
+          "description": "Debug console.log calls are present in three production files and expose internal data structures in the browser console. Remove all of them: AuthContext.jsx line 34 (logs full login response including token), HomePage.jsx lines 35-37 (logs full crime array on every page load), CrimePage.jsx line 29 (logs crime ID on every render). Replace with proper error-only logging where appropriate.",
+          "affected_files": [
+            "frontend/src/context/AuthContext.jsx",
+            "frontend/src/pages/HomePage.jsx",
+            "frontend/src/pages/CrimePage.jsx"
+          ],
+          "complexity": "low",
+          "urgency": "medium"
+        },
+        {
+          "id": "BUG-03",
+          "priority": "A-7",
+          "name": "Fix crime state accumulation bug in HomePage",
+          "status": "accepted",
+          "track": "bug_correction",
+          "description": "HomePage.jsx accumulates crimes across page loads by appending each new page to the existing state array (setCrimes(prev => [...prev, ...allCrimes])). When a user navigates away and returns, the effect re-fires and duplicates crimes already in state. The fix: reset crimes to an empty array whenever a filter changes, and replace accumulation with a proper replace-or-append strategy keyed on page number. The LOAD MORE pattern should replace page 1 data only on a fresh load, then append for page 2+.",
+          "affected_files": [
+            "frontend/src/pages/HomePage.jsx"
+          ],
+          "lines_of_concern": "HomePage.jsx:22-54",
+          "complexity": "low-medium",
+          "urgency": "high"
+        },
+        {
+          "id": "BUG-04",
+          "priority": "A-8",
+          "name": "Fix client-side filtering operating only on loaded pages",
+          "status": "accepted",
+          "track": "bug_correction",
+          "description": "The filter buttons (crime type, severity) and the search input on HomePage operate on the crimes already held in client state, not on the full dataset. A user who filters for 'assault' after loading only page 1 will miss assaults on pages 2+. The correct fix: move filtering to the server by passing type, severity, and search as query parameters to GET /crimes, resetting to page 1 whenever a filter changes. The backend already supports year, severity, crime_type, and verified filter parameters. Add a search/title filter parameter to the backend if not present.",
+          "affected_files": [
+            "frontend/src/pages/HomePage.jsx",
+            "backend/app/routes/crimes.py"
+          ],
+          "lines_of_concern": "HomePage.jsx:56-73, crimes.py:49-89",
+          "complexity": "medium",
+          "urgency": "high"
+        },
+        {
+          "id": "BUG-05",
+          "priority": "A-9",
+          "name": "Replace window.location.search with useSearchParams in CrimePage",
+          "status": "accepted",
+          "track": "bug_correction",
+          "description": "CrimePage.jsx reads the crime ID from the URL using a manual getCrimeIdFromURL() function that calls window.location.search directly. This bypasses React Router and breaks under certain navigation scenarios (e.g. programmatic navigation that does not trigger a full page load). Replace with React Router's useSearchParams hook, which is reactive and integrates correctly with the router's history stack.",
+          "affected_files": [
+            "frontend/src/pages/CrimePage.jsx"
+          ],
+          "lines_of_concern": "CrimePage.jsx:9-11, CrimePage.jsx:27",
+          "complexity": "low",
+          "urgency": "medium"
+        }
+      ]
+    },
+    "phase_b": {
+      "label": "Phase B — Platform Engineering + Visible Product Value",
+      "goal": "Complete the navigation stubs, surface real computed data, and add the infrastructure the AI layer will depend on.",
+      "features": [
+        {
+          "id": "MC-02",
+          "priority": 5,
+          "name": "Municipality & Region Boundary Overlays",
+          "status": "accepted",
+          "description": "Replace the Zones page UnderConstruction placeholder with an interactive Leaflet map. GeoJSON overlays for Swedish municipalities sourced from Lantmäteriet's open geodata. Boundaries display summary statistics (crime count, dominant crime type, safety score once CS-01 is available) in a tooltip on hover. Toggleable boundary layer alongside crime point markers. The crimes endpoint gains a bounding-box query parameter so only markers within the current viewport are loaded.",
+          "problem_solved": "The Zones page is an UnderConstruction stub reachable from the homepage navigation. Users click it and find nothing. Replacing it with a real map is the highest-visibility quick win.",
+          "showcase_value": ["GIS", "data visualisation", "frontend engineering"],
+          "files_to_change": [
+            "frontend/src/pages/Zones.jsx"
+          ],
+          "files_to_create": [
+            "frontend/src/components/SwedishMap.jsx",
+            "frontend/src/components/ZoneBoundaryLayer.jsx"
+          ],
+          "backend_changes": [
+            "Add bbox (bounding box) query parameter to GET /crimes"
+          ],
+          "complexity": "medium",
+          "depends_on": []
+        },
+        {
+          "id": "CS-04",
+          "priority": 6,
+          "name": "Community Safety Timeline",
+          "status": "accepted",
+          "description": "Replace the CrimeHistory page UnderConstruction placeholder with a real zone-filtered timeline. A scrollable chronological view of recorded incidents, filterable by crime type and severity. Displays trend indicators (crime frequency increasing or decreasing over the selected period) using aggregated counts from the crimes API. Uses the existing GET /crimes endpoint with date-range and zone filters. Includes a period selector (last 30 days, 90 days, 1 year, all time).",
+          "problem_solved": "The CrimeHistory page is an UnderConstruction stub reachable from the header navigation. Users hit a dead end. The existing crimes API already supports date and type filters — this feature connects the UI to those capabilities.",
+          "showcase_value": ["data visualisation", "full-stack engineering", "UX design"],
+          "files_to_change": [
+            "frontend/src/pages/CrimeHistory.jsx"
+          ],
+          "files_to_create": [
+            "frontend/src/components/CrimeTimeline.jsx",
+            "frontend/src/components/TrendIndicator.jsx"
+          ],
+          "complexity": "low-medium",
+          "depends_on": []
+        },
+        {
+          "id": "CS-01",
+          "priority": 7,
+          "name": "Neighbourhood Safety Score",
+          "status": "accepted",
+          "description": "A backend aggregation endpoint that computes a safety index (0–100) per district or zone. The score is derived from: total incident count in the past 90 days (weighted by severity), trend direction (incidents increasing or decreasing vs prior 90 days), and coverage quality. Exposed as GET /zones/{zone_id}/score. Displayed as a visual badge on zone detail views and in map tooltips (MC-02). Replaces the hardcoded zone risk data currently in Statistics.jsx.",
+          "problem_solved": "The Statistics page has hardcoded zone risk values (e.g. Stockholm City: 94, Gothenburg S.: 81) with no API backing. This feature computes those values from actual data and exposes them through a proper API.",
+          "showcase_value": ["data engineering", "algorithm design", "civic data visualisation"],
+          "files_to_create": [
+            "backend/app/routes/zones.py",
+            "backend/app/schemas/zones_schemas.py"
+          ],
+          "files_to_change": [
+            "backend/app/main.py",
+            "frontend/src/pages/Statistics.jsx"
+          ],
+          "complexity": "medium",
+          "depends_on": []
+        },
+        {
+          "id": "PE-03",
+          "priority": 8,
+          "name": "Structured Logging and Metrics",
+          "status": "accepted",
+          "description": "Replace all print() statements in the backend with structured JSON logging using Python's standard logging module configured with a JSON formatter. Each request gets a correlation ID injected as a log field. A GET /metrics endpoint exposes Prometheus-compatible metrics: HTTP request count and latency histograms by route, database query counts, and (later) LLM call latency. Critically: remove the DATABASE_URL print in database.py that currently exposes credentials in Railway logs.",
+          "problem_solved": "The backend has zero structured observability. database.py prints the full DATABASE_URL (including credentials) to stdout on every startup. There is no way to diagnose performance issues or correlate errors across requests.",
+          "showcase_value": ["platform engineering", "observability", "reliability"],
+          "files_to_change": [
+            "backend/app/database/database.py",
+            "backend/app/main.py"
+          ],
+          "files_to_create": [
+            "backend/app/core/logging.py",
+            "backend/app/core/metrics.py"
+          ],
+          "complexity": "medium",
+          "depends_on": ["PE-06"]
+        },
+        {
+          "id": "PE-05",
+          "priority": 9,
+          "name": "Caching Layer (Redis)",
+          "status": "accepted",
+          "description": "Introduce Redis as an external service (Railway add-on or Upstash). Replace SlowAPI's in-memory rate limiter with a Redis-backed store so rate limits work correctly across multiple Gunicorn workers. Add response caching for: aggregated safety scores (TTL: 1 hour, invalidated on new crime creation), crime statistics by zone/period (TTL: 1 hour), and LLM-generated summaries (TTL: 24 hours). Cache is checked before any database aggregation query or LLM call.",
+          "problem_solved": "The current in-memory rate limiter fails silently when Gunicorn runs multiple workers — each worker has its own counter, making the 5/minute limit effectively (5 × worker_count)/minute. Redis also enables caching for the LLM calls added in Phase C.",
+          "showcase_value": ["platform engineering", "performance", "scalability"],
+          "files_to_create": [
+            "backend/app/core/cache.py"
+          ],
+          "files_to_change": [
+            "backend/app/core/limiter.py",
+            "backend/requirements.txt",
+            "docker-compose.yml"
+          ],
+          "complexity": "medium",
+          "depends_on": ["PE-01"]
+        }
+      ]
+    },
+    "phase_c": {
+      "label": "Phase C — AI Agents",
+      "goal": "Build a genuine tool-using agent system on top of the stable, observable, cached platform from Phases A and B.",
+      "features": [
+        {
+          "id": "AI-03",
+          "priority": 10,
+          "name": "Automated Crime Trend Summarisation",
+          "status": "accepted",
+          "description": "A rate-limited backend endpoint (POST /ai/summarise) that accepts a zone or time-period parameter. The backend retrieves aggregated crime data for that context, constructs a structured prompt containing only the aggregated data (never raw individual records), calls the LLM API, and returns a plain-language summary. Summaries are cached in Redis for 24 hours to reduce LLM costs. Raw prompts are never exposed to clients. Responses include an explicit AI-generated disclaimer and a data timestamp. This is the first LLM integration — it establishes the client, prompt pattern, caching, and error handling that AI-01 and AI-02 will reuse.",
+          "problem_solved": "The Statistics page currently shows raw charts with no narrative explanation. Non-expert users cannot interpret trend data without guidance. CLAUDE.md specified an LLM endpoint from the start — this delivers it properly.",
+          "showcase_value": ["LLM integration", "AI informing", "rate limiting", "caching", "platform engineering"],
+          "agent_tools": null,
+          "execution_model": "synchronous, on-demand, Redis-cached",
+          "files_to_create": [
+            "backend/app/routes/ai.py",
+            "backend/app/services/llm_client.py",
+            "backend/app/services/summariser.py"
+          ],
+          "files_to_change": [
+            "backend/app/main.py",
+            "backend/requirements.txt",
+            "frontend/src/pages/Statistics.jsx"
+          ],
+          "complexity": "medium",
+          "depends_on": ["PE-05", "CS-01"]
+        },
+        {
+          "id": "AI-01",
+          "priority": 11,
+          "name": "Safety Intelligence Agent",
+          "status": "accepted",
+          "description": "A tool-using AI agent invoked by analysts via POST /ai/agent/query. The agent receives a natural-language question and autonomously decides which platform APIs to call, in what order, to construct an answer. Tools available to the agent: query_crimes (wraps GET /crimes with filters), get_zone_score (wraps GET /zones/{id}/score from CS-01), get_trend_data (aggregated time-series query), compare_zones (multi-zone comparison). The agent plans a query strategy, executes tool calls sequentially or in parallel, reflects on the results, and returns a structured response with source citations and confidence indicators. Not a chatbot — each invocation is a self-contained reasoning task. Responses always cite the specific tool call results that support each claim.",
+          "problem_solved": "Analysts must manually filter and cross-reference data across multiple pages to answer complex questions. The agent enables questions like 'Has violent crime in Gothenburg increased faster than in Stockholm over the last two years?' to be answered automatically with cited data.",
+          "showcase_value": ["AI agents", "agentic AI", "tool-use", "LLM integration", "multi-step reasoning"],
+          "agent_tools": [
+            "query_crimes(zone, crime_type, year_range, severity_min)",
+            "get_zone_score(zone_id)",
+            "get_trend_data(zone_id, metric, period)",
+            "compare_zones(zone_ids, metric, period)"
+          ],
+          "execution_model": "synchronous, user-initiated, cached for identical queries (15 min TTL)",
+          "human_approval_required": "None at query time (read-only tools). Human review required if agent output is used to publish alerts.",
+          "hallucination_mitigation": "All claims in the response must reference a specific tool call result. Agent is instructed to refuse to speculate beyond available data and to flag uncertainty explicitly.",
+          "files_to_create": [
+            "backend/app/agents/safety_agent.py",
+            "backend/app/agents/tools.py",
+            "backend/app/agents/agent_executor.py",
+            "frontend/src/components/AgentQueryPanel.jsx"
+          ],
+          "files_to_change": [
+            "backend/app/routes/ai.py"
+          ],
+          "complexity": "high",
+          "depends_on": ["AI-03", "CS-01", "PE-05"]
+        },
+        {
+          "id": "AI-02",
+          "priority": 12,
+          "name": "Anomaly Detection Agent",
+          "status": "accepted",
+          "description": "A scheduled agent that runs after each new batch of crime data is added. The detection core is deterministic: compute a rolling 4-week baseline crime frequency per zone × crime type, flag if the current week exceeds the baseline by more than 2 standard deviations. Where the LLM genuinely adds value is triage: once a statistical anomaly is flagged, the agent queries surrounding context (what else changed in the same zone and period?), assesses whether the spike is seasonal or genuinely novel, generates a plain-language explanation with a confidence level, and recommends whether to publish an alert or dismiss as noise. Human analyst review is required in the admin queue before any anomaly alert is published externally. The agent cannot publish autonomously.",
+          "problem_solved": "Manual monitoring of crime data across all zones and crime types is not scalable. Deterministic detection with LLM-powered triage ensures unusual patterns are surfaced promptly while keeping a human in the loop before public communication.",
+          "showcase_value": ["AI agents", "agentic workflows", "event-driven systems", "human-in-loop design", "data engineering"],
+          "agent_tools": [
+            "get_zone_baseline(zone_id, crime_type, window_weeks)",
+            "get_current_week_counts(zone_id, crime_type)",
+            "get_surrounding_context(zone_id, period)",
+            "flag_for_analyst_review(anomaly_id, explanation, confidence)"
+          ],
+          "execution_model": "scheduled (triggers after data ingestion) + event-driven",
+          "human_approval_required": "Yes — analyst must approve in admin review queue before any alert is published externally.",
+          "files_to_create": [
+            "backend/app/agents/anomaly_agent.py",
+            "backend/app/workers/scheduler.py",
+            "backend/app/models/anomaly_models.py"
+          ],
+          "files_to_change": [
+            "backend/app/routes/ai.py",
+            "backend/requirements.txt"
+          ],
+          "complexity": "high",
+          "depends_on": ["AI-03", "PE-05", "CS-01"]
+        }
+      ]
+    }
+  },
+  "deferred": {
+    "note": "The following features from Phase 1 discovery were not selected for the current roadmap. They are retained here for future planning but are not scheduled.",
+    "features": [
+      { "id": "LA-01", "name": "Real-Time Incident Event Stream", "reason": "Depends on Redis (PE-05) and alert preferences (LA-02). Deferred to a future phase after Phase C is complete." },
+      { "id": "LA-02", "name": "User Alert Preferences", "reason": "Deferred — requires area watchlist (CS-03) as a meaningful basis for preferences." },
+      { "id": "LA-03", "name": "Geographic Alert Targeting", "reason": "Deferred — depends on LA-01 and LA-02." },
+      { "id": "LA-04", "name": "Alert Severity Prioritisation", "reason": "Deferred — depends on LA-01." },
+      { "id": "LA-05", "name": "Web Push Notifications", "reason": "High complexity for marginal gain over email digest. Deferred." },
+      { "id": "LA-06", "name": "Alert Deduplication Engine", "reason": "Deferred — depends on LA-01 alert system." },
+      { "id": "LA-07", "name": "Email Digest Notifications", "reason": "Deferred to after Phase C. The subscription UI exists; backend can be added when a scheduler is in place." },
+      { "id": "CS-02", "name": "Local Safety Resources Directory", "reason": "Deferred — valuable but requires content curation and admin tooling not yet built." },
+      { "id": "CS-03", "name": "Area Watchlist with Saved Zones", "reason": "Deferred — natural next step after MC-02 (map) and CS-04 (timeline) are in place." },
+      { "id": "CS-05", "name": "Emergency Preparedness Guides", "reason": "Deferred — requires content management infrastructure." },
+      { "id": "CS-06", "name": "Community Reporting Portal", "reason": "Deferred — requires moderation queue and admin dashboard not yet built." },
+      { "id": "AI-04", "name": "Natural-Language Query Interface", "reason": "Deferred — AI-01 (Safety Agent) covers the core use case more robustly." },
+      { "id": "AI-05", "name": "AI-Generated Area Safety Reports", "reason": "Deferred — depends on AI-01 and a document generation service." },
+      { "id": "AI-06", "name": "Data Quality Agent", "reason": "Deferred — depends on a scheduled data pipeline (PE-04) not yet in scope." },
+      { "id": "AI-07", "name": "Incident Pattern Analysis Agent", "reason": "Deferred — requires significant real data volume (MC-01) and geospatial clustering infrastructure." },
+      { "id": "AI-08", "name": "RAG-Based Safety Advisor", "reason": "Deferred — most complex AI feature. Requires vector store and embedding pipeline. Build after AI-01 patterns are established." },
+      { "id": "MC-01", "name": "Multi-Region Data Coverage (BRÅ Integration)", "reason": "Deferred — important but requires a scheduled pipeline (PE-04). The map (MC-02) can work with current data first." },
+      { "id": "MC-03", "name": "Crime Density Heatmap Layer", "reason": "Deferred — depends on MC-01 for meaningful national data density." },
+      { "id": "MC-04", "name": "Map Performance Optimisation", "reason": "Deferred — not critical until data volume grows significantly beyond current ~50 records." },
+      { "id": "MC-05", "name": "Missing Data Indicators", "reason": "Deferred — depends on MC-01 for meaningful coverage gaps." },
+      { "id": "MC-06", "name": "Regional Crime Comparison Dashboard", "reason": "Deferred — depends on MC-01 for multi-region data." },
+      { "id": "MC-07", "name": "Population-Normalised Crime Rates", "reason": "Deferred — depends on SCB data integration and MC-01." },
+      { "id": "PE-04", "name": "Automated Data Pipeline with Scheduling", "reason": "Deferred — high complexity. The scheduler added for AI-02 can be extended to cover this in a future phase." },
+      { "id": "PE-08", "name": "Infrastructure as Code", "reason": "Deferred — high showcase value but low product value at current scale. Implement when deploying to a second environment." },
+      { "id": "PE-09", "name": "Admin Dashboard", "reason": "Deferred — required for AI-02 anomaly review queue in a future iteration. Will be revisited after Phase C." }
+    ]
+  },
+  "summary": {
+    "total_accepted": 17,
+    "total_deferred": 25,
+    "accepted_by_phase": {
+      "phase_a_infrastructure": ["PE-06", "PE-01", "PE-07", "PE-02"],
+      "phase_a_bug_corrections": ["BUG-01", "BUG-02", "BUG-03", "BUG-04", "BUG-05"],
+      "phase_b_platform_and_product": ["MC-02", "CS-04", "CS-01", "PE-03", "PE-05"],
+      "phase_c_ai_agents": ["AI-03", "AI-01", "AI-02"]
+    },
+    "implementation_order": [
+      "PE-06  — Secrets hardening (immediate, before anything else)",
+      "PE-01  — Docker + docker-compose",
+      "PE-07  — Backend test suite",
+      "PE-02  — GitHub Actions CI/CD",
+      "BUG-01 — Fix ownership check on crime update/delete",
+      "BUG-02 — Remove console.log from production files",
+      "BUG-03 — Fix crime state accumulation in HomePage",
+      "BUG-04 — Move filtering server-side in HomePage",
+      "BUG-05 — Replace window.location.search with useSearchParams",
+      "MC-02  — Municipality boundary overlays (replace Zones stub)",
+      "CS-04  — Community safety timeline (replace CrimeHistory stub)",
+      "CS-01  — Neighbourhood safety score (backend aggregation API)",
+      "PE-03  — Structured logging and metrics",
+      "PE-05  — Redis caching layer",
+      "AI-03  — Crime trend summarisation (first LLM integration)",
+      "AI-01  — Safety Intelligence Agent (tool-using, multi-step)",
+      "AI-02  — Anomaly Detection Agent (scheduled, human-in-loop)"
+    ]
+  }
+}
