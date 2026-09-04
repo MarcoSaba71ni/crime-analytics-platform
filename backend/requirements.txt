@@ -12,3 +12,4 @@ slowapi
 pytest
 httpx
 gunicorn 
+pytest-cov

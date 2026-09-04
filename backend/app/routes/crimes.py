@@ -127,6 +127,9 @@ def update_crime(crime_id: int, updated_crime: CrimeUpdate, db: Session = Depend
 
     update_data = updated_crime.model_dump(exclude_none=True)
 
+    if current_user.id != crime.reporter_id:
+        raise HTTPException(status_code=403, detail="Not authorized to update this crime")
+
     if not update_data:
         raise HTTPException(status_code=400, detail="No fields provided for update")
 
@@ -151,6 +154,9 @@ def delete_crime(crime_id: int, db: Session = Depends(get_db), current_user: Aut
     if not crime:
         raise HTTPException(status_code=404, detail="Crime not found")    
 
+    if current_user.id != crime.reporter_id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this crime")
+
     try: 
         db.delete(crime)
         db.commit()
@@ -158,5 +164,4 @@ def delete_crime(crime_id: int, db: Session = Depends(get_db), current_user: Aut
     except SQLAlchemyError as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Database error occurred while deleting crime")
-
 

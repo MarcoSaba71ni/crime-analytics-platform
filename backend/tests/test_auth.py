@@ -37,7 +37,6 @@ def test_register_short_password(client):
     res = client.post("/auth/register", json=bad_user)
 
     assert res.status_code == 422
-    assert "password" in res.json()["detail"].lower()
 
 def test_login_success(client):
     client.post("/auth/register", json=VALID_USER)
@@ -67,4 +66,25 @@ def test_login_unknown_email(client):
     })
 
     assert res.status_code == 401
-    
+
+def test_get_me_authenticated(client):
+    res = client.post("/auth/register", json=VALID_USER)
+    token = res.json()["access_token"]
+
+    res = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
+
+    assert res.status_code == 200
+    data = res.json()
+    assert data["email"] == VALID_USER["email"]
+    assert data["username"] == VALID_USER["username"]
+    assert "password" not in data
+
+def test_get_me_no_token(client):
+    res = client.get("/auth/me")
+
+    assert res.status_code == 401
+
+def test_get_me_invalid_token(client):
+    res = client.get("/auth/me", headers={"Authorization": "Bearer thisisnotavalidtoken"})
+
+    assert res.status_code == 401

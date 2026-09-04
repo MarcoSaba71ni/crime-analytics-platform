@@ -17,6 +17,7 @@ from sqlalchemy.pool import StaticPool
 from app.database.database import Base
 from app.database.deps import get_db
 from app.main import app
+from app.core.limiter import limiter
 
 # ---------------------------------------------------------------------------
 # Test database — SQLite in-memory, shared across all sessions via StaticPool.
@@ -49,11 +50,12 @@ app.dependency_overrides[get_db] = override_get_db
 @pytest.fixture(autouse=True)
 def reset_db():
     """
-    Run before every test: create all tables.
+    Run before every test: create all tables and reset rate limit counters.
     Run after every test: drop all tables.
-    This guarantees each test starts with a clean, empty database.
-    autouse=True means it applies automatically — no need to declare it in tests.
+    This guarantees each test starts with a clean, empty database and no
+    accumulated rate limit hits from previous tests.
     """
+    limiter._storage.reset()
     Base.metadata.create_all(bind=TEST_ENGINE)
     yield
     Base.metadata.drop_all(bind=TEST_ENGINE)
