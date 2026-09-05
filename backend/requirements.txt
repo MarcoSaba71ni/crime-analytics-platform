@@ -2,7 +2,7 @@ fastapi
 email-validator
 uvicorn[standard]
 sqlalchemy
-aiomysql
+pymysql
 pydantic-settings
 python-dotenv
 python-jose[cryptography]
@@ -11,5 +11,5 @@ python-multipart
 slowapi
 pytest
 httpx
-gunicorn 
+gunicorn
 pytest-cov
