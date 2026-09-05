@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 
-
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -31,7 +31,6 @@ export function AuthProvider({ children }) {
         }
 
         const data = await response.json();
-        console.log('Login successful:', data);
         setAuth(data.user, data.access_token);
         return data;
     }
