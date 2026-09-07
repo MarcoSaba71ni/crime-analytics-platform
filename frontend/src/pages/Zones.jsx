@@ -1,4 +1,5 @@
-import UnderConstruction from "../components/UnderConstruction";
+import SwedishMap from '../components/SwedishMap';
+
 
 function Zones() {
 	return (
@@ -18,14 +19,8 @@ function Zones() {
 					</div>
 				</div>
 			</section>
-
 			<section className="mx-auto w-full max-w-7xl px-6 pb-16 lg:px-12">
-				<UnderConstruction
-					title="Zone Intelligence Module In Progress"
-					message="We are currently building interactive zone mapping, risk overlays, and area-level trend tracking to support better local awareness."
-					eta="Module release coming soon"
-					showHomeButton={true}
-				/>
+				<SwedishMap width="100%" />
 			</section>
 		</main>
 	);
