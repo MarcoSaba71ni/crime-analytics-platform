@@ -32,11 +32,9 @@ function HomePage() {
                     throw new Error(`Network response was not ok: ${text}`);
                 }
                 const data = await response.json();
-                console.log("Fetched crimes data:", data);
-                const allCrimes = data.crimes || data; // Handle both paginated and non-paginated responses
-                console.log("Parsed crimes data:", allCrimes);
+                const allCrimes = data.crimes || data;
                 if (!ignore) {
-                    setCrimes(prevCrimes => [...prevCrimes, ...allCrimes]);
+                    setCrimes(prev => currentPage === 1 ? allCrimes : [...prev, ...allCrimes]);
                 }
             } catch (error) {
                 setError(error.message);

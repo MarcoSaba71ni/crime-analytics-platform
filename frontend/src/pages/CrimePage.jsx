@@ -1,15 +1,10 @@
 import { useState , useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import { ArrowLeft, MapPin, Calendar, ShieldAlert, BadgeCheck, BookOpen , Bookmark } from "lucide-react"
 import CrimeLocationMap from "../components/CrimeLocationMap"
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSavedCrime } from "../store/savedSlice";
 import { useAuth } from "../context/useAuth";
-
-function getCrimeIdFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('id');
-}
 
 function CrimePage() {
     const [crime, setCrime] = useState(null);
@@ -24,9 +19,9 @@ function CrimePage() {
     );
     const isSaved = savedCrimes.some((savedCrime) => savedCrime.id === crime?.id);
 
-    const crimeId = getCrimeIdFromURL();
+    const [searchParams] = useSearchParams();
+    const crimeId = searchParams.get('id');
 
-    console.log("Crime ID from URL:", crimeId);
 
 
     useEffect(() => {
@@ -46,7 +41,6 @@ function CrimePage() {
                     
                 }
                 const data = await response.json();
-                console.log("Fetched crime data:", data);
                 setCrime(data);
             } catch (error) {
                 console.error("Error fetching crime:", error);
