@@ -11,7 +11,7 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-function SwedishMap({ height = '600px', width = '80%' }) {
+function SwedishMap({ height = '600px', width = '100%', center = [59.3293, 18.0686], zoom = 12 }) {
     const [crimes, setCrimes] = useState([]);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ function SwedishMap({ height = '600px', width = '80%' }) {
                 const data = await res.json();
                 setCrimes(data.crimes || []);
             } catch {
-                // network error — map shows empty
+                // network error â€” map shows empty
             }
         }
         fetchCrimes();
@@ -31,7 +31,7 @@ function SwedishMap({ height = '600px', width = '80%' }) {
     const pinned = crimes.filter(c => c.latitude != null && c.longitude != null);
 
     return (
-        <MapContainer center={[59.3293, 18.0686]} zoom={6} style={{ height, width }}>
+        <MapContainer center={center} zoom={zoom} style={{ height, width }}>
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -41,12 +41,12 @@ function SwedishMap({ height = '600px', width = '80%' }) {
                     <Popup>
                         <div style={{ minWidth: 160 }}>
                             <p style={{ fontWeight: 700, margin: '0 0 4px' }}>{c.title}</p>
-                            <p style={{ color: '#555', margin: '2px 0', fontSize: 12 }}>{c.type} · Severity {c.severity}/5</p>
+                            <p style={{ color: '#555', margin: '2px 0', fontSize: 12 }}>{c.type} Â· Severity {c.severity}/5</p>
                             <a
                                 href={`/crime-page?id=${c.id}`}
                                 style={{ color: '#2563eb', fontSize: 12, display: 'inline-block', marginTop: 6 }}
                             >
-                                View details →
+                                View details â†’
                             </a>
                         </div>
                     </Popup>
@@ -57,3 +57,4 @@ function SwedishMap({ height = '600px', width = '80%' }) {
 }
 
 export default SwedishMap;
+

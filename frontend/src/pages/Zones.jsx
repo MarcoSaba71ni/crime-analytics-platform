@@ -3,9 +3,9 @@ import SwedishMap from '../components/SwedishMap';
 
 function Zones() {
 	return (
-		<main className="w-full min-h-screen bg-[var(--color-primary)] text-white">
+		<main className="w-full min-h-screen bg-[var(--color-primary)] text-white flex flex-col gap-16">
 			<section className="relative">
-				<div className="relative mx-auto pt-16 flex min-h-[55vh] max-w-7xl flex-col items-center justify-center px-6 py-16 lg:px-12">
+				<div className="relative mx-auto pt-32 flex min-h-[55vh] max-w-7xl flex-col items-center justify-center px-6 py-16 lg:px-12">
 					<div className="max-w-3xl text-left">
 						<p className="inline-flex rounded-full border border-[var(--color-secondary)]/60 bg-[rgba(4,31,69,0.55)] px-4 py-1 text-xs tracking-[0.18em] text-[var(--color-secondary)] font-redwing">
 							ZONES
