@@ -5,7 +5,7 @@ import {useAuth} from "../context/useAuth";
 import { toggleSavedCrime } from "../store/savedSlice";
 import { useDispatch , useSelector } from "react-redux";
 
-function CrimeCard({ crime }) {
+function CrimeCard({ crime, compact = false }) {
     const { user, role } = useAuth();
     const isAnalyst = (role ?? user?.role ?? "").toLowerCase() === "analyst";
     const isVerified = Boolean(crime.is_verified);
@@ -28,7 +28,7 @@ function CrimeCard({ crime }) {
     return (
         <Link to={`/crime-page?id=${crime.id}`}
         className="bg-[var(--color-primary)] text-white rounded-lg mb-4 overflow-hidden flex flex-col">
-            <div className="relative isolate w-full h-40 overflow-hidden">
+            <div className={`relative isolate w-full overflow-hidden ${compact ? 'h-24' : 'h-40'}`}>
                 {crime.latitude && crime.longitude ? (
                     <div className="w-full h-full pointer-events-none relative z-0">
                         <CrimeLocationMap lat={crime.latitude} lng={crime.longitude} />
@@ -74,7 +74,7 @@ function CrimeCard({ crime }) {
                     <BadgeCheck size={16} strokeWidth={2} />
                 </span>
                 </div>
-            <div className="p-4 flex flex-col gap-2">
+            <div className={`flex flex-col gap-2 ${compact ? 'p-2' : 'p-4'}`}>
                 <div className="flex justify-between items-start gap-2">
                     <h3 className="text-base font-bold leading-snug">{crime.title}</h3>
                     <p className="text-gray-400 text-sm whitespace-nowrap">{crime.date}</p>
@@ -86,7 +86,7 @@ function CrimeCard({ crime }) {
                         <span className="text-xs bg-green-600 px-2 py-0.5 rounded-full">Verified<span><BadgeCheck size={16} strokeWidth={2} className="inline-block ml-1" /></span></span>
                     )}
                 </div>
-                <p className="text-gray-300 text-sm line-clamp-3">{crime.description}</p>
+                <p className={`text-gray-300 text-sm ${compact ? 'line-clamp-2' : 'line-clamp-3'}`}>{crime.description}</p>
             </div>
         </Link>
     );
