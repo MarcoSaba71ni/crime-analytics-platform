@@ -1,81 +1,14 @@
-import { Sparkles, ShieldUser } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import CrimeCard from '../components/CrimeCard';
+import { ShieldUser } from 'lucide-react'
 import { Link } from 'react-router-dom';
 import HeroSection from '../components/HeroSection/HeroSection';
 import { useAuth } from '../context/useAuth';
+import { useState } from 'react';
 import ReportingForm  from '../components/ReportingForm';
 
 function HomePage() {
-    const [crimes, setCrimes] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [selectedSeverity, setSelectedSeverity] = useState('all');
-    const [currentPage, setCurrentPage] = useState(1);
-    const limit = 6;
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
     const { user, role } = useAuth();
     const isCrimeReporter = role === 'crime_reporter';
     const [isUpdating, setIsUpdating] = useState(false);
-
-    useEffect(() => {
-        let ignore = false;
-
-        async function loadCrimes() {
-            setIsLoading(true);
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/crimes?page=${currentPage}&limit=${limit}`);
-                const contentType = response.headers.get("content-type");
-                if(!response.ok || !contentType || !contentType.includes("application/json")) {
-                    const text = await response.text();
-                    throw new Error(`Network response was not ok: ${text}`);
-                }
-                const data = await response.json();
-                const allCrimes = data.crimes || data;
-                if (!ignore) {
-                    setCrimes(prev => currentPage === 1 ? allCrimes : [...prev, ...allCrimes]);
-                }
-            } catch (error) {
-                setError(error.message);
-                console.error('Error fetching crimes:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        loadCrimes();
-
-        return () => {
-            ignore = true;
-        };
-    }, [currentPage, limit]);
-
-    const filteredCrimes = crimes.filter((crime) => {
-        const normalizedSearchTerm = searchTerm.toLowerCase();
-        const matchesSearch =
-            crime.title.toLowerCase().includes(normalizedSearchTerm) ||
-            crime.location.toLowerCase().includes(normalizedSearchTerm) ||
-            crime.type.toLowerCase().includes(normalizedSearchTerm);
-
-        const matchesCategory =
-            selectedCategory === 'all' || crime.type.toLowerCase() === selectedCategory;
-
-        const matchesSeverity =
-            selectedSeverity === 'all' ||
-            (selectedSeverity === 'low' && crime.severity <= 2) ||
-            (selectedSeverity === 'medium' && crime.severity === 3) ||
-            (selectedSeverity === 'high' && crime.severity >= 4);
-
-        return matchesSearch && matchesCategory && matchesSeverity;
-    });
-
-    const getFilterButtonClass = (isActive) =>
-        `border px-2 sm:px-3 py-1 sm:py-2 rounded-full cursor-pointer transition-colors text-sm sm:text-md duration-300 ease-in-out ${
-            isActive
-                ? 'border-[var(--color-secondary)] bg-[var(--color-secondary)] text-[var(--color-primary)]'
-                : 'border-white text-white bg-black hover:bg-[#4073BA]'
-        }`;
 
     return (
         <>
@@ -140,107 +73,6 @@ function HomePage() {
                 </section>
 
             )}
-            <section className="bg-black">
-                <div className="flex flex-col gap-4 mx-4 sm:mx-40 py-20">
-                    <h2 className="text-2xl sm:text-4xl font-redwing text-white">List of Crimes</h2>
-                    <p className="text-gray-400 text-sm sm:text-lg text-center">“Due to limited access to structured, incident-level crime data, this project combines real verified data with simulated dataset based on real statistical trends from Brottsförebyggande rådet. The dataset reflects observed developments such as declining overall crime rates and increasing levels of organized and financial crime.”</p>
-                    <input 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value.trim())}
-                    className="bg-gray-800 text-white w-full sm:w-2/3 border border-gray-600 rounded-lg px-2 sm:px-4 py-2 sm:py-2 mt-4" placeholder="Search for crime's title, location or type ..."></input>
-                    <div className="flex flex-wrap gap-2 items-center">
-                        <p className="text-white text-sm sm:text-md">All Categories:</p>
-                        <button
-                            type="button"
-                            onClick={() => setSelectedCategory('all')}
-                            className={getFilterButtonClass(selectedCategory === 'all')}
-                        >
-                            All
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setSelectedCategory('vandalism')}
-                            className={getFilterButtonClass(selectedCategory === 'vandalism')}
-                        >
-                            Vandalism
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setSelectedCategory('theft')}
-                            className={getFilterButtonClass(selectedCategory === 'theft')}
-                        >
-                            Theft
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setSelectedCategory('assault')}
-                            className={getFilterButtonClass(selectedCategory === 'assault')}
-                        >
-                            Assault
-                        </button>
-                    </div>
-                    <div className="flex flex-wrap gap-2 items-center">
-                        <p className="text-white text-sm sm:text-md">Severity:</p>
-                        <button
-                            type="button"
-                            onClick={() => setSelectedSeverity('all')}
-                            className={getFilterButtonClass(selectedSeverity === 'all')}
-                        >
-                            All
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setSelectedSeverity('low')}
-                            className={getFilterButtonClass(selectedSeverity === 'low')}
-                        >
-                            Low
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setSelectedSeverity('medium')}
-                            className={getFilterButtonClass(selectedSeverity === 'medium')}
-                        >
-                            Medium
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setSelectedSeverity('high')}
-                            className={getFilterButtonClass(selectedSeverity === 'high')}
-                        >
-                            High
-                        </button>
-                    </div>
-                    <div>
-                        <button className="bg-gradient-to-r from-[#2563eb] to-[#60a5fa] text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105">
-                            <Sparkles size={18} />
-                            AI Crime Analyzer
-                        </button>
-                    </div>
-                    <div id="crimes-wrapper"
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 pr-2">
-                        {filteredCrimes.map((crime) => (
-                            <CrimeCard key={crime.id} crime={crime} />
-                        ))}
-                        {filteredCrimes.length === 0 && (
-                            <p className="text-gray-400 text-center col-span-full">No crimes found matching your current search and filters.</p>
-                        )}
-                        {isLoading && (
-                        <div className="col-span-full w-full min-h-40 flex flex-col items-center justify-center gap-4">
-                            <div className="w-10 h-10 border-4 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin text-black" />
-                            <p className="text-white font-redwing tracking-widest">LOADING...</p>
-                        </div>
-                        )}
-                        {error && (
-                            <p className="text-red-500 text-center col-span-full">Error: {error}</p>
-                        )}                            
-
-                    </div>
-                    <div className="flex justify-center mt-4">
-                        <button className="font-redwing hover:text-[var(--color-secondary)] cursor-pointer duration-300 text-2xl text-white"
-                        onClick={() => setCurrentPage((prevPage) => prevPage + 1)}>LOAD MORE</button>
-                    </div>
-                </div>
-            </section>
             <section className=" bg-[url('../images/stockholm-view-img3.jpg')] bg-cover bg-center w-full h-140">
                 <div className=" z-10 flex flex-col justify-center items-center gap-8 mx-10 sm:mx-40 py-40">
                     <h2 className="text-2xl sm:text-4xl font-redwing text-white pt-40">UNDERSTAND THE CRIME TRENDS IN THE CAPITAL OF SWEDEN</h2>
