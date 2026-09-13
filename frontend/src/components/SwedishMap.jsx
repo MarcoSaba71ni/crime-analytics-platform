@@ -20,7 +20,7 @@ function BoundsTracker({ onBoundsChange }) {
 
     useEffect(() => {
         onBoundsChange(map.getBounds());
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [map, onBoundsChange]);
 
     return null;
 }

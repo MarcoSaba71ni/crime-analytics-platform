@@ -142,7 +142,7 @@ function Zones() {
 				</div>
 			</section>
 
-			<section className='flex justify-center'>
+			<section className='flex justify-center' role="group" aria-label="Zones view selector">
 				<div>
 					<button aria-pressed={selectedView === 'map'} onClick={() => handleViewChange('map')} className={`border text-[var(--color-secondary)] font-redwing py-1 text-sm px-3 rounded-l-full hover:bg-[var(--color-secondary)] hover:text-black cursor-pointer transition ${selectedView === 'map' ? 'bg-[var(--color-secondary)] text-black' : ''}`}>Map of View</button>
 				</div>
@@ -172,7 +172,7 @@ function Zones() {
 								<p className="text-white/40 text-sm text-center mt-8">No crimes with location data in the current view.</p>
 							)}
 							{visibleCrimes.map(crime => (
-								<CrimeListItem key={crime.id} crime={crime} classname="hover:bg-[var(--color-secondary)] hover:text-black transition" />
+								<CrimeListItem key={crime.id} crime={crime} />
 							))}
 						</div>
 						</div>
