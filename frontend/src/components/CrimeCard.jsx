@@ -29,7 +29,7 @@ function CrimeCard({ crime, compact = false }) {
         <Link to={`/crime-page?id=${crime.id}`}
         className="bg-[var(--color-primary)] hover:scale-105 text-white rounded-lg mb-4 overflow-hidden flex flex-col transition-transform duration-200">
             <div className={`relative isolate w-full overflow-hidden ${compact ? 'h-24' : 'h-40'}`}>
-                {crime.latitude && crime.longitude ? (
+                {crime.latitude != null && crime.longitude != null ? (
                     <div className="w-full h-full pointer-events-none relative z-0">
                         <CrimeLocationMap lat={crime.latitude} lng={crime.longitude} />
                     </div>

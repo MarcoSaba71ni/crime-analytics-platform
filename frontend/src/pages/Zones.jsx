@@ -33,9 +33,9 @@ function Zones() {
 				const data = await response.json();
 				if (!ignore) setCrimes(data.crimes || data);
 			} catch (err) {
-				setError(err.message);
+				if (!ignore) setError(err.message);
 			} finally {
-				setIsLoading(false);
+				if (!ignore) setIsLoading(false);
 			}
 		}
 		loadCrimes();
@@ -82,11 +82,14 @@ function Zones() {
 	// Bottom section: crimes filtered by search / category / severity
 	const filteredCrimes = crimes.filter((crime) => {
 		const normalizedSearch = searchTerm.toLowerCase();
+		const crimeTitle = (crime.title ?? '').toLowerCase();
+		const crimeLocation = (crime.location ?? '').toLowerCase();
+		const crimeType = (crime.type ?? '').toLowerCase();
 		const matchesSearch =
-			crime.title.toLowerCase().includes(normalizedSearch) ||
-			crime.location.toLowerCase().includes(normalizedSearch) ||
-			crime.type.toLowerCase().includes(normalizedSearch);
-		const matchesCategory = selectedCategory === 'all' || crime.type.toLowerCase() === selectedCategory;
+			crimeTitle.includes(normalizedSearch) ||
+			crimeLocation.includes(normalizedSearch) ||
+			crimeType.includes(normalizedSearch);
+		const matchesCategory = selectedCategory === 'all' || crimeType === selectedCategory;
 		const matchesSeverity =
 			selectedSeverity === 'all' ||
 			(selectedSeverity === 'low' && crime.severity <= 2) ||
