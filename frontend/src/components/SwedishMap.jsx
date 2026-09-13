@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -11,23 +11,20 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-function SwedishMap({ height = '600px', width = '100%', center = [59.3293, 18.0686], zoom = 12 }) {
-    const [crimes, setCrimes] = useState([]);
+function BoundsTracker({ onBoundsChange }) {
+    const map = useMapEvents({
+        moveend: () => onBoundsChange(map.getBounds()),
+        zoomend: () => onBoundsChange(map.getBounds()),
+    });
 
     useEffect(() => {
-        async function fetchCrimes() {
-            try {
-                const res = await fetch(`${import.meta.env.VITE_API_URL}/crimes?limit=100`);
-                if (!res.ok) return;
-                const data = await res.json();
-                setCrimes(data.crimes || []);
-            } catch {
-                // network error â€” map shows empty
-            }
-        }
-        fetchCrimes();
-    }, []);
+        onBoundsChange(map.getBounds());
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+    return null;
+}
+
+function SwedishMap({ crimes = [], onBoundsChange, height = '600px', width = '100%', center = [59.3293, 18.0686], zoom = 12 }) {
     const pinned = crimes.filter(c => c.latitude != null && c.longitude != null);
 
     return (
@@ -36,25 +33,25 @@ function SwedishMap({ height = '600px', width = '100%', center = [59.3293, 18.06
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
+            {onBoundsChange && <BoundsTracker onBoundsChange={onBoundsChange} />}
             {pinned.map(c => (
                 <Marker key={c.id} position={[c.latitude, c.longitude]}>
                     <Popup>
                         <div style={{ minWidth: 160 }}>
                             <p style={{ fontWeight: 700, margin: '0 0 4px' }}>{c.title}</p>
-                            <p style={{ color: '#555', margin: '2px 0', fontSize: 12 }}>{c.type} Â· Severity {c.severity}/5</p>
+                            <p style={{ color: '#555', margin: '2px 0', fontSize: 12 }}>{c.type} · Severity {c.severity}/5</p>
                             <a
                                 href={`/crime-page?id=${c.id}`}
                                 style={{ color: '#2563eb', fontSize: 12, display: 'inline-block', marginTop: 6 }}
                             >
-                                View details â†’
+                                View details &rarr;
                             </a>
                         </div>
                     </Popup>
                 </Marker>
             ))}
         </MapContainer>
-    )
+    );
 }
 
 export default SwedishMap;
-
