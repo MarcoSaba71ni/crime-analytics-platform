@@ -64,10 +64,20 @@ function Zones() {
 		)
 		: crimes.filter(c => c.latitude != null && c.longitude != null);
 
-	// Reset visible count when filters change
-	useEffect(() => { 
-		setVisibleCount(6); 
-	}, [searchTerm, selectedCategory, selectedSeverity]);
+	const handleSearchChange = (event) => {
+		setSearchTerm(event.target.value);
+		setVisibleCount(6);
+	};
+
+	const handleCategoryChange = (category) => {
+		setSelectedCategory(category);
+		setVisibleCount(6);
+	};
+
+	const handleSeverityChange = (severity) => {
+		setSelectedSeverity(severity);
+		setVisibleCount(6);
+	};
 
 	// Bottom section: crimes filtered by search / category / severity
 	const filteredCrimes = crimes.filter((crime) => {
@@ -190,23 +200,23 @@ function Zones() {
 						<input
 							type="text"
 							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
+							onChange={handleSearchChange}
 							placeholder="Search by title, location or type..."
 							className="w-full rounded border border-white/20 bg-white/5 px-4 py-2 text-white placeholder:text-white/40 focus:outline-none focus:border-[var(--color-secondary)]"
 						/>
 						<div className="flex flex-wrap gap-2 items-center">
 							<p className="text-white text-sm">Category:</p>
-							<button type="button" onClick={() => setSelectedCategory('all')} className={getFilterButtonClass(selectedCategory === 'all')}>All</button>
-							<button type="button" onClick={() => setSelectedCategory('vandalism')} className={getFilterButtonClass(selectedCategory === 'vandalism')}>Vandalism</button>
-							<button type="button" onClick={() => setSelectedCategory('theft')} className={getFilterButtonClass(selectedCategory === 'theft')}>Theft</button>
-							<button type="button" onClick={() => setSelectedCategory('assault')} className={getFilterButtonClass(selectedCategory === 'assault')}>Assault</button>
+							<button type="button" onClick={() => handleCategoryChange('all')} className={getFilterButtonClass(selectedCategory === 'all')}>All</button>
+							<button type="button" onClick={() => handleCategoryChange('vandalism')} className={getFilterButtonClass(selectedCategory === 'vandalism')}>Vandalism</button>
+							<button type="button" onClick={() => handleCategoryChange('theft')} className={getFilterButtonClass(selectedCategory === 'theft')}>Theft</button>
+							<button type="button" onClick={() => handleCategoryChange('assault')} className={getFilterButtonClass(selectedCategory === 'assault')}>Assault</button>
 						</div>
 						<div className="flex flex-wrap gap-2 items-center">
 							<p className="text-white text-sm">Severity:</p>
-							<button type="button" onClick={() => setSelectedSeverity('all')} className={getFilterButtonClass(selectedSeverity === 'all')}>All</button>
-							<button type="button" onClick={() => setSelectedSeverity('low')} className={getFilterButtonClass(selectedSeverity === 'low')}>Low</button>
-							<button type="button" onClick={() => setSelectedSeverity('medium')} className={getFilterButtonClass(selectedSeverity === 'medium')}>Medium</button>
-							<button type="button" onClick={() => setSelectedSeverity('high')} className={getFilterButtonClass(selectedSeverity === 'high')}>High</button>
+							<button type="button" onClick={() => handleSeverityChange('all')} className={getFilterButtonClass(selectedSeverity === 'all')}>All</button>
+							<button type="button" onClick={() => handleSeverityChange('low')} className={getFilterButtonClass(selectedSeverity === 'low')}>Low</button>
+							<button type="button" onClick={() => handleSeverityChange('medium')} className={getFilterButtonClass(selectedSeverity === 'medium')}>Medium</button>
+							<button type="button" onClick={() => handleSeverityChange('high')} className={getFilterButtonClass(selectedSeverity === 'high')}>High</button>
 						</div>
 					</div>
 					{error && <p className="text-red-500">Error: {error}</p>}
