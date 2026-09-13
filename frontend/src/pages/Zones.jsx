@@ -118,7 +118,7 @@ function Zones() {
 							ZONES
 						</p>
 						<h1 className="mt-6 text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-							Explore the map of Stockholm and crimality pin points.
+							Explore the map of Stockholm and criminality pin points.
 						</h1>
 						<p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70">
 							Explore how crime pressure is distributed across zones, how risks shift over time, and where targeted prevention can make the biggest impact.
@@ -144,10 +144,10 @@ function Zones() {
 
 			<section className='flex justify-center'>
 				<div>
-					<button onClick={() => handleViewChange('map')} className={`border text-[var(--color-secondary)] font-redwing py-1 text-sm px-3 rounded-l-full hover:bg-[var(--color-secondary)] hover:text-black cursor-pointer transition ${selectedView === 'map' ? 'bg-[var(--color-secondary)] text-black' : ''}`}>Map of View</button>
+					<button aria-pressed={selectedView === 'map'} onClick={() => handleViewChange('map')} className={`border text-[var(--color-secondary)] font-redwing py-1 text-sm px-3 rounded-l-full hover:bg-[var(--color-secondary)] hover:text-black cursor-pointer transition ${selectedView === 'map' ? 'bg-[var(--color-secondary)] text-black' : ''}`}>Map of View</button>
 				</div>
 				<div>
-					<button onClick={() => handleViewChange('list')} className={`border text-[var(--color-secondary)] font-redwing py-1 text-sm px-3 rounded-r-full hover:bg-[var(--color-secondary)] hover:text-black cursor-pointer transition ${selectedView === 'list' ? 'bg-[var(--color-secondary)] text-black' : ''}`}>List of Crimes</button>
+					<button aria-pressed={selectedView === 'list'} onClick={() => handleViewChange('list')} className={`border text-[var(--color-secondary)] font-redwing py-1 text-sm px-3 rounded-r-full hover:bg-[var(--color-secondary)] hover:text-black cursor-pointer transition ${selectedView === 'list' ? 'bg-[var(--color-secondary)] text-black' : ''}`}>List of Crimes</button>
 				</div>
 			</section>
 

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -40,12 +41,12 @@ function SwedishMap({ crimes = [], onBoundsChange, height = '600px', width = '10
                         <div style={{ minWidth: 160 }}>
                             <p style={{ fontWeight: 700, margin: '0 0 4px' }}>{c.title}</p>
                             <p style={{ color: '#555', margin: '2px 0', fontSize: 12 }}>{c.type} · Severity {c.severity}/5</p>
-                            <a
-                                href={`/crime-page?id=${c.id}`}
+                            <Link
+                                to={`/crime-page?id=${c.id}`}
                                 style={{ color: '#2563eb', fontSize: 12, display: 'inline-block', marginTop: 6 }}
                             >
                                 View details &rarr;
-                            </a>
+                            </Link>
                         </div>
                     </Popup>
                 </Marker>
