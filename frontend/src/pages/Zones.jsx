@@ -171,7 +171,8 @@ function Zones() {
 									<p className="text-white font-redwing tracking-widest">LOADING...</p>
 								</div>
 							)}
-							{!isLoading && visibleCrimes.length === 0 && (
+							{error && <p className="text-red-500">Error: {error}</p>}
+							{!isLoading && !error && visibleCrimes.length === 0 && (
 								<p className="text-white/40 text-sm text-center mt-8">No crimes with location data in the current view.</p>
 							)}
 							{visibleCrimes.map(crime => (
