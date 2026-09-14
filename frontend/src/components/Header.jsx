@@ -1,6 +1,6 @@
 import {Link, useLocation} from 'react-router-dom'
 import { useState , useEffect } from 'react';
-import { UserCircle, LogOut , Bookmark, PlusCircle, Menu, X } from 'lucide-react';
+import { Bookmark, PlusCircle, Menu, X } from 'lucide-react';
 import LoginForm from './LoginForm';
 import { useAuth } from '../context/useAuth';
 import { useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ function Header () {
 
     async function handleLogout() {
         await logout();
-        navigate("/auth/register", { replace: true }); // Redirect to login page after logout
+        navigate("/auth/login", { replace: true });
     }
 
     useEffect(() => {
@@ -48,6 +48,7 @@ function Header () {
     }, [isLoginOpen]);
 
     return (
+        <>
         <header className="fixed top-0 left-0 w-full z-20 px-6 md:px-12 bg-transparent">
             <div className="sm:hidden relative flex w-full items-center justify-between py-4">
                 <div className="flex w-12 justify-start">
@@ -69,7 +70,7 @@ function Header () {
 
                 <div className="absolute left-1/2 -translate-x-1/2">
                     <Link to="/" className="inline-block bg-transparent hover:cursor-pointer transition-transform duration-300 hover:scale-110">
-                        <h1 className="text-4xl text-white line-through">SS</h1>
+                        <h1 className="text-4xl text-white">SS</h1>
                     </Link>
                 </div>
 
@@ -208,148 +209,78 @@ function Header () {
                 <div className="flex justify-start">
                     <div className="bg-transparent hover:cursor-pointer transition-transform duration-300 hover:scale-110">
                         <Link to="/">
-                            <h1 className="text-4xl text-white line-through">SS</h1>
+                            <h1 className="text-4xl text-white line-through ">SS</h1>
                         </Link>
                     </div>
                 </div>
 
                 <div className="flex justify-center">
                     <nav
-                        className={`px-6 py-3 rounded-b-full ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'bg-[var(--color-primary)]'} transition-colors duration-300`}
+                        className={`px-6 py-3 rounded-b-full border border-white/15 ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'bg-[var(--color-primary)]'} transition-colors duration-300`}
                         style={{ backgroundColor: changeHeaderNav ? 'var(--color-secondary)' : 'var(--color-primary)' }}
                     >
                         <ul className="flex gap-4 md:gap-8 lg:gap-12">
-                            <li className={`text-sm md:text-lg ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
-                                <Link to="/statistics">Statistics</Link>
+                            <li className={`text-sm md:text-md tracking-[0.2em] font-bold ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
+                                <Link to="/statistics">STATISTICS</Link>
                             </li>
-                            <li className={`text-sm md:text-lg ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
-                                <Link to="/about">Who We Are</Link>
+                            <li className={`text-sm md:text-md tracking-[0.2em]   ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
+                                <Link to="/about">WHO WE ARE</Link>
                             </li>
-                            <li className={`text-sm md:text-lg ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
-                                <Link to="/crime-history">Crime History</Link>
+                            <li className={`text-sm md:text-md tracking-[0.2em]   ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
+                                <Link to="/crime-history">CRIME HISTORY</Link>
                             </li>
-                            <li className={`text-sm md:text-lg ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
-                                <Link to="/zones">Zones</Link>
+                            <li className={`text-sm md:text-md tracking-[0.2em]   ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
+                                <Link to="/zones">ZONES</Link>
                             </li>
                         </ul>
                     </nav>
                 </div>
 
-                <div className="flex items-center justify-end min-w-[200px]">
-                    {!user && !showLoginDiv && !hideLoginButton && (
-                        <button
-                            onClick={() => setIsLoginOpen(true)}
-                            className={`header_button px-4 py-2 rounded cursor-pointer hover:bg-blue-500 ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} transition-colors duration-300`}
-                            style={{ backgroundColor: changeHeaderNav ? 'var(--color-secondary)' : 'var(--color-primary)' }}
-                        >
-                            Login
-                        </button>
-                    )}
-                    {user && (
-                        <div className='flex gap-4'>
-                            {isAnalyst && (
-                                <div className="relative">
-                                    <button
-                                        type="button"
-                                        onClick={handleToggleSavedCrime}
-                                        aria-label="Open saved crimes"
-                                    >
-                                        <Bookmark size={32} strokeWidth={1.5} className="text-white hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300" />
-                                    </button>
-
-                                    {showSavedCrimes && (
-                                        <div className="absolute top-full right-0 mt-2 w-80 rounded-lg border border-white/10 bg-[var(--color-primary)] text-white shadow-2xl z-50">
-                                            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-                                                <h3 className="text-sm font-redwing tracking-wider">Saved Crimes</h3>
-                                                <button
-                                                    type="button"
-                                                    onClick={handleCloseSavedCrimes}
-                                                    className="text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20 transition-colors"
-                                                >
-                                                    Close
-                                                </button>
-                                            </div>
-                                            <div className="px-4 py-3 border-t border-white/10">
-                                                <Link to="/profile" className="text-xs text-[var(--color-secondary)] hover:underline">
-                                                    View full List
-                                                </Link>
-                                            </div>
-
-                                            <div className="max-h-80 overflow-y-auto px-4 py-3">
-                                                {savedCrimes.length === 0 ? (
-                                                    <p className="text-sm text-white/70">No saved crimes yet.</p>
-                                                ) : (
-                                                    <ul className="space-y-2">
-                                                        {savedCrimes.map((crime) => {
-                                                            return (
-                                                                <li key={crime.id} className="rounded bg-white/5 px-3 py-2">
-                                                                    <p className="text-sm font-semibold text-white truncate">
-                                                                        {crime.title || `Crime ${crime.id}`}
-                                                                    </p>
-                                                                    <p className="text-xs text-white/70 truncate">
-                                                                        {crime.location || 'Location unavailable'}
-                                                                    </p>
-                                                                    <p className="text-xs text-white/70 mt-1 line-clamp-2">
-                                                                        {crime.description || 'Description unavailable'}
-                                                                    </p>
-                                                                    <div className="flex gap-4 mt-2">
-                                                                        <Link
-                                                                            to={`/crime-page?id=${crime.id}`}
-                                                                            onClick={handleCloseSavedCrimes}
-                                                                            className="inline-block mt-1 text-xs text-[var(--color-secondary)] hover:underline"
-                                                                        >
-                                                                            Open
-                                                                        </Link>    
-                                                                        <div>
-                                                                            <button
-                                                                                className="inline-block text-xs text-white p-1 bg-red-600 cursor-pointer rounded hover:bg-red-700 transition-colors"
-                                                                                onClick={() => dispatch(deleteSavedCrime(crime.id))}
-                                                                            >
-                                                                                Remove
-                                                                            </button>
-                                                                        </div>                                                                
-                                                                    </div>
-
-                                                                </li>
-                                                            );
-                                                        })}
-                                                    </ul>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                            {isReporter && (
-                                <button>
-                                    <PlusCircle size={32} strokeWidth={1.5} className="text-white hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300" />
+                <div
+                    className="mt-2 flex flex-wrap gap-4 justify-end"
+                >
+                    {!user ? (
+                        <>
+                            <Link to="/auth/register">
+                                <button className="font-redwing bg-[var(--color-secondary)] cursor-pointer text-[var(--color-primary)] px-4 py-3 text-xs tracking-[0.2em] hover:bg-white transition-colors duration-300">
+                                    GET STARTED
                                 </button>
-                            )}
-                            <div>
-                                <Link to="/profile" className="text-white hover:text-cyan-300 transition-colors duration-300">
-                                    <UserCircle size={32} strokeWidth={1.5} />
-                                </Link>
-                            </div>
-                            <div>
-                                <button
-                                    onClick={handleLogout}
-                                    className="text-white hover:text-red-400 transition-colors duration-300 cursor-pointer bg-transparent border-none"
-                                >
-                                    <LogOut size={32} strokeWidth={1.5} />
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={() => setIsLoginOpen(true)}
+                                className="font-redwing border border-white/15 cursor-pointer text-white/50 px-4 py-3 text-xs tracking-[0.2em] hover:border-white/40 hover:text-white/80 transition-colors duration-300"
+                            >
+                                SIGN IN
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/profile">
+                                <button className="font-redwing border border-white/15 cursor-pointer text-white/50 px-4 py-3 text-xs tracking-[0.2em] hover:border-white/40 hover:text-white/80 transition-colors duration-300">
+                                    MY PROFILE
                                 </button>
-                            </div>
-                        </div>
+                            </Link>
+                            <button
+                                type="button"
+                                onClick={handleLogout}
+                                className="font-redwing bg-[var(--color-secondary)] cursor-pointer text-[var(--color-primary)] px-4 py-3 text-xs tracking-[0.2em] hover:bg-white transition-colors duration-300"
+                            >
+                                LOGOUT
+                            </button>
+                        </>
                     )}
                 </div>
             </div>
-            {showLoginDiv && (
-            <div className="fixed inset-0 z-40 bg-black/50">
+        </header>
+        {showLoginDiv && (
+            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm">
                 <div className="mx-auto mt-24 w-full max-w-md rounded-lg p-6">
                     <LoginForm onClose={() => setIsLoginOpen(false)} />
                 </div>
             </div>
-            )}
-        </header>
+        )}
+    </>
     )
 }
 

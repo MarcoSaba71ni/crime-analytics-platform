@@ -1,164 +1,282 @@
-import { ShieldUser } from 'lucide-react'
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import HeroSection from '../components/HeroSection/HeroSection';
-import { useAuth } from '../context/useAuth';
-import { useState } from 'react';
-import ReportingForm  from '../components/ReportingForm';
+import gsap from 'gsap';
+import landingPageAnimation from '../animations/landing-page';
+import { Database, Flag, TrendingUp, Lightbulb, Bot, ChevronsDown } from 'lucide-react';
 
-function HomePage() {
-    const { user, role } = useAuth();
-    const isCrimeReporter = role === 'crime_reporter';
-    const [isUpdating, setIsUpdating] = useState(false);
+const CONCEPTS = [
+    { id: 'concept-0', label: 'CRIME DATA',        Icon: Database,   desc: 'Visualize public information from official Swedish sources.' },
+    { id: 'concept-1', label: 'REPORT INCIDENTS',  Icon: Flag,       desc: 'Report real events mapped across your city.' },
+    { id: 'concept-2', label: 'PATTERNS',          Icon: TrendingUp, desc: 'Trends that emerge over time and across areas.' },
+    { id: 'concept-3', label: 'AI INSIGHTS',       Icon: Lightbulb,  desc: 'Intelligent reports for your neighborhood.' },
+    { id: 'concept-4', label: 'AI ACTION',         Icon: Bot,        desc: 'AI agents that recommend actions based on local crime trends.' },
+];
+
+// Static map placeholder — will be upgraded to a live visualization later
+function MapPlaceholder() {
+    const dots = [
+        { top: '22%', left: '32%', r: 4, o: 0.9 },
+        { top: '38%', left: '56%', r: 5, o: 0.7 },
+        { top: '52%', left: '24%', r: 3, o: 0.8 },
+        { top: '44%', left: '67%', r: 6, o: 0.55 },
+        { top: '66%', left: '47%', r: 4, o: 0.85 },
+        { top: '27%', left: '72%', r: 3, o: 0.5 },
+        { top: '60%', left: '34%', r: 5, o: 0.65 },
+        { top: '74%', left: '61%', r: 3, o: 0.6 },
+        { top: '31%', left: '43%', r: 3, o: 0.75 },
+        { top: '57%', left: '74%', r: 4, o: 0.45 },
+    ];
 
     return (
-        <>
-            <HeroSection />
-            { !user && (
-                <section className="bg-[var(--color-primary)] w-full px-4 sm:px-0 py-24 flex flex-col items-center gap-6">
-                    <h2 className="text-white text-2xl sm:text-4xl text-center">Create a free account or login to track crime trends in real time.</h2>
-                    <p className="font-redwing text-[var(--color-secondary)] text-md sm:text-lg text-center max-w-xl">
-                        As an Analyst you can save areas, set watchlists, and receive AI-generated summaries. As a Crime Reporter you can report crimes and contribute to the community's safety.
-                    </p>
-                    <div className="flex gap-4 mt-4">
-                        <Link to="/auth/register">
-                            <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
-                                SIGN IN
-                            </button>                        
-                        </Link>
-                        <Link to="/auth/register">
-                            <button className="border border-[var(--color-secondary)] cursor-pointer hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] text-[var(--color-secondary)] font-redwing px-6 sm:px-8 py-2 sm:py-3 rounded-lg text-lg">
-                                CREATE ACCOUNT
-                            </button>
-                        </Link>
-                    </div>
-                </section>                
-            )}
-            {isCrimeReporter && (
-                <section className="bg-black px-4 py-8 sm:px-8" aria-label="Crime reporter quick actions">
-                    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 rounded-2xl bg-[var(--color-primary)]/90 p-5 mt-5 shadow-xl ring-1 ring-white/20 sm:p-7">
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <p className="font-redwing text-sm tracking-[0.12em] text-white/75">REPORTER MODE</p>
-                                <h2 className="font-redwing text-2xl text-white text-lg sm:text-3xl">Submit a New Crime Report</h2>
-                                <p className="mt-1 max-w-2xl text-xs sm:text-sm text-white/85 sm:text-base">
-                                    Capture incident details quickly and help keep the community map accurate and up to date.
-                                </p>
-                            </div>
-                            <span className="w-fit rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-redwing text-white/90">
-                                Priority Workflow
-                            </span>
-                        </div>
+        <div className="absolute inset-0 bg-[#061830] overflow-hidden">
+            {/* Street grid */}
+            <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
+                {[15, 30, 45, 60, 75, 90].map(x => (
+                    <line key={`v${x}`} x1={`${x}%`} y1="0" x2={`${x}%`} y2="100%" stroke="white" strokeWidth="0.5" />
+                ))}
+                {[20, 35, 50, 65, 80].map(y => (
+                    <line key={`h${y}`} x1="0" y1={`${y}%`} x2="100%" y2={`${y}%`} stroke="white" strokeWidth="0.5" />
+                ))}
+                <line x1="0" y1="25%" x2="100%" y2="72%" stroke="white" strokeWidth="0.5" />
+                <line x1="0" y1="75%" x2="100%" y2="20%" stroke="white" strokeWidth="0.5" />
+            </svg>
 
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-white/80 sm:text-sm">
-                            <span className="rounded-full border border-white/25 px-3 py-1">Verified role</span>
-                            <span className="rounded-full border border-white/25 px-3 py-1">Geo-aware reporting</span>
-                            <span className="rounded-full border border-white/25 px-3 py-1">Fast incident intake</span>
+            {/* Watch-area rings */}
+            <div
+                className="absolute border border-[var(--color-secondary)]/25 rounded-full pointer-events-none"
+                style={{ top: '47%', left: '47%', width: 180, height: 180, transform: 'translate(-50%, -50%)' }}
+            />
+            <div
+                className="absolute border border-[var(--color-secondary)]/10 rounded-full pointer-events-none"
+                style={{ top: '47%', left: '47%', width: 260, height: 260, transform: 'translate(-50%, -50%)' }}
+            />
+
+            {/* Incident dots */}
+            {dots.map((d, i) => (
+                <div
+                    key={i}
+                    className="absolute rounded-full bg-[var(--color-secondary)]"
+                    style={{
+                        top: d.top, left: d.left,
+                        width: d.r * 3, height: d.r * 3,
+                        opacity: d.o,
+                        transform: 'translate(-50%, -50%)',
+                    }}
+                />
+            ))}
+
+            <div className="absolute bottom-4 left-5">
+                <p className="font-redwing text-[10px] text-white/20 tracking-[0.3em] uppercase">
+                    Kista, Stockholm
+                </p>
+            </div>
+        </div>
+    );
+}
+
+function HomePage() {
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            landingPageAnimation();
+        });
+        return () => ctx.revert();
+    }, []);
+
+    return (
+        <main className="bg-[var(--color-primary)] text-white">
+
+            {/* ── Section 1: Hero ──────────────────────────────────── */}
+            <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-x-hidden">
+                <div className="flex flex-col items-center justify-center gap-4">
+                    <p className="inline-flex w-fit rounded-full border border-[var(--color-secondary)]/70 bg-[#041F45A6] px-4 py-1 text-xs tracking-[0.18em] text-[var(--color-secondary)] font-redwing">
+                        PUBLIC SAFETY INTELLIGENCE
+                    </p>
+                    {/* SS and Safe Sweden share the same space — animated sequence on load */}
+                    <div className="relative flex items-center justify-center w-full">
+                        {/* heading-group moves as a unit; strikethrough is a real div so GSAP can erase it */}
+                        <div id="heading-group" className="relative inline-block opacity-0">
+                            <h1 className="font-redwing text-8xl font-bold leading-none line-through">
+                                <span id="ss-left">S</span><span id="ss-right" className="inline-block line-through">S</span>
+                            </h1>
+                            <div
+                                id="strikethrough-line"
+                                className="absolute top-1/2 left-0 w-full h-[2px] bg-white -translate-y-1/2 origin-center"
+                            />
+                        </div>
+                        <h2
+                            id="landing-subheading-2"
+                            className="absolute left-1/2 -translate-x-1/2 font-redwing text-8xl whitespace-nowrap opacity-0"
+                        >
+                            Safe Sweden
+                        </h2>
+                    </div>
+                </div>
+                <p
+                    id="landing-subheading"
+                    className="mt-8 text-sm font-redwing sm:text-base text-white max-w-lg opacity-0"
+                >
+                    Watch your neighborhood and Stockholm's surrounding areas for public safety insights.
+                </p>
+
+                <div
+                    id="landing-cta"
+                    className="mt-12 flex flex-wrap gap-4 justify-center opacity-0"
+                >
+                    <Link to="/auth/register">
+                        <button className="font-redwing bg-[var(--color-secondary)] text-[var(--color-primary)] px-8 py-3 text-xs tracking-[0.2em] hover:bg-white transition-colors duration-300">
+                            GET STARTED
+                        </button>
+                    </Link>
+                    <Link to="/auth/login">
+                        <button className="font-redwing border border-white/15 text-white/50 px-8 py-3 text-xs tracking-[0.2em] hover:border-white/40 hover:text-white/80 transition-colors duration-300">
+                            SIGN IN
+                        </button>
+                    </Link>
+                </div>
+                <div
+                    id="landing-scroll-indicator"
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-0"
+                    aria-hidden="true"
+                >
+                    <p className="font-redwing text-[10px] tracking-[0.4em] text-[var(--color-secondary)]/50 uppercase">Scroll</p>
+                    <div className="rounded-full p-2 animate-bounce">
+                        <ChevronsDown size={30} strokeWidth={2} className="text-[var(--color-secondary)]/70" />
+                    </div>
+                </div>
+            </section>
+
+            {/* ── Section 2: Journey (scroll-driven) ───────────────── */}
+            <section id="journey-section" className="relative">
+                {/* Sticky panel */}
+                <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
+                    {/* Video background */}
+                    <video
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src="/images/video-Stadshuset_view.webm"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        aria-hidden="true"
+                    />
+                    {/* Dark overlay so text stays readable */}
+                    <div className="absolute inset-0 bg-[var(--color-primary)]/75" />
+
+                    {/* Content sits above the video + overlay */}
+                    <div className="relative z-15 flex flex-col items-center py-10">
+                        <p className="font-redwing text-[10px] tracking-[0.35em] text-[var(--color-secondary)] mb-16 uppercase">
+                            AI-Powered Crime analytics platform
+                        </p>
+
+                        <div className="flex flex-col gap-4 sm:flex-row items-center">
+                            {CONCEPTS.map((concept, i) => (
+                                <div key={concept.id} className="flex sm:flex-row items-center">
+                                    <div
+                                        id={concept.id}
+                                        className="flex flex-col  items-center gap-3 px-6 sm:px-8 opacity-0"
+                                    >
+                                        <concept.Icon size={32} className="text-[var(--color-secondary)]" aria-hidden="true" />
+                                        <h3 className="font-redwing text-base sm:text-xl tracking-[0.18em]">
+                                            {concept.label}
+                                        </h3>
+                                        <p className="text-[var(--color-secondary)] font-redwing text-sm text-center max-w-[130px]">
+                                            {concept.desc}
+                                        </p>
+                                    </div>
+
+                                    {i < CONCEPTS.length - 1 && (
+                                        <span className="hidden sm:block text-[var(--color-secondary)] text-lg select-none">
+                                            →
+                                        </span>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Scroll spacer — 300vh = 5 concepts × ~60vh each */}
+                <div className="h-[300vh]" aria-hidden="true" />
+            </section>
+
+            {/* ── Section 3: Product Preview ────────────────────────── */}
+            <section className="px-6 py-28 max-w-6xl mx-auto overflow-x-hidden">
+                <p className="font-redwing text-[10px] tracking-[0.35em] text-[var(--color-secondary)] uppercase mb-4">
+                    The product
+                </p>
+                <h2 className="font-redwing text-3xl sm:text-4xl mb-20 max-w-lg leading-snug">
+                    Saved Neighborhood and AI insights.
+                </h2>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 border border-white/8">
+                    {/* Saved Area Card */}
+                    <div
+                        id="product-card"
+                        className="p-10 lg:p-12 flex flex-col gap-10 border-b lg:border-b-0 lg:border-r border-white/8 opacity-0"
+                    >
+                        <div>
+                            <p className="font-redwing text-[10px] tracking-[0.3em] text-[var(--color-secondary)] uppercase mb-3">
+                                Saved area
+                            </p>
+                            <h3 className="font-redwing text-5xl tracking-wide">KISTA</h3>
                         </div>
 
                         <div>
-                            <button
-                                onClick={() => setIsUpdating(true)}
-                                disabled={isUpdating}
-                                className={`inline-flex cursor-pointer items-center gap-2 rounded-lg bg-white px-4 sm:px-5 py-2 sm:py-3 font-redwing text-sm sm:text-lg text-[var(--color-primary)] transition-transform duration-300 ease-in-out hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-primary)] ${isUpdating ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            >
-                                <ShieldUser size={22} />
-                                Start Crime Report
-                            </button>
-                        </div>
-                    </div>
-                    {isUpdating && (
-                        <ReportingForm onClose={() => setIsUpdating(false)} />
-                        )}
-                
-                </section>
-
-            )}
-            <section className=" bg-[url('../images/stockholm-view-img3.jpg')] bg-cover bg-center w-full h-140">
-                <div className=" z-10 flex flex-col justify-center items-center gap-8 mx-10 sm:mx-40 py-40">
-                    <h2 className="text-2xl sm:text-4xl font-redwing text-white pt-40">UNDERSTAND THE CRIME TRENDS IN THE CAPITAL OF SWEDEN</h2>
-                    <Link to="/statistics">
-                        <button className="font-redwing bg-[var(--color-secondary)] px-2 sm:px-4 py-1 sm:py-2 rounded-lg sm:text-2xl text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">EXPLORE</button>
-                    </Link>
-                </div>
-            </section>
-            <section className="w-full h-100 sm:h-140 flex">
-                <div className="relative bg-[url('../images/experts-analyzing.webp')] bg-cover bg-center w-1/2 h-full brightness-75 flex flex-col gap-4 justify-center items-center">
-                    <div className="absolute inset-0" />
-                        <h3 className="relative z-10 w-full px-4 text-center font-redwing text-lg text-white sm:text-3xl">STATISTICS & DASHBOARDS</h3>
-                        <Link to="/statistics">
-                            <button className="relative bg-[var(--color-secondary)] text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing z-10 hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">EXPLORE</button>
-                        </Link>
-                </div>
-                <div className="relative bg-[url('../images/black-dressed-men.png')] bg-cover bg-center w-1/2 sm:h-full brightness-75 flex flex-col gap-4 justify-center items-center">
-                    <div className="absolute inset-0"/>
-                        <h3 className="relative z-10 w-full px-4 text-center font-redwing text-lg text-white sm:text-3xl">ZONES CONTROLLED BY NEIGHBORHOOD</h3>
-                        <Link to="/zones">
-                            <button className="relative bg-[var(--color-secondary)] text-[var(--color-primary)] px-4 py-2 rounded-lg font-redwing z-10 hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">EXPLORE</button>
-                        </Link>
-                </div>
-            </section>
-            { user && (
-                <section className="bg-[var(--color-primary)] w-full py-24 flex flex-col px-6 sm:px-0 items-center gap-6">
-                    <h2 className="text-white text-2xl sm:text-4xl text-center">Stay informed. Track crime trends in real time.</h2>
-                    <p className="font-redwing text-[var(--color-secondary)] text-sm sm:text-lg text-center max-w-xl">
-                        Subscribe your email to receive AI-generated summaries and watch lists of crime activity in your saved area.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                        <input type="email" placeholder="Enter your email" className="w-full border border-gray-300 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary)]" />
-                        <button className="bg-[var(--color-secondary)] text-[var(--color-primary)] font-redwing px-3 sm:px-4 py-1 sm:py-2 rounded-lg text-sm sm:text-lg hover:bg-[var(--color-primary)] hover:text-[var(--color-secondary)] cursor-pointer transition-colors duration-300 ease-in-out">
-                            SUBSCRIBE
-                        </button>
-                    </div>
-                </section> 
-            )}
-            <section className="relative bg-[var(--color-secondary)] py-14 lg:py-18">
-                <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-6 lg:grid-cols-12 lg:items-center lg:px-10">
-                    <div className="relative overflow-hidden rounded-2xl lg:col-span-7">
-                        <img
-                            src="../images/armed-officers-running.png"
-                            alt="Officers running"
-                            className="h-72 w-full object-cover object-[30%_center] sm:h-80 lg:h-[26rem]"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(4,31,69,0.72)] via-transparent to-transparent" />
-                        <p className="absolute bottom-5 left-5 rounded-full border border-white/40 bg-[rgba(4,31,69,0.72)] px-4 py-1 text-xs tracking-[0.14em] text-white font-redwing">
-                            CIVIC TECH FOR PUBLIC SAFETY
-                        </p>
-                    </div>
-
-                    <div className="rounded-2xl bg-[var(--color-primary)] p-6 text-white shadow-xl lg:col-span-5 lg:p-8">
-                        <h3 className="text-2xl sm:text-3xl font-redwing leading-tight">Who We Are</h3>
-                        <p className="mt-4 text-sm sm:text-md text-base leading-relaxed text-white/90">
-                            Safe Sweden is a civic-tech initiative focused on making public crime data clearer, more transparent, and easier to understand for everyone.
-                        </p>
-                        <p className="mt-3 text-base leading-relaxed hidden sm:flex text-white/80">
-                            Explore our mission, values, and methodology, and see how data can support informed, safer communities.
-                        </p>
-
-                        <div className="mt-6 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3 sm:gap-3">
-                            <Link to="/about#our-mission" className="rounded-full hover:bg-white hover:text-[var(--color-primary)] transition-colors duration-300 border border-white/35 px-3 py-1.5 text-center font-redwing">Mission</Link>
-                            <Link to="/about#methodology" className="rounded-full hover:bg-white hover:text-[var(--color-primary)] transition-colors duration-300 border border-white/35 px-3 py-1.5 text-center font-redwing">Methodology</Link>
-                            <Link to="/about#our-values" className="rounded-full hover:bg-white hover:text-[var(--color-primary)] transition-colors duration-300 border border-white/35 px-3 py-1.5 text-center font-redwing">Values</Link>
+                            <p className="font-redwing text-[10px] tracking-[0.25em] text-[var(--color-secondary)] uppercase mb-4">
+                                Recent activity
+                            </p>
+                            <div className="flex items-baseline gap-4">
+                                <span className="font-redwing text-7xl leading-none">7</span>
+                                <span className="text-white/35 text-sm leading-snug">
+                                    incidents<br />in the last 7 days
+                                </span>
+                            </div>
                         </div>
 
-                        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                            <Link
-                                to="/about"
-                                className="rounded-lg bg-[var(--color-secondary)] px-5 py-3 text-center text-base font-redwing text-[var(--color-primary)] transition-colors duration-300 hover:bg-white"
-                            >
-                                LEARN MORE
-                            </Link>
-                            <a
-                                href="mailto:contact@safesweden.ai"
-                                className="rounded-lg border border-white px-5 py-3 text-center text-base font-redwing text-white transition-colors duration-300 hover:bg-white hover:text-[var(--color-primary)]"
-                            >
-                                CONTACT US
-                            </a>
+                        <div className="flex items-center gap-4 pt-8 border-t border-white/8">
+                            <span className="font-redwing text-2xl text-green-400">↓ 12%</span>
+                            <span className="text-white/30 text-sm">compared with previous period</span>
                         </div>
+                    </div>
+
+                    {/* Map */}
+                    <div
+                        id="product-map"
+                        className="relative min-h-[320px] lg:min-h-0 opacity-0"
+                    >
+                        <MapPlaceholder />
                     </div>
                 </div>
             </section>
 
-        </>
-    )
+            {/* ── Section 4: Final CTA ──────────────────────────────── */}
+            <section className="min-h-[55vh] flex flex-col items-center justify-center px-6 text-center border-t border-white/8 overflow-x-hidden">
+                <h2
+                    id="cta-heading"
+                    className="font-redwing text-4xl sm:text-5xl lg:text-6xl mb-6 leading-tight opacity-0"
+                >
+                    Your neighborhood. Your awareness.
+                </h2>
+
+                <p
+                    id="cta-subtext"
+                    className="text-white max-w-sm font-redwing mb-12 leading-relaxed text-md opacity-0"
+                >
+                    Create your personal safety profile and start exploring Safe Sweden.
+                </p>
+
+                <Link to="/auth/register">
+                    <button
+                        id="cta-button"
+                        className="font-redwing border border-[var(--color-secondary)]/60 text-[var(--color-secondary)] px-12 py-4 text-xs tracking-[0.25em] hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)] transition-colors duration-500 opacity-0"
+                    >
+                        GET STARTED
+                    </button>
+                </Link>
+            </section>
+
+        </main>
+    );
 }
-export default HomePage
+
+export default HomePage;
