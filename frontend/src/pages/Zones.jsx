@@ -157,7 +157,7 @@ function Zones() {
 			{selectedView === 'map' && (
 			<>
 				{/* Section 2: Split panel — left list driven by map viewport */}
-				<section className="mx-auto w-full px-6 pb-16 flex flex-col gap-4">
+				<section id="crime-panel" className="mx-auto w-full px-6 pb-16 flex flex-col gap-4">
 					<div>
 						<h2 className="text-2xl font-semibold">Crimes in view</h2>
 						<p className="text-white/40 text-sm mt-1">Updates as you pan or zoom the map.</p>

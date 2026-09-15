@@ -87,7 +87,7 @@ function CrimePage() {
                 <ShieldAlert size={48} className="text-[var(--color-secondary)]" />
                 <p className="text-white text-xl font-redwing">Crime record not found</p>
                 <Link to="/" className="text-[var(--color-secondary)] underline font-redwing hover:opacity-80 transition-opacity">
-                    ← BACK TO HOME
+                    ← BACK TO LIST OF CRIMES
                 </Link>
             </div>
         );
@@ -99,7 +99,7 @@ function CrimePage() {
             {/* Back link */}
             <div className="max-w-4xl mx-auto px-8 pt-12 relative z-10">
                 <Link
-                    to="/"
+                    to="/dashboard/zones"
                     className="flex items-center gap-2 text-[var(--color-secondary)] font-redwing tracking-widest text-sm hover:opacity-80 transition-opacity"
                 >
                     <ArrowLeft size={16} /> BACK TO ALL CRIMES
