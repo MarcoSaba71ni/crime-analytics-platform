@@ -24,9 +24,7 @@ function Router() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/crime-page" element={<CrimePage />} />
                 <Route path="/crime-history" element={<CrimeHistory />} />
-                <Route path="/zones" element={<Zones />} />
                 <Route path="auth">
                     <Route
                         path="login"
@@ -55,6 +53,7 @@ function Router() {
                     <Route path="/dashboard/statistics" element={<Statistics />} />
                     <Route path="/dashboard/crime-history" element={<CrimeHistory />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/crime-page" element={<CrimePage />} />
                 </Route>
             </Route>
         </Routes>

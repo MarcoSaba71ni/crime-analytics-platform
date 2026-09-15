@@ -18,7 +18,7 @@ function Header () {
     const isReporter = role.toLowerCase() === "crime_reporter";
     const location = useLocation();
     const hideLoginButton = location.pathname === '/auth/register';
-    const changeHeaderNav = location.pathname === '/statistics' || location.pathname === '/about' || location.pathname === '/zones' || location.pathname === '/crime-history';
+    const changeHeaderNav = location.pathname === '/statistics' || location.pathname === '/about' || location.pathname === '/crime-history';
     const savedCrimes = useSelector((state) => state.saved.savedCrimes);
     const [showSavedCrimes, setShowSavedCrimes] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -163,9 +163,6 @@ function Header () {
                                 <li>
                                     <Link to="/crime-history" onClick={() => setIsMobileMenuOpen(false)} className="block rounded px-3 py-2 hover:bg-white/10">Crime History</Link>
                                 </li>
-                                <li>
-                                    <Link to="/zones" onClick={() => setIsMobileMenuOpen(false)} className="block rounded px-3 py-2 hover:bg-white/10">Zones</Link>
-                                </li>
                                 {user && (
                                     <li>
                                         <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="block rounded px-3 py-2 hover:bg-white/10">My Profile</Link>
@@ -228,9 +225,6 @@ function Header () {
                             </li>
                             <li className={`text-sm md:text-md tracking-[0.2em]   ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
                                 <Link to="/crime-history">CRIME HISTORY</Link>
-                            </li>
-                            <li className={`text-sm md:text-md tracking-[0.2em]   ${changeHeaderNav ? 'text-[var(--color-primary)]' : 'text-white'} hover:cursor-pointer transition-transform duration-300 hover:scale-110 whitespace-nowrap`}>
-                                <Link to="/zones">ZONES</Link>
                             </li>
                         </ul>
                     </nav>
