@@ -1,7 +1,5 @@
+import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
-
-import { Navigate } from "react-router-dom";
-
 
 export function ProtectedRoute({ children }) {
     const { user, token } = useAuth();
@@ -9,5 +7,8 @@ export function ProtectedRoute({ children }) {
     if (!user || !token) {
         return <Navigate to="/auth/login" replace />;
     }
-    return children;
+
+    // Used as a layout route (<Route element={<ProtectedRoute />}>) → render Outlet
+    // Used as a wrapper component (<ProtectedRoute><Page/></ProtectedRoute>) → render children
+    return children ?? <Outlet />;
 }

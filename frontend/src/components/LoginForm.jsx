@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm ({ onClose }) {
     const [email, setEmail] = useState('');
@@ -10,6 +11,7 @@ function LoginForm ({ onClose }) {
     const [touched, setTouched] = useState({});
 
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     function validateField(name, value) {
         if (name === 'email') {
@@ -55,10 +57,12 @@ function LoginForm ({ onClose }) {
             setIsLoading(true);
             await login(email, password);
             onClose();
+            navigate('/dashboard');
         } catch (err) {
             setError(err.message);
         } finally {
             setIsLoading(false);
+
         }
     }
 

@@ -39,7 +39,7 @@ function HeroSection() {
                                     PUBLIC SAFETY INTELLIGENCE
                                 </p>
                                 <h1 className="text-white text-4xl sm:text-6xl">Safe Sweden</h1>
-                                <h2 className="text-white text-md sm:text-2xl">Watch your neighborhood and Stockholm's surrounding areas</h2>                        
+                                <h2 className="text-white text-md sm:text-2xl">Crime analytics platform designed to help users better understand public safety</h2>                        
                             </div>
                             <div className="flex gap-2">
                                 <Link to="/about#methodology">

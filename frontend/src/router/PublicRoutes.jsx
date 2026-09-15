@@ -5,7 +5,7 @@ export function PublicRoutes({ children }) {
     const { user , token } = useAuth();
 
     if (user && token) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/dashboard" replace />;
     }
     return children;
 }

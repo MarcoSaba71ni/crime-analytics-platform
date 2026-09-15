@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import LoginForm from '../components/LoginForm';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import landingPageAnimation from '../animations/landing-page';
@@ -75,12 +76,24 @@ function MapPlaceholder() {
 }
 
 function HomePage() {
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [showLoginDiv, setShowLoginDiv] = useState(false);
+
     useEffect(() => {
         const ctx = gsap.context(() => {
             landingPageAnimation();
         });
         return () => ctx.revert();
     }, []);
+
+    useEffect(() => {
+        if (isLoginOpen) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setShowLoginDiv(true);
+        } else {
+            setShowLoginDiv(false);
+        }
+    }, [isLoginOpen]);
 
     return (
         <main className="bg-[var(--color-primary)] text-white">
@@ -127,11 +140,13 @@ function HomePage() {
                             GET STARTED
                         </button>
                     </Link>
-                    <Link to="/auth/login">
-                        <button className="font-redwing border border-white/15 text-white/50 px-8 py-3 text-xs tracking-[0.2em] hover:border-white/40 hover:text-white/80 transition-colors duration-300">
-                            SIGN IN
-                        </button>
-                    </Link>
+                    <button
+                        type="button"
+                        onClick={() => setIsLoginOpen(true)}
+                        className="font-redwing border border-white/15 text-white/50 px-8 py-3 text-xs tracking-[0.2em] hover:border-white/40 hover:text-white/80 transition-colors duration-300"
+                    >
+                        SIGN IN
+                    </button>
                 </div>
                 <div
                     id="landing-scroll-indicator"
@@ -274,6 +289,14 @@ function HomePage() {
                     </button>
                 </Link>
             </section>
+
+            {showLoginDiv && (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm">
+                    <div className="mx-auto mt-24 w-full max-w-md rounded-lg p-6">
+                        <LoginForm onClose={() => setIsLoginOpen(false)} />
+                    </div>
+                </div>
+            )}
 
         </main>
     );
