@@ -134,6 +134,8 @@ export default function Dashboard() {
                             <span className="text-xs block mt-1 text-[var(--color-secondary)] hover:underline cursor-pointer">Complete your profile to Report Crimes and Watch neighborhood</span>
                         </p>
                     </div>
+                    
+
                     {/* Recent activity */}
                     <div className="lg:col-span-2 rounded-xl border border-white/8 bg-white/4 p-6">
                         <div className="flex items-center justify-between mb-5">

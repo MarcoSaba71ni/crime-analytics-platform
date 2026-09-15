@@ -35,7 +35,7 @@ function Header () {
 
     async function handleLogout() {
         await logout();
-        navigate("/auth/login", { replace: true });
+        navigate("/", { replace: true });
     }
 
     useEffect(() => {

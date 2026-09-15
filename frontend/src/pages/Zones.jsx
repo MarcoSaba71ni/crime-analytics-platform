@@ -163,24 +163,24 @@ function Zones() {
 						<p className="text-white/40 text-sm mt-1">Updates as you pan or zoom the map.</p>
 					</div>
 					<div className="flex flex-col lg:flex-row gap-8">
-						<div className="flex-1 flex flex-col gap-3 bg-[var(--color-primary)] rounded-xl p-4">
-						<div className="h-[600px] overflow-y-auto flex flex-col gap-2 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[var(--color-primary)] [&::-webkit-scrollbar-thumb]:bg-[var(--color-secondary)]/40 [&::-webkit-scrollbar-thumb]:rounded-full">
-							{isLoading && (
-								<div className="w-full min-h-40 flex flex-col items-center justify-center gap-4">
-									<div className="w-10 h-10 border-4 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin" />
-									<p className="text-white font-redwing tracking-widest">LOADING...</p>
-								</div>
-							)}
-							{error && <p className="text-red-500">Error: {error}</p>}
-							{!isLoading && !error && visibleCrimes.length === 0 && (
-								<p className="text-white/40 text-sm text-center mt-8">No crimes with location data in the current view.</p>
-							)}
-							{visibleCrimes.map(crime => (
-								<CrimeListItem key={crime.id} crime={crime} />
-							))}
+						<div className="h-[300px] lg:h-auto lg:w-1/4 flex flex-col gap-3 bg-[var(--color-primary)] rounded-xl p-4">
+							<div className="h-full lg:h-[600px] overflow-y-auto flex flex-col gap-2 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-[var(--color-primary)] [&::-webkit-scrollbar-thumb]:bg-[var(--color-secondary)]/40 [&::-webkit-scrollbar-thumb]:rounded-full">
+								{isLoading && (
+									<div className="w-full min-h-40 flex flex-col items-center justify-center gap-4">
+										<div className="w-10 h-10 border-4 border-[var(--color-secondary)] border-t-transparent rounded-full animate-spin" />
+										<p className="text-white font-redwing tracking-widest">LOADING...</p>
+									</div>
+								)}
+								{error && <p className="text-red-500">Error: {error}</p>}
+								{!isLoading && !error && visibleCrimes.length === 0 && (
+									<p className="text-white/40 text-sm text-center mt-8">No crimes with location data in the current view.</p>
+								)}
+								{visibleCrimes.map(crime => (
+									<CrimeListItem key={crime.id} crime={crime} />
+								))}
+							</div>
 						</div>
-						</div>
-						<div className="flex-1">
+						<div className="lg:w-3/4">
 							<SwedishMap
 							crimes={crimes}
 							onBoundsChange={handleBoundsChange}

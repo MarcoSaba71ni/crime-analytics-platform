@@ -64,7 +64,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
 
     async function handleLogout() {
         await logout();
-        navigate('/auth/login', { replace: true });
+        navigate('/', { replace: true });
     }
 
     return (
