@@ -108,7 +108,7 @@ function HomePage() {
                     <div className="relative flex items-center justify-center w-full">
                         {/* heading-group moves as a unit; strikethrough is a real div so GSAP can erase it */}
                         <div id="heading-group" className="relative inline-block opacity-0">
-                            <h1 className="font-redwing text-8xl font-bold leading-none line-through">
+                            <h1 className="font-redwing text-6xl md:text-8xl font-bold leading-none line-through">
                                 <span id="ss-left">S</span><span id="ss-right" className="inline-block line-through">S</span>
                             </h1>
                             <div
@@ -118,7 +118,7 @@ function HomePage() {
                         </div>
                         <h2
                             id="landing-subheading-2"
-                            className="absolute left-1/2 -translate-x-1/2 font-redwing text-8xl whitespace-nowrap opacity-0"
+                            className="absolute left-1/2 -translate-x-1/2 font-redwing text-6xl md:text-8xl whitespace-nowrap opacity-0"
                         >
                             Safe Sweden
                         </h2>
@@ -183,7 +183,7 @@ function HomePage() {
                             AI-Powered Crime analytics platform
                         </p>
 
-                        <div className="flex flex-col gap-4 sm:flex-row items-center">
+                        <div className="flex flex-col gap-2 md:gap-4 sm:flex-row items-center">
                             {CONCEPTS.map((concept, i) => (
                                 <div key={concept.id} className="flex sm:flex-row items-center">
                                     <div
@@ -191,10 +191,10 @@ function HomePage() {
                                         className="flex flex-col  items-center gap-3 px-6 sm:px-8 opacity-0"
                                     >
                                         <concept.Icon size={32} className="text-[var(--color-secondary)]" aria-hidden="true" />
-                                        <h3 className="font-redwing text-base sm:text-xl tracking-[0.18em]">
+                                        <h3 className="font-redwing text-base text-md sm:text-xl tracking-[0.18em]">
                                             {concept.label}
                                         </h3>
-                                        <p className="text-[var(--color-secondary)] font-redwing text-sm text-center max-w-[130px]">
+                                        <p className="text-[var(--color-secondary)] font-redwing text-xs sm:text-sm text-center max-w-[130px]">
                                             {concept.desc}
                                         </p>
                                     </div>
