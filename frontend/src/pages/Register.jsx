@@ -185,8 +185,9 @@ function Register() {
         } focus:outline-none focus:ring-2`;
 
     return (
-        <div className='bg-[url("../images/stockholm-view.webp")] bg-cover bg-center bg-fixed min-h-screen'>
-            <div className="px-4 py-24 sm:px-6 lg:px-8">
+        <div className="min-h-screen">
+            <div className='fixed inset-0 -z-10 bg-[url("../images/stockholm-view.webp")] bg-cover bg-center' />
+            <div className="px-4 py-24 sm:px-6 lg:px-8 mt-12 sm:mt-0">
                 <section id='auth-selection' className='flex justify-center pb-6 opacity-0' role="group" aria-label="Zones view selector">
                     <div>
                         <button onClick={() => setSelectedView('login')} className={`border text-[var(--color-secondary)] bg-[var(--color-primary)]/50 font-redwing py-1 text-sm px-3 rounded-l-full hover:bg-[var(--color-secondary)] hover:text-black cursor-pointer transition ${selectedView === 'login' ? 'bg-[var(--color-secondary)] text-black' : ''}`}>Login</button>
@@ -212,7 +213,7 @@ function Register() {
 
                     <div id='auth-forms' className="absolute top-0 left-0 right-0 mx-auto flex flex-col w-full max-w-6xl items-stretch justify-center gap-6 lg:items-center opacity-0">
                     {selectedView === 'login' && (
-                    <form onSubmit={loginUser} className="relative flex w-full flex-col rounded-xl border border-white/20 bg-[rgba(15,23,42,0.62)] p-5 shadow-lg sm:p-6 md:p-8 lg:max-w-sm">
+                    <form onSubmit={loginUser} className="relative flex w-full flex-col rounded-xl border border-white/20 bg-[rgba(15,23,42,0.62)] p-5 shadow-lg sm:p-6 mt-12 sm:mt-0 md:p-8 lg:max-w-sm">
                         <h2 className="flex justify-center text-3xl text-white font-bold tracking-wide">Login</h2>
                         <p className="text-center text-white/70 text-sm mt-1 mb-5">Access your dashboard and saved areas</p>
                         {loginError && <p className="mb-4 text-red-400 text-sm text-center">{loginError}</p>}
@@ -338,7 +339,7 @@ function Register() {
                         </button>
                     </form>
                     )}
-                    <div>
+                    <div className='text-center flex justify-center'>
                         <p id="strikethrough-logo" className="font-redwing text-3xl text-white line-through opacity-0">
                             SS
                         </p>
