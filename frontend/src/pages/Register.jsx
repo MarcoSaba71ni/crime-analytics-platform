@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth.jsx';
-
+import { animateAuthPage, animateAuthForms } from '../animations/auth-page.js';
 
 function Register() {
+    const tlRef = useRef(null);
+    const hasInitialized = useRef(false);
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [bio, setBio] = useState('');
     const [role, setRole] = useState('analyst');
 
     const [loginEmail, setLoginEmail] = useState('');
@@ -17,6 +19,25 @@ function Register() {
     const [loginLoading, setLoginLoading] = useState(false);
     const [loginError, setLoginError] = useState(null);
 
+    const [selectedView, setSelectedView] = useState('login');
+
+    // Runs once on mount — full heading sequence, then triggers initial reveal via onComplete
+    useEffect(() => {
+        tlRef.current = animateAuthPage();
+        return () => {
+            tlRef.current?.kill();
+            hasInitialized.current = false;
+        };
+    }, []);
+
+    // Runs on tab switch — re-animates only the form, skips initial render
+    useEffect(() => {
+        if (!hasInitialized.current) {
+            hasInitialized.current = true;
+            return;
+        }
+        animateAuthForms();
+    }, [selectedView]);
     // Field-level validation state
     const [loginFieldErrors, setLoginFieldErrors] = useState({});
     const [loginTouched, setLoginTouched] = useState({});
@@ -103,10 +124,9 @@ function Register() {
             email: validateRegField('email', email),
             username: validateRegField('username', username),
             password: validateRegField('password', password),
-            bio: validateRegField('bio', bio),
         };
         setRegErrors(newErrors);
-        setRegTouched({ email: true, username: true, password: true, bio: true });
+        setRegTouched({ email: true, username: true, password: true });
         return !Object.values(newErrors).some(Boolean);
     }
 
@@ -134,7 +154,7 @@ function Register() {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, username, password, bio: bio || undefined, role }),
+                body: JSON.stringify({ email, username, password, role }),
             });
             if (!response.ok) {
                 const errorData = await response.json();
@@ -142,7 +162,7 @@ function Register() {
             }
             const data = await response.json();
             setAuth(data.user, data.access_token);
-            navigate('/');
+            navigate('/profile-completion');
         } catch (error) {
             setError(error.message || 'Registration failed. Please try again.');
         } finally {
@@ -166,7 +186,31 @@ function Register() {
 
     return (
         <div className="bg-[url('../images/stockholm-view.webp')] bg-cover bg-center min-h-screen px-4 py-24 sm:px-6 lg:px-8">
-            <div className="mx-auto flex w-full max-w-6xl flex-col items-stretch justify-center gap-6 lg:flex-row lg:items-center">
+            <section id='auth-selection' className='flex justify-center pb-6 opacity-0' role="group" aria-label="Zones view selector">
+				<div>
+					<button onClick={() => setSelectedView('login')} className={`border text-[var(--color-secondary)] bg-[var(--color-primary)]/50 font-redwing py-1 text-sm px-3 rounded-l-full hover:bg-[var(--color-secondary)] hover:text-black cursor-pointer transition ${selectedView === 'login' ? 'bg-[var(--color-secondary)] text-black' : ''}`}>Login</button>
+				</div>
+				<div>
+					<button onClick={() => setSelectedView('register')} className={`border text-[var(--color-secondary)] bg-[var(--color-primary)]/50 font-redwing py-1 text-sm px-3 rounded-r-full hover:bg-[var(--color-secondary)] hover:text-black cursor-pointer transition ${selectedView === 'register' ? 'bg-[var(--color-secondary)] text-black' : ''}`}>Register</button>
+				</div>
+			</section>
+
+            {/* Relative wrapper — heading and form share the same vertical space */}
+            <div className="relative">
+                <section id='auth-title' className="flex justify-center mb-6">
+                    <div id="heading-group" className="relative inline-block opacity-0">
+                        <h1 className="font-redwing text-6xl md:text-8xl font-bold leading-none line-through text-white">
+                            <span id="ss-left">S</span><span id="ss-right" className="inline-block line-through">S</span>
+                        </h1>
+                        <div
+                            id="strikethrough-line"
+                            className="absolute top-1/2 left-0 w-full h-[2px] bg-white -translate-y-1/2 origin-center"
+                        />
+                    </div>
+                </section>
+
+            <div id='auth-forms' className="absolute top-0 left-0 right-0 mx-auto flex flex-col w-full max-w-6xl flex-col items-stretch justify-center gap-6  lg:items-center opacity-0">
+                {selectedView === 'login' && (
                 <form onSubmit={loginUser} className="relative flex w-full flex-col rounded-xl border border-white/20 bg-[rgba(15,23,42,0.62)] p-5 shadow-lg sm:p-6 md:p-8 lg:max-w-sm">
                     <h2 className="flex justify-center text-3xl text-white font-bold tracking-wide">Login</h2>
                     <p className="text-center text-white/70 text-sm mt-1 mb-5">Access your dashboard and saved areas</p>
@@ -203,16 +247,8 @@ function Register() {
                         {loginLoading ? 'Logging in...' : 'Login'}
                     </button>
                 </form>
-                <div className="hidden lg:flex flex-col items-center justify-center px-2 gap-3">
-                    <div className="w-px bg-white/50 flex-1" />
-                    <span className="text-white/70 text-xl font-semibold tracking-[0.3em] uppercase">or</span>
-                    <div className="w-px bg-white/50 flex-1" />
-                </div>
-                <div className="flex lg:hidden items-center justify-center gap-3 py-1">
-                    <div className="h-px bg-white/50 flex-1" />
-                    <span className="text-white/70 text-sm font-semibold tracking-[0.3em] uppercase">or</span>
-                    <div className="h-px bg-white/50 flex-1" />
-                </div>
+                )}
+                {selectedView === 'register' && (
                 <form onSubmit={registerUser}
                  className="relative flex w-full flex-col rounded-xl border border-white/20 bg-[rgba(15,23,42,0.62)] p-5 shadow-lg sm:p-6 md:p-8 lg:max-w-2xl">
                     <h2 className="flex justify-center text-3xl text-white font-bold tracking-wide">Register</h2>
@@ -248,6 +284,8 @@ function Register() {
                                     <p className="text-red-400 text-xs">{regErrors.username}</p>
                                 )}
                             </div>
+                        </div>
+                        <div className="flex flex-col flex-1">
                             <div className="mb-5 flex flex-col gap-1">
                                 <label className="text-white font-redwing" htmlFor="register-password">Password:</label>
                                 <input
@@ -260,23 +298,6 @@ function Register() {
                                 />
                                 {regTouched.password && regErrors.password && (
                                     <p className="text-red-400 text-xs">{regErrors.password}</p>
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex flex-col flex-1">
-                            <div className="mb-4 flex flex-col gap-1">
-                                <label className="text-white font-redwing" htmlFor='register-bio'>Bio:</label>
-                                <textarea
-                                    className={regInputClass('bio')}
-                                    id="register-bio" name="bio"
-                                    value={bio}
-                                    onChange={handleRegChange(setBio, 'bio')}
-                                    onBlur={handleRegBlur}
-                                    placeholder="Tell us a bit about yourself (optional)"
-                                    rows="3"
-                                />
-                                {regTouched.bio && regErrors.bio && (
-                                    <p className="text-red-400 text-xs">{regErrors.bio}</p>
                                 )}
                             </div>
                             <div className="mb-5 flex flex-col gap-2">
@@ -315,7 +336,14 @@ function Register() {
                         {isLoading ? 'Registering...' : 'Register'}
                     </button>
                 </form>
+                )}
+                <div>
+                    <p id="strikethrough-logo" className="font-redwing text-3xl text-white line-through opacity-0">
+                        SS
+                    </p>
+                </div>
             </div>
+            </div>{/* end relative wrapper */}
         </div>
     )
 }
