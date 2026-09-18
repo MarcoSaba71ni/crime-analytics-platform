@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import ProfileCompletion from "../pages/Profile-Completion";
 
 import PublicLayout from "../layouts/PublicLayout";
 import AppShell from "../layouts/AppShell";
@@ -25,6 +26,7 @@ function Router() {
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/crime-history" element={<CrimeHistory />} />
+                <Route path="/profile-completion" element={<ProfileCompletion />} />
                 <Route path="auth">
                     <Route
                         path="login"
