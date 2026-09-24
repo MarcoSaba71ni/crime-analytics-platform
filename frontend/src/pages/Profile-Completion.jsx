@@ -52,7 +52,7 @@ function ProfileCompletion() {
                 <p className="font-redwing text-3xl text-white line-through mb-8 tracking-widest">SS</p>
 
                 {/* Card */}
-                <div className="w-full max-w-md rounded-xl border border-white/20 bg-[rgba(15,23,42,0.72)] p-6 shadow-xl sm:p-8">
+                <div className="w-full max-w-2xl rounded-xl border border-white/20 bg-[rgba(15,23,42,0.72)] p-6 shadow-xl sm:p-8">
                     <h2 className="font-redwing text-2xl font-bold text-white tracking-wide text-center">
                         Profile Completion
                     </h2>

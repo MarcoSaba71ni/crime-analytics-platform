@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import NeighborhoodSelector from './NeighborhoodSelector';
 
 const CRIME_CATEGORIES = ['Theft', 'Assault', 'Vandalism', 'Drug Offenses', 'Robbery', 'Fraud', 'Other'];
 const NOTIFICATION_OPTIONS = ['Email', 'SMS', 'Push Notifications'];
@@ -6,6 +7,7 @@ const NOTIFICATION_OPTIONS = ['Email', 'SMS', 'Push Notifications'];
 const inputClass = "w-full rounded-lg border border-white/20 bg-[rgba(15,23,42,0.5)] p-2.5 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[var(--color-secondary)]/60 transition";
 
 function SecondaryForm() {
+    const [homeNeighborhood, setHomeNeighborhood] = useState('');
     const [watchAreas, setWatchAreas] = useState([]);
     const [areaInput, setAreaInput] = useState('');
     const [crimeCategories, setCrimeCategories] = useState([]);
@@ -38,34 +40,35 @@ function SecondaryForm() {
     return (
         <form className="flex flex-col gap-5 bg-[var(--color-secondary)]/50 rounded-lg p-4">
 
-            {/* Your Location */}
+            {/* Row 1 — Your Location: two columns */}
             <div className="flex flex-col gap-3">
                 <p className="font-redwing text-white/60 text-xs tracking-widest uppercase">Your Location</p>
-                <div className="flex flex-col gap-1">
-                    <label className="text-white font-redwing" htmlFor="neighborhood">Home Neighborhood</label>
-                    <input
-                        type="text"
-                        id="neighborhood"
-                        placeholder="e.g. Södermalm"
-                        className={inputClass}
-                    />
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-white font-redwing" htmlFor="address">
-                        Address <span className="text-white/40 text-xs font-sans">(optional)</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="address"
-                        placeholder="Street address"
-                        className={inputClass}
-                    />
+                <div className="flex gap-4">
+                    <div className="flex flex-1 flex-col gap-1">
+                        <label className="text-white font-redwing" htmlFor="neighborhood">Home Neighborhood</label>
+                        <NeighborhoodSelector
+                            id="neighborhood"
+                            value={homeNeighborhood}
+                            onChange={setHomeNeighborhood}
+                        />
+                    </div>
+                    <div className="flex flex-1 flex-col gap-1">
+                        <label className="text-white font-redwing" htmlFor="address">
+                            Address <span className="text-white/40 text-xs font-sans">(optional)</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="address"
+                            placeholder="Street address"
+                            className={inputClass}
+                        />
+                    </div>
                 </div>
             </div>
 
             <hr className="border-white/10" />
 
-            {/* Watch Areas */}
+            {/* Row 2 — Watch Areas: full width tag input */}
             <div className="flex flex-col gap-3">
                 <p className="font-redwing text-white/60 text-xs tracking-widest uppercase">Your Watch Areas</p>
                 <div className="flex flex-col gap-1">
@@ -109,41 +112,42 @@ function SecondaryForm() {
 
             <hr className="border-white/10" />
 
-            {/* Crime Categories */}
-            <div className="flex flex-col gap-3">
-                <p className="font-redwing text-white/60 text-xs tracking-widest uppercase">Crime Categories</p>
-                <div className="grid grid-cols-2 gap-2">
-                    {CRIME_CATEGORIES.map(cat => (
-                        <label key={cat} className="inline-flex items-center gap-2 text-white/90 text-sm cursor-pointer select-none">
-                            <input
-                                type="checkbox"
-                                checked={crimeCategories.includes(cat)}
-                                onChange={() => toggleCategory(cat)}
-                                className="h-4 w-4 rounded border-white/30 bg-[rgba(15,23,42,0.5)] accent-[var(--color-secondary)]"
-                            />
-                            {cat}
-                        </label>
-                    ))}
+            {/* Row 3 — Crime Categories | Notification Preferences: two columns */}
+            <div className="flex gap-6">
+                <div className="flex flex-1 flex-col gap-3">
+                    <p className="font-redwing text-white/60 text-xs tracking-widest uppercase">Crime Categories</p>
+                    <div className="grid grid-cols-2 gap-2">
+                        {CRIME_CATEGORIES.map(cat => (
+                            <label key={cat} className="inline-flex items-center gap-2 text-white/90 text-sm cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={crimeCategories.includes(cat)}
+                                    onChange={() => toggleCategory(cat)}
+                                    className="h-4 w-4 rounded border-white/30 bg-[rgba(15,23,42,0.5)] accent-[var(--color-secondary)]"
+                                />
+                                {cat}
+                            </label>
+                        ))}
+                    </div>
                 </div>
-            </div>
 
-            <hr className="border-white/10" />
+                <div className="w-px bg-white/10 self-stretch" />
 
-            {/* Notification Preferences */}
-            <div className="flex flex-col gap-3">
-                <p className="font-redwing text-white/60 text-xs tracking-widest uppercase">Notification Preferences</p>
-                <div className="flex flex-col gap-2">
-                    {NOTIFICATION_OPTIONS.map(notif => (
-                        <label key={notif} className="inline-flex items-center gap-2 text-white/90 text-sm cursor-pointer select-none">
-                            <input
-                                type="checkbox"
-                                checked={notifications.includes(notif)}
-                                onChange={() => toggleNotification(notif)}
-                                className="h-4 w-4 rounded border-white/30 bg-[rgba(15,23,42,0.5)] accent-[var(--color-secondary)]"
-                            />
-                            {notif}
-                        </label>
-                    ))}
+                <div className="flex flex-1 flex-col gap-3">
+                    <p className="font-redwing text-white/60 text-xs tracking-widest uppercase">Notification Preferences</p>
+                    <div className="flex flex-col gap-2">
+                        {NOTIFICATION_OPTIONS.map(notif => (
+                            <label key={notif} className="inline-flex items-center gap-2 text-white/90 text-sm cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={notifications.includes(notif)}
+                                    onChange={() => toggleNotification(notif)}
+                                    className="h-4 w-4 rounded border-white/30 bg-[rgba(15,23,42,0.5)] accent-[var(--color-secondary)]"
+                                />
+                                {notif}
+                            </label>
+                        ))}
+                    </div>
                 </div>
             </div>
 

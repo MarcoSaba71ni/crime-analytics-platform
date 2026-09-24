@@ -37,9 +37,9 @@ function PrimaryForm() {
                         />
                     </div>
                     <div className="flex flex-col gap-1">
-                        <label className="text-white font-redwing" htmlFor="genre">Genre</label>
-                        <select id="genre" className={inputClass}>
-                            <option value="">Select genre</option>
+                        <label className="text-white font-redwing" htmlFor="gender">Gender</label>
+                        <select id="gender" className={inputClass}>
+                            <option value="">Select gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                             <option value="other">Other</option>

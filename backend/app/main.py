@@ -8,8 +8,9 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from app.routes import crimes, profiles, auth
+from app.routes import crimes, profiles, auth, profile_completion
 from app.models.crime_models import Crime  # noqa: F401 — registers model with Base.metadata
+from app.models.profile_models import Profile  # noqa: F401 — registers model with Base.metadata
 from app.models.auth_models import AuthRegister  # noqa: F401 — registers model with Base.metadata
 from app.database.database import engine, Base
 from app.core.limiter import limiter
@@ -30,6 +31,7 @@ app.add_middleware(
 app.include_router(crimes.router, prefix="/crimes")
 app.include_router(profiles.router, prefix="/profiles")
 app.include_router(auth.router, prefix="/auth")
+app.include_router(profile_completion.router, prefix="/profile-completion")
 
 for _attempt in range(1, 6):
     try:

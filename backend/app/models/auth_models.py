@@ -14,3 +14,4 @@ class AuthRegister(Base):
     role = Column(String(50), default="analyst")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     crimes = relationship("Crime", back_populates="reporter")
+    profile = relationship("Profile", back_populates="user", uselist=False)
